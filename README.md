@@ -2,8 +2,6 @@
 
 Serwer RADIUS z protokołem EAP-MD5. Zawiera klienta symulującego NAS do testów.
 
-## Instalacja ##
-
 ### Wymagania
 
 * VS2012 albo Microsoft SDK
