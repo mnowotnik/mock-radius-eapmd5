@@ -1,5 +1,6 @@
 #include <iostream>
 #define CATCH_CONFIG_MAIN
+#include "packet.h"
 #include "catch.hpp"
 
 unsigned int Factorial( unsigned int number ) {

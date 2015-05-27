@@ -1,8 +1,4 @@
-#include <iostream>
-#include "tclap/CmdLine.h"
 #include "client.h"
-#include "crypto.h"
-
 using namespace TCLAP;
 using namespace std;
 

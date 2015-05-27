@@ -9,7 +9,7 @@ CATCH=$(ROOT)\lib\Catch\single_include
 
 SERVER_DEP=$(SRC)\server.cc md5.obj
 CLIENT_DEP=$(SRC)\client.cc md5.obj
-TESTS_DEP=$(SRC)\all_tests.cc
+TESTS_DEP=$(SRC)\all_tests.cc md5.obj
 
 SERVER=server.exe
 CLIENT=client.exe
@@ -31,11 +31,14 @@ $(CLIENT): $(CLIENT_DEP)
 $(TESTS): $(TESTS_DEP)
 	$(CC) $(TESTS_INC) $(TESTS_DEP)
 
-$(HASHLIB)\hash-library\%.cc:
-	$(CC) $@
+# $(HASHLIB)\hash-library\%.cc:
+# 	$(CC) $@
 
 {$(HASHLIB)}.cpp{}.obj::
 	$(CC) /I$(HASHLIB) -c $<
+
+packet.obj: $(SRC)\packet.cc md5.obj
+	$(CC) /I$(HASHLIB) /I$(SRC) -c $?
 
 clean:
 	del *.obj *.exe

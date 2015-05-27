@@ -1,7 +1,6 @@
-#ifndef __USER_H_INCLUDED__
-#define __USER_H_INCLUDED__
 #include<iostream>
 #include <string>
+#pragma once
 /**
 Class for encapsulating user parameters
  */
@@ -21,4 +20,3 @@ class User
    */
   std::string getUsername();
 }
-#endif//__USER_H_INCLUDED__
