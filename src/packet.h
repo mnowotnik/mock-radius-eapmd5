@@ -43,17 +43,16 @@ class RadiusAVP;
  */
 class RadiusPacket {
 private:
-  std::vector<byte> buffer();
+  std::vector<byte> buffer;
   std::vector<RadiusAVP> avpList;
 
 public:
   // codes
   const byte ACCESS_REQUEST = 1, ACCESS_ACCEPT = 2, ACCESS_REJECT = 3,
-              ACCESS_CHALLENGE = 11;
+             ACCESS_CHALLENGE = 11;
 
-  RadiusPacket() { }
+  RadiusPacket() {}
   RadiusPacket(byte inputBuf[], int n);
-/*
   void setCode(byte code) { buffer[0] = code; }
   byte getCode() { return buffer[0]; }
   void setIdentifier(byte identifier) { buffer[1] = identifier; }
@@ -64,7 +63,7 @@ public:
     buffer[3] = bytes[1];
   }
   short getLength() {
-    short l = networkBytes2Short(std::array({{buffer[2], buffer[3]}}));
+    short l = networkBytes2Short(std::array<byte, 2>({{buffer[2], buffer[3]}}));
     return l;
   }
   void setAuthenticator(std::array<byte, 16> arr) {
@@ -79,7 +78,6 @@ public:
     }
   }
   std::vector<RadiusAVP> getAVPList() { return avpList; }
-  */
 };
 
 /**
@@ -91,7 +89,7 @@ class RadiusAVP {
 public:
   // types
   const byte MESSAGE_AUTHENTICATOR = 80, EAP_MESSAGE = 79, NAS_IP_ADDRESS = 4,
-              NAS_IDENTIFIER = 32;
+             NAS_IDENTIFIER = 32;
 };
 
 /**
