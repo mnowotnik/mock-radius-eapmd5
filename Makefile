@@ -9,7 +9,7 @@ CATCH=$(ROOT)\lib\Catch\single_include
 
 SERVER_DEP=$(SRC)\server.cc md5.obj
 CLIENT_DEP=$(SRC)\client.cc md5.obj
-TESTS_DEP=$(SRC)\all_tests.cc md5.obj
+TESTS_DEP=$(SRC)\all_tests.cc md5.obj packet.obj
 
 SERVER=server.exe
 CLIENT=client.exe
@@ -19,6 +19,9 @@ COMMON_INC=/I$(HASHLIB) /I$(TCLAP) /I$(SRC)
 SERVER_INC=$(COMMON_INC)
 CLIENT_INC=$(COMMON_INC)
 TESTS_INC=/I$(HASHLIB) /I$(CATCH) /I$(SRC)
+
+CFLAGS = $(COMMON_INC)
+
 
 all: $(SERVER) $(CLIENT) $(TESTS)
 
@@ -37,8 +40,8 @@ $(TESTS): $(TESTS_DEP)
 {$(HASHLIB)}.cpp{}.obj::
 	$(CC) /I$(HASHLIB) -c $<
 
-packet.obj: $(SRC)\packet.cc md5.obj
-	$(CC) /I$(HASHLIB) /I$(SRC) -c $?
+{$(SRC)}.cc{}.obj:
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	del *.obj *.exe
