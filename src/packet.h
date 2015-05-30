@@ -28,21 +28,22 @@ class RadiusAVP;
  */
 class RadiusPacket {
 private:
+  const int radiusMinSize = 20;
   std::vector<byte> buffer;
   std::vector<RadiusAVP> avpList;
 
 public:
   // codes
-  const byte ACCESS_REQUEST = 1, ACCESS_ACCEPT = 2, ACCESS_REJECT = 3,
+  static const byte ACCESS_REQUEST = 1, ACCESS_ACCEPT = 2, ACCESS_REJECT = 3,
              ACCESS_CHALLENGE = 11;
 
-  RadiusPacket() {}
+  RadiusPacket():buffer(radiusMinSize) {}
   RadiusPacket(byte inputBuf[], int n);
   void setCode(byte code) { buffer[0] = code; }
   byte getCode() { return buffer[0]; }
   void setIdentifier(byte identifier) { buffer[1] = identifier; }
   byte getIdentifier() { return buffer[1]; }
-  void setLength(short length) {
+  void setLength(unsigned short length) {
     std::array<byte, 2> bytes = radius::internal::short2NetworkBytes(length);
     buffer[2] = bytes[0];
     buffer[3] = bytes[1];
@@ -59,10 +60,10 @@ public:
   }
   std::array<byte, 16> getAuthenticator() {
     std::array<byte, 16> auth;
-    for (int i = 0; i < 16; i++) {
-      auth[i] = buffer[i + 4];
-    }
+    std::copy(buffer.begin()+4,buffer.begin()+20,&auth[0]);
+    return auth;
   }
+  std::vector<byte> getBuffer(){return buffer;}
   std::vector<RadiusAVP> getAVPList() { return avpList; }
 };
 
