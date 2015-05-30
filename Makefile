@@ -20,28 +20,28 @@ SERVER_INC=$(COMMON_INC)
 CLIENT_INC=$(COMMON_INC)
 TESTS_INC=/I$(HASHLIB) /I$(CATCH) /I$(SRC)
 
-CFLAGS = $(COMMON_INC)
+CFLAGS = /EHsc
 
 
 all: $(SERVER) $(CLIENT) $(TESTS)
 
 $(SERVER): $(SERVER_DEP)
-	$(CC) $(SERVER_INC) $(SERVER_DEP)
+	$(CC) $(CFLAGS) $(SERVER_INC) $(SERVER_DEP)
 
 $(CLIENT): $(CLIENT_DEP)
-	$(CC) $(CLIENT_INC) $(CLIENT_DEP)
+	$(CC) $(CFLAGS) $(CLIENT_INC) $(CLIENT_DEP)
 
 $(TESTS): $(TESTS_DEP)
-	$(CC) $(TESTS_INC) $(TESTS_DEP)
+	$(CC) $(CFLAGS) $(TESTS_INC) $(TESTS_DEP)
 
 # $(HASHLIB)\hash-library\%.cc:
 # 	$(CC) $@
 
 {$(HASHLIB)}.cpp{}.obj::
-	$(CC) /I$(HASHLIB) -c $<
+	$(CC) $(CFLAGS) /I$(HASHLIB) -c $<
 
 {$(SRC)}.cc{}.obj:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) $(COMMON_INC) -c $<
 
 clean:
 	del *.obj *.exe

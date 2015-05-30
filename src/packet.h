@@ -10,28 +10,13 @@
 
 typedef unsigned char byte;
 
-#ifdef DEBUG
-namespace packet_h_private {
-#else
-namespace {
-#endif
-short networkBytes2Short(std::array<byte, 2> bytes) {
-  short s = (bytes[1] << 8) | bytes[2];
-  return ntohs(s);
+namespace radius {
+namespace internal {
+unsigned short networkBytes2Short(std::array<byte, 2> bytes);
+std::array<byte, 2> short2NetworkBytes(unsigned short s);
+}
 }
 
-std::array<byte, 2> short2NetworkBytes(short s) {
-  s = htons(s);
-  std::array<byte, 2> b;
-  b[0] = s & 0xff;
-  b[1] = (s >> 8) & 0xff;
-  return b;
-}
-
-const int RADIUS_MIN_SIZE = 20;
-}
-
-const int RADIUS_MIN_SIZE = 20;
 class RadiusAVP;
 
 /**
@@ -58,12 +43,13 @@ public:
   void setIdentifier(byte identifier) { buffer[1] = identifier; }
   byte getIdentifier() { return buffer[1]; }
   void setLength(short length) {
-    std::array<byte, 2> bytes = short2NetworkBytes(length);
+    std::array<byte, 2> bytes = radius::internal::short2NetworkBytes(length);
     buffer[2] = bytes[0];
     buffer[3] = bytes[1];
   }
   short getLength() {
-    short l = networkBytes2Short(std::array<byte, 2>({{buffer[2], buffer[3]}}));
+    unsigned short l = radius::internal::networkBytes2Short(
+        std::array<byte, 2>({{buffer[2], buffer[3]}}));
     return l;
   }
   void setAuthenticator(std::array<byte, 16> arr) {
