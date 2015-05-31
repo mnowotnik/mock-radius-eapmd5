@@ -9,7 +9,7 @@ CATCH=$(ROOT)\lib\Catch\single_include
 
 SERVER_DEP=$(SRC)\server.cc md5.obj
 CLIENT_DEP=$(SRC)\client.cc md5.obj
-TESTS_DEP=$(SRC)\all_tests.cc md5.obj packet.obj
+TESTS_DEP=$(SRC)\all_tests.cc md5.obj packet.obj radius_packet.obj eap_packet.obj
 
 SERVER=server.exe
 CLIENT=client.exe
@@ -37,13 +37,13 @@ $(CLIENT): $(CLIENT_DEP)
 $(TESTS): $(TESTS_DEP)
 	$(CC) $(CFLAGS) $(TESTS_INC) $(TESTS_DEP)
 
-# $(HASHLIB)\hash-library\%.cc:
-# 	$(CC) $@
-
 {$(HASHLIB)}.cpp{}.obj::
 	$(CC) $(CFLAGS) /I$(HASHLIB) -c $<
 
 {$(SRC)}.cc{}.obj:
+	$(CC) $(CFLAGS) $(COMMON_INC) -c $<
+
+{$(SRC)/packets}.cc{}.obj:
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $<
 
 clean:

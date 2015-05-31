@@ -1,12 +1,11 @@
-#include "packet.h"
+#include "packets/packet.h"
+#include "packets/radius_packet.h"
+#include "packets/eap_packet.h"
 #include <array>
-
-
-typedef unsigned char byte;
 
 TEST_CASE( "Conversion of network bytes to short", "[networkBytes2Short]" ) {
     std::array<byte,2> bytes = {0x00,0x38};
-    short s = radius::internal::networkBytes2Short(bytes);
+    unsigned short s = radius::internal::networkBytes2Short(bytes);
     REQUIRE( s == 56 );
 }
 

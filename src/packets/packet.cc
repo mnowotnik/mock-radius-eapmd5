@@ -16,8 +16,3 @@ std::array<byte, 2> short2NetworkBytes(unsigned short s) {
 }
 }
 }
-
-RadiusPacket::RadiusPacket(byte inputBuf[], int n) {
-    std::vector<byte> tmpBuf(inputBuf,inputBuf+n);
-    buffer.insert(buffer.end(),tmpBuf.begin(),tmpBuf.end());
-}
