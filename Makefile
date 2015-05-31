@@ -25,6 +25,9 @@ CFLAGS = /EHsc
 
 all: $(SERVER) $(CLIENT) $(TESTS)
 
+test: $(TESTS)
+	$(TESTS)
+
 $(SERVER): $(SERVER_DEP)
 	$(CC) $(CFLAGS) $(SERVER_INC) $(SERVER_DEP)
 

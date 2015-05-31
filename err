@@ -1,0 +1,187 @@
+	cl /EHsc /IC:\Users\Mike\Desktop\RADIUS\lib\hash-library /IC:\Users\Mike\Desktop\RADIUS\lib\tclap-1.2.1\include /IC:\Users\Mike\Desktop\RADIUS\src -c C:\Users\Mike\Desktop\RADIUS\src\packet.cc
+packet.cc
+c:\users\mike\desktop\radius\src\packet.h(82) : error C2027: use of undefined type 'RadiusAVP'
+        c:\users\mike\desktop\radius\src\packet.h(27) : see declaration of 'RadiusAVP'
+c:\users\mike\desktop\radius\src\packet.h(82) : error C2228: left of '.buffer' must have class/struct/union
+c:\users\mike\desktop\radius\src\packet.h(82) : error C2228: left of '.begin' must have class/struct/union
+        c:\users\mike\desktop\radius\src\packet.h(27) : see declaration of 'RadiusAVP'
+c:\users\mike\desktop\radius\src\packet.h(82) : error C2228: left of '.end' must have class/struct/union
+c:\users\mike\desktop\radius\src\packet.h(82) : error C2661: 'std::vector<byte,std::allocator<_Ty>>::insert' : no overloaded function takes 1 arguments
+        with
+        [
+            _Ty=byte
+        ]
+c:\users\mike\desktop\radius\src\packet.h(148) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(148) : error C2143: syntax error : missing ',' before '&'
+c:\users\mike\desktop\radius\src\packet.h(153) : error C2146: syntax error : missing ';' before identifier 'getEapPacket'
+c:\users\mike\desktop\radius\src\packet.h(153) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(156) : warning C4183: 'getEapPacket': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(145) : error C2661: 'std::vector<byte,std::allocator<_Ty>>::resize' : no overloaded function takes 0 arguments
+        with
+        [
+            _Ty=byte
+        ]
+c:\users\mike\desktop\radius\src\packet.h(146) : error C2146: syntax error : missing ';' before identifier 'setType'
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2039: 'DATA_OFFSET' : is not a member of 'RadiusAVP'
+        c:\users\mike\desktop\radius\src\packet.h(98) : see declaration of 'RadiusAVP'
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2065: 'DATA_OFFSET' : undeclared identifier
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2065: 'packet' : undeclared identifier
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2228: left of '.buffer' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2228: left of '.begin' must have class/struct/union
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2228: left of '.end' must have class/struct/union
+c:\users\mike\desktop\radius\src\packet.h(149) : error C2661: 'std::vector<byte,std::allocator<_Ty>>::insert' : no overloaded function takes 1 arguments
+        with
+        [
+            _Ty=byte
+        ]
+c:\users\mike\desktop\radius\src\packet.h(155) : error C3861: 'EapPacket': identifier not found
+c:\users\mike\desktop\radius\src\packet.h(203) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(203) : error C2143: syntax error : missing ',' before '&'
+c:\users\mike\desktop\radius\src\packet.h(207) : error C2146: syntax error : missing ';' before identifier 'getData'
+c:\users\mike\desktop\radius\src\packet.h(207) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(215) : warning C4183: 'getData': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(204) : error C2065: 'data' : undeclared identifier
+c:\users\mike\desktop\radius\src\packet.h(204) : error C2228: left of '.buffer' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(204) : error C2228: left of '.begin' must have class/struct/union
+c:\users\mike\desktop\radius\src\packet.h(204) : error C2228: left of '.end' must have class/struct/union
+c:\users\mike\desktop\radius\src\packet.h(204) : error C2661: 'std::vector<byte,std::allocator<_Ty>>::insert' : no overloaded function takes 1 arguments
+        with
+        [
+            _Ty=byte
+        ]
+c:\users\mike\desktop\radius\src\packet.h(210) : error C2248: 'PacketAccessException::PacketAccessException' : cannot access private member declared in class 'PacketAccessException'
+        c:\users\mike\desktop\radius\src\packet.h(17) : see declaration of 'PacketAccessException::PacketAccessException'
+        c:\users\mike\desktop\radius\src\packet.h(16) : see declaration of 'PacketAccessException'
+c:\users\mike\desktop\radius\src\packet.h(213) : error C2514: 'std::vector' : class has no constructors
+        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\vector(650) : see declaration of 'std::vector'
+c:\users\mike\desktop\radius\src\packet.h(214) : error C3861: 'EapData': identifier not found
+c:\users\mike\desktop\radius\src\packet.h(227) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(228) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(236) : error C2590: 'EapTypeData' : only a constructor can have a base/member initializer list
+c:\users\mike\desktop\radius\src\packet.h(237) : error C2590: 'EapTypeData' : only a constructor can have a base/member initializer list
+c:\users\mike\desktop\radius\src\packet.h(261) : error C2061: syntax error : identifier 'string'
+c:\users\mike\desktop\radius\src\packet.h(261) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(263) : warning C4183: 'setIdentity': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(265) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(267) : warning C4183: 'getIdentity': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(256) : error C2614: 'EapIdentity' : illegal member initialization: 'buffer' is not a base or member
+c:\users\mike\desktop\radius\src\packet.h(257) : error C2248: 'EapData::MIN_LENGTH' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(227) : see declaration of 'EapData::MIN_LENGTH'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(257) : error C2614: 'EapIdentity' : illegal member initialization: 'buffer' is not a base or member
+c:\users\mike\desktop\radius\src\packet.h(258) : error C2653: 'EapTypeData' : is not a class or namespace name
+c:\users\mike\desktop\radius\src\packet.h(262) : error C2248: 'EapData::DATA_OFFSET' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(262) : error C2065: 'identity' : undeclared identifier
+c:\users\mike\desktop\radius\src\packet.h(262) : error C2228: left of '.begin' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(262) : error C2228: left of '.end' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(262) : error C2661: 'std::vector<byte,std::allocator<_Ty>>::insert' : no overloaded function takes 1 arguments
+        with
+        [
+            _Ty=byte
+        ]
+c:\users\mike\desktop\radius\src\packet.h(266) : error C2248: 'EapData::DATA_OFFSET' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(266) : error C3861: 'string': identifier not found
+c:\users\mike\desktop\radius\src\packet.h(280) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(288) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(290) : warning C4183: 'setPrefAlgorithm': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(292) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(294) : warning C4183: 'getPrefAlgorithm': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(282) : error C2614: 'EapNak' : illegal member initialization: 'buffer' is not a base or member
+c:\users\mike\desktop\radius\src\packet.h(283) : error C2248: 'EapData::MIN_LENGTH' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(227) : see declaration of 'EapData::MIN_LENGTH'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(283) : error C2614: 'EapNak' : illegal member initialization: 'buffer' is not a base or member
+c:\users\mike\desktop\radius\src\packet.h(284) : error C2653: 'EapTypeData' : is not a class or namespace name
+c:\users\mike\desktop\radius\src\packet.h(306) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(332) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(332) : error C2143: syntax error : missing ',' before '&'
+c:\users\mike\desktop\radius\src\packet.h(337) : error C2146: syntax error : missing ';' before identifier 'getName'
+c:\users\mike\desktop\radius\src\packet.h(337) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(341) : warning C4183: 'getName': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(306) : error C2248: 'EapData::DATA_OFFSET' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(309) : error C2614: 'EapMd5Challenge' : illegal member initialization: 'buffer' is not a base or member
+c:\users\mike\desktop\radius\src\packet.h(310) : error C2248: 'EapData::MIN_LENGTH' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(227) : see declaration of 'EapData::MIN_LENGTH'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(310) : error C2614: 'EapMd5Challenge' : illegal member initialization: 'buffer' is not a base or member
+c:\users\mike\desktop\radius\src\packet.h(311) : error C2653: 'EapTypeData' : is not a class or namespace name
+c:\users\mike\desktop\radius\src\packet.h(328) : error C2248: 'EapData::DATA_OFFSET' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(328) : error C2440: 'initializing' : cannot convert from 'std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned char>>>' to 'byte *'
+        No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+c:\users\mike\desktop\radius\src\packet.h(329) : error C2248: 'EapData::DATA_OFFSET' : cannot access private member declared in class 'EapData'
+        c:\users\mike\desktop\radius\src\packet.h(228) : see declaration of 'EapData::DATA_OFFSET'
+        c:\users\mike\desktop\radius\src\packet.h(225) : see declaration of 'EapData'
+c:\users\mike\desktop\radius\src\packet.h(329) : error C2665: 'std::vector<byte,std::allocator<_Ty>>::vector' : none of the 10 overloads could convert all the argument types
+        with
+        [
+            _Ty=byte
+        ]
+        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\vector(919): could be 'std::vector<byte,std::allocator<_Ty>>::vector(std::initializer_list<unsigned char>,const std::allocator<_Ty> &)'
+        with
+        [
+            _Ty=byte
+        ]
+        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\vector(816): or       'std::vector<byte,std::allocator<_Ty>>::vector(std::vector<_Ty,std::allocator<_Ty>> &&,const std::allocator<_Ty> &)'
+        with
+        [
+            _Ty=byte
+        ]
+        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\vector(732): or       'std::vector<byte,std::allocator<_Ty>>::vector(const std::vector<_Ty,std::allocator<_Ty>> &,const std::allocator<_Ty> &)'
+        with
+        [
+            _Ty=byte
+        ]
+        C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE\vector(704): or       'std::vector<byte,std::allocator<_Ty>>::vector(unsigned __int64,const unsigned char &)'
+        with
+        [
+            _Ty=byte
+        ]
+        while trying to match the argument list '(std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned char>>>, byte *)'
+c:\users\mike\desktop\radius\src\packet.h(334) : error C2065: 'name' : undeclared identifier
+c:\users\mike\desktop\radius\src\packet.h(334) : error C2228: left of '.begin' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(334) : error C2228: left of '.end' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(334) : error C2661: 'std::vector<byte,std::allocator<_Ty>>::insert' : no overloaded function takes 1 arguments
+        with
+        [
+            _Ty=byte
+        ]
+c:\users\mike\desktop\radius\src\packet.h(340) : error C3861: 'string': identifier not found
+c:\users\mike\desktop\radius\src\packet.h(391) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(391) : error C2143: syntax error : missing ',' before '&'
+c:\users\mike\desktop\radius\src\packet.h(393) : error C2065: 'ipStr' : undeclared identifier
+c:\users\mike\desktop\radius\src\packet.h(393) : error C2228: left of '.c_str' must have class/struct/union
+        type is 'unknown-type'
+c:\users\mike\desktop\radius\src\packet.h(394) : error C2440: 'type cast' : cannot convert from 'std::_Array_iterator<_Ty,0x04>' to 'void *'
+        with
+        [
+            _Ty=byte
+        ]
+        No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+c:\users\mike\desktop\radius\src\packet.h(399) : error C2440: 'initializing' : cannot convert from 'std::_Vector_iterator<std::_Vector_val<std::_Simple_types<unsigned char>>>' to 'byte *'
+        No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
+c:\users\mike\desktop\radius\src\packet.h(422) : error C2146: syntax error : missing ';' before identifier 'getIdentifier'
+c:\users\mike\desktop\radius\src\packet.h(422) : error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+c:\users\mike\desktop\radius\src\packet.h(425) : warning C4183: 'getIdentifier': missing return type; assumed to be a member function returning 'int'
+c:\users\mike\desktop\radius\src\packet.h(424) : error C3861: 'string': identifier not found
+C:\Users\Mike\Desktop\RADIUS\src\packet.cc(20) : error C2511: 'RadiusPacket::RadiusPacket(byte [],int)' : overloaded member function not found in 'RadiusPacket'
+        c:\users\mike\desktop\radius\src\packet.h(36) : see declaration of 'RadiusPacket'
+C:\Users\Mike\Desktop\RADIUS\src\packet.cc(22) : error C2228: left of '.insert' must have class/struct/union
+C:\Users\Mike\Desktop\RADIUS\src\packet.cc(22) : error C2228: left of '.end' must have class/struct/union
