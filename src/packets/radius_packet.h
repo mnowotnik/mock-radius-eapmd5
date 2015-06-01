@@ -106,9 +106,10 @@ public:
 class NasIdentifier : public RadiusAVP {
 
 public:
-  NasIdentifier() { setType(RadiusAVP::NAS_IDENTIFIER); }
+  NasIdentifier() { setType(NAS_IDENTIFIER); }
 
-  void setIdentifier(std::vector<byte> id);
+  void setIdentifier(const std::vector<byte> &id);
+  void setIdentifier(const std::string& id);
 
   std::string getIdentifier();
 };
@@ -131,8 +132,10 @@ public:
                     ACCESS_CHALLENGE = 11;
   static const int AVP_OFFSET = 20, AUTH_OFFSET = 4, AUTH_LEN = 16;
 
-  RadiusPacket() : buffer(radiusMinSize) {}
-  RadiusPacket(const byte inputBuf[], int n);
+  RadiusPacket() : buffer(radiusMinSize) {
+      setLength(radiusMinSize);
+  }
+  RadiusPacket(const std::vector<byte> &bytes);
 
   void setCode(byte code) { buffer[0] = code; }
   byte getCode() { return buffer[0]; }

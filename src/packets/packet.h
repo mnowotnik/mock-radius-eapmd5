@@ -17,6 +17,10 @@ class PacketAccessException: public Exception {
     public:
     explicit PacketAccessException(const std::string& message): Exception(message) {}
 };
+class IncorrectPacketSize: public Exception {
+    public:
+    explicit IncorrectPacketSize(const std::string& message): Exception(message) {}
+};
 
 namespace radius {
 namespace internal {

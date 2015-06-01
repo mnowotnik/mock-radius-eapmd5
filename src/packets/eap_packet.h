@@ -10,22 +10,24 @@ class EapPacket;
  * 1+ : type-data
  */
 class EapData {
-  friend EapPacket;
+    friend EapPacket;
 
-protected:
-  const int MIN_LENGTH = 1;
-  const int DATA_OFFSET = MIN_LENGTH;
-  std::vector<byte> buffer;
+  protected:
+    const int MIN_LENGTH = 1;
+    const int DATA_OFFSET = MIN_LENGTH;
+    std::vector<byte> buffer;
 
-public:
-  static const byte IDENTITY = 1, MD5_CHALLENGE = 4, NAK = 3;
+  public:
+    static const byte IDENTITY = 1, MD5_CHALLENGE = 4, NAK = 3;
 
-  EapData(const std::vector<byte> &bytes) : buffer(bytes) {}
-  EapData() : buffer(MIN_LENGTH) {}
+    EapData(const std::vector<byte> &bytes) : buffer(bytes) {}
+    EapData() : buffer(MIN_LENGTH) {}
 
-  void setType(byte type) { buffer[0] = type; }
+    void setType(byte type) { buffer[0] = type; }
 
-  byte getType() { return buffer[0]; }
+    byte getType() { return buffer[0]; }
+
+    std::vector<byte> getBuffer() { return buffer; }
 };
 
 /**
@@ -34,13 +36,14 @@ public:
  */
 class EapIdentity : public EapData {
 
-public:
-  EapIdentity(const std::vector<byte> &bytes) : EapData(bytes) {}
-  EapIdentity() { setType(EapData::IDENTITY); }
 
-  void setIdentity(const std::string &identity);
+  public:
+    EapIdentity(const std::vector<byte> &bytes) : EapData(bytes) {}
+    EapIdentity() { setType(EapData::IDENTITY); }
 
-  std::string getIdentity();
+    void setIdentity(const std::string &identity);
+
+    std::string getIdentity();
 };
 
 /**
@@ -50,18 +53,18 @@ public:
  */
 class EapNak : public EapData {
 
-  const int LENGTH = 2;
+    const int LENGTH = 2;
 
-public:
-  EapNak(const std::vector<byte> &bytes) : EapData(bytes) {}
-  EapNak() {
-    setType(EapData::NAK);
-    buffer.resize(LENGTH);
-  }
+  public:
+    EapNak(const std::vector<byte> &bytes) : EapData(bytes) {}
+    EapNak() {
+        setType(EapData::NAK);
+        buffer.reserve(LENGTH);
+    }
 
-  void setPrefAlgorithm(byte type) { buffer[1] = type; }
+    void setPrefAlgorithm(byte type) { buffer[1] = type; }
 
-  byte getPrefAlgorithm() { return buffer[1]; }
+    byte getPrefAlgorithm() { return buffer[1]; }
 };
 
 /**
@@ -73,23 +76,22 @@ public:
  */
 class EapMd5Challenge : public EapData {
 
-  const int VAL_OFFSET = DATA_OFFSET + 1;
+    const int VAL_OFFSET = DATA_OFFSET + 1;
 
-public:
-  EapMd5Challenge(const std::vector<byte> &bytes) : EapData(bytes) {}
-  EapMd5Challenge() { setType(EapData::MD5_CHALLENGE); }
+  public:
+    EapMd5Challenge(const std::vector<byte> &bytes) : EapData(bytes) {}
+    EapMd5Challenge() { setType(EapData::MD5_CHALLENGE); }
 
-  byte getValueSize() { return buffer[1]; }
+    byte getValueSize() { return buffer[1]; }
 
-  void setValueSize(byte size) { buffer[1] = size; }
+    void setValueSize(byte size) { buffer[1] = size; }
 
-  void setValue(const std::vector<byte> &value);
+    void setValue(const std::vector<byte> &value);
+    void setValue(const std::vector<byte> &value, const std::string &name);
 
-  std::vector<byte> getValue();
+    std::vector<byte> getValue();
 
-  void setName(const std::string &name);
-
-  std::string getName();
+    std::string getName();
 };
 
 /**
@@ -100,27 +102,31 @@ public:
  */
 class EapPacket {
 
-  friend EapMessage;
-  std::vector<byte> buffer;
-  const int MIN_LENGTH = 4;
-  const int DATA_OFFSET = MIN_LENGTH;
+    friend EapMessage;
+    std::vector<byte> buffer;
+    static const int MIN_LENGTH = 4;
+    static const int DATA_OFFSET = MIN_LENGTH;
 
-public:
-  static const byte REQUEST = 1, RESPONSE = 2, SUCCESS = 3, FAILURE = 4;
+  public:
+    static const byte REQUEST = 1, RESPONSE = 2, SUCCESS = 3, FAILURE = 4;
 
-  EapPacket() : buffer(MIN_LENGTH) {}
-  EapPacket(const std::vector<byte> &bytes) : buffer(bytes) {}
+    EapPacket() : buffer(MIN_LENGTH) { setLength(MIN_LENGTH); }
+    EapPacket(const std::vector<byte> &bytes) : buffer(bytes) {
+        buffer.resize(getLength());
+    }
 
-  void setType(byte type) { buffer[0] = type; }
-  byte getType() { return buffer[0]; }
+    void setType(byte type) { buffer[0] = type; }
+    byte getType() { return buffer[0]; }
 
-  void setIdentifier(byte id) { buffer[1] = id; }
-  byte getIdentifier() { return buffer[1]; }
+    void setIdentifier(byte id) { buffer[1] = id; }
+    byte getIdentifier() { return buffer[1]; }
 
-  void setLength(unsigned short length);
-  short getLength();
+    void setLength(unsigned short length);
+    short getLength();
 
-  void setData(const EapData &data);
+    void setData(const EapData &data);
 
-  EapData getData();
+    std::vector<byte> getBuffer() { return buffer; }
+
+    EapData getData();
 };
