@@ -10,18 +10,18 @@ class RadiusPacket;
  * 2+ : value
  */
 class RadiusAVP {
-    friend RadiusPacket;
+  friend RadiusPacket;
+
 public:
   // types
   static const byte MESSAGE_AUTHENTICATOR = 80, EAP_MESSAGE = 79,
                     NAS_IP_ADDRESS = 4, NAS_IDENTIFIER = 32;
   static const byte VAL_OFFSET = 2;
+
 protected:
   std::vector<byte> buffer;
 
-
 public:
-
   RadiusAVP() : buffer(VAL_OFFSET) {}
 
   void setType(byte type) { buffer[0] = type; }
@@ -30,11 +30,11 @@ public:
   void setLength(byte length) { buffer[1] = length; }
   byte getLength() { return buffer[1]; }
 
-  void setValue(const std::vector<byte> &value){
-      buffer.insert(buffer.begin()+VAL_OFFSET,value.begin(),value.end());
+  void setValue(const std::vector<byte> &value) {
+    buffer.insert(buffer.begin() + VAL_OFFSET, value.begin(), value.end());
   }
-  std::vector<byte> getValue(){
-      std::vector<byte>value(buffer.begin()+VAL_OFFSET,buffer.end());
+  std::vector<byte> getValue() {
+    std::vector<byte> value(buffer.begin() + VAL_OFFSET, buffer.end());
   }
 
   std::vector<byte> getBuffer() { return buffer; }
@@ -50,26 +50,17 @@ public:
  *      4+ : data -> (EPData)
  *          0 : protocol type
  *          1+ : type-data (if any)
+ *
+ * EapPacket can have >253 bytes so byte arrays have to be retrieved
+ * and concatanted (or split) per instance
  */
 class EapMessage : public RadiusAVP {
 protected:
-    const int MIN_LENGTH=4; 
+  const int MIN_LENGTH = 4;
 
 public:
-  EapMessage() { 
-      setType(RadiusAVP::EAP_MESSAGE); }
-
-  void setEapPacket(const EapPacket &packet){
-      buffer.insert(buffer.begin()+RadiusAVP::VAL_OFFSET,packet.buffer.begin(),packet.buffer.end());
-      setLength(buffer.size());
-  }
-
-  EapPacket getEapPacket(){
-      std::vector<byte>eapBytes(buffer.begin()+RadiusAVP::VAL_OFFSET,buffer.end());
-      return EapPacket(eapBytes);
-  }
+  EapMessage() { setType(RadiusAVP::EAP_MESSAGE); }
 };
-
 
 /**
  * type : 80
@@ -80,24 +71,10 @@ class MessageAuthenticator : public RadiusAVP {
   const byte length = 16;
 
 public:
-  MessageAuthenticator() {
-    this->buffer.resize(length);
-    setType(RadiusAVP::MESSAGE_AUTHENTICATOR);
-  }
+  MessageAuthenticator();
 
-  void setMd5(std::array<byte, 16> md5) {
-    int offset = RadiusAVP::VAL_OFFSET;
-    buffer.insert(buffer.begin() + offset, md5.begin(), md5.end());
-    setLength(buffer.size());
-  }
-
-  std::array<byte, 16> getMd5() {
-    std::array<byte, 16> md5;
-    int offset = RadiusAVP::VAL_OFFSET;
-    std::copy(buffer.begin() + offset, buffer.begin() + offset + length,
-              md5.begin());
-    return md5;
-  }
+  void setMd5(const std::array<byte, 16> &md5);
+  std::array<byte, 16> getMd5();
 };
 
 /**
@@ -107,32 +84,16 @@ public:
  */
 class NasIpAddr : public RadiusAVP {
 
-    const byte length = 4;
+  const byte length = 4;
 
 public:
   NasIpAddr() { setType(RadiusAVP::NAS_IP_ADDRESS); }
 
-  void setIp(std::array<byte, 4>ip) {
-    buffer.insert(buffer.begin() + RadiusAVP::VAL_OFFSET, ip.begin(),
-                  ip.end());
-    setLength(length);
-  }
+  void setIp(std::array<byte, 4> ip);
 
-  void setIp(const std::string &ipStr) {
-      std::array<byte, 4> ip;
-      in_addr addr;
-      inet_pton(AF_INET,ipStr.c_str(),&addr);
-      memcpy((void*) &ip[0], &addr, sizeof(in_addr));
-      setIp(ip);
-  }
+  void setIp(const std::string &ipStr);
 
-  in_addr getIp() {
-      byte* addrPtr = &buffer[RadiusAVP::VAL_OFFSET];
-      struct in_addr addr;
-      /* inet_ntop(AF_INET,&addr,ipStr.c_str(),ipStr.length()); */
-      memcpy((void*) &addr, addrPtr, sizeof(in_addr));
-      return addr;
-  }
+  in_addr getIp();
 };
 
 /**
@@ -145,16 +106,9 @@ class NasIdentifier : public RadiusAVP {
 public:
   NasIdentifier() { setType(RadiusAVP::NAS_IDENTIFIER); }
 
-  void setIdentifier(std::vector<byte> id) {
-    buffer.insert(buffer.begin() + RadiusAVP::VAL_OFFSET, id.begin(),
-                  id.end());
-    setLength(buffer.size());
-  }
+  void setIdentifier(std::vector<byte> id);
 
-  std::string getIdentifier() {
-    int offset = RadiusAVP::VAL_OFFSET;
-    return std::string((const char *)&buffer[offset],buffer.size()-offset);
-  }
+  std::string getIdentifier();
 };
 
 /**
@@ -184,39 +138,14 @@ public:
   void setIdentifier(byte identifier) { buffer[1] = identifier; }
   byte getIdentifier() { return buffer[1]; }
 
-  void setLength(unsigned short length) {
-    std::array<byte, 2> bytes = radius::internal::short2NetworkBytes(length);
-    buffer[2] = bytes[0];
-    buffer[3] = bytes[1];
-  }
-  short getLength() {
-    unsigned short l = radius::internal::networkBytes2Short(
-        std::array<byte, 2>({{buffer[2], buffer[3]}}));
-    return l;
-  }
+  void setLength(unsigned short length);
+  short getLength();
 
-  void setAuthenticator(const std::array<byte, 16> &arr) {
-    for (int i = 0; i < 16; i++) {
-      buffer[i + 4] = arr[i];
-    }
-  }
-  std::array<byte, 16> getAuthenticator() {
-    std::array<byte, 16> auth;
-    std::copy(buffer.begin() + 4, buffer.begin() + 4 + auth.size(),
-              auth.begin());
-    return auth;
-  }
+  void setAuthenticator(const std::array<byte, 16> &arr);
+  std::array<byte, 16> getAuthenticator();
 
-  std::vector<byte> getBuffer() { return buffer; }
+    std::vector<byte> getBuffer() { return buffer; }
 
-  void addAVP(const RadiusAVP &avp){
-      buffer.insert(buffer.end(),avp.buffer.begin(),avp.buffer.end());
-  }
-  std::vector<RadiusAVP> getAVPList(){
-      std::vector<RadiusAVP> avpList;
-  
-      //TODO
-      return avpList;
-  
-  }
+    void addAVP(const RadiusAVP &avp);
+    std::vector<RadiusAVP> getAVPList();
 };
