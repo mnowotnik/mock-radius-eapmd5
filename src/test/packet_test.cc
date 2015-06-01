@@ -61,8 +61,34 @@ TEST_CASE( "Read basic RadiusPacket","[RadiusPacket]"){
     buffer.insert(buffer.end(),authenticator.begin(),authenticator.end());
     RadiusPacket packet(&buffer[0],20);
 
+    REQUIRE(packet.getBuffer().size()==20);
     REQUIRE(packet.getCode() == 0x01);
     REQUIRE(packet.getIdentifier() == 0x01);
     REQUIRE(packet.getLength() == 20);
     REQUIRE(packet.getAuthenticator() == authenticator);
 }
+
+TEST_CASE( "Create basic AVP and add to RadiusPacket", "[RadiusAVP]"){
+
+    RadiusPacket packet;
+    //md5 of char '0'
+    std::array<byte,16>md5 = {
+        0xcf,0xcd,0x20,0x84,0x95,0xd5,0x65,0xef,0x66,0xe7,0xdf,0xf9,0xf9,0x87,0x64,0xda
+    };
+    MessageAuthenticator avp = MessageAuthenticator();
+    avp.setMd5(md5);
+
+    REQUIRE(avp.getValue().size()==16);
+    REQUIRE(avp.getBuffer().size()==18);
+
+    packet.addAVP(static_cast<RadiusAVP>(avp));
+
+    REQUIRE(packet.getBuffer().size()==38);
+
+    std::vector<RadiusAVP>avpList = packet.getAVPList();
+    REQUIRE(avpList.size()==1);
+    MessageAuthenticator m = static_cast<const MessageAuthenticator&>(avpList[0]);
+    std::array<byte,16>rMd5 = m.getMd5();
+    REQUIRE(rMd5==md5);
+}
+

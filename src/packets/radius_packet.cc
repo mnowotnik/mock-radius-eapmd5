@@ -5,16 +5,13 @@ MessageAuthenticator::MessageAuthenticator() {
   setType(RadiusAVP::MESSAGE_AUTHENTICATOR);
 }
 void MessageAuthenticator::setMd5(const std::array<byte, 16> &md5) {
-  int offset = RadiusAVP::VAL_OFFSET;
-  buffer.insert(buffer.begin() + offset, md5.begin(), md5.end());
+  std::copy(md5.begin(),md5.end(),buffer.begin()+VAL_OFFSET);
   setLength(buffer.size());
 }
 
 std::array<byte, 16> MessageAuthenticator::getMd5() {
   std::array<byte, 16> md5;
-  int offset = RadiusAVP::VAL_OFFSET;
-  std::copy(buffer.begin() + offset, buffer.begin() + offset + length,
-            md5.begin());
+  std::copy(buffer.begin() + VAL_OFFSET, buffer.end(), md5.begin());
   return md5;
 }
 
@@ -65,14 +62,16 @@ short RadiusPacket::getLength() {
   return l;
 }
 
-void RadiusPacket::setAuthenticator(const std::array<byte, 16> &arr) {
-  for (int i = 0; i < 16; i++) {
+void RadiusPacket::setAuthenticator(
+    const std::array<byte, RadiusPacket::AUTH_LEN> &arr) {
+  for (int i = 0; i < AUTH_LEN; i++) {
     buffer[i + 4] = arr[i];
   }
 }
-std::array<byte, 16> RadiusPacket::getAuthenticator() {
-  std::array<byte, 16> auth;
-  std::copy(buffer.begin() + 4, buffer.begin() + 4 + auth.size(), auth.begin());
+std::array<byte, RadiusPacket::AUTH_LEN> RadiusPacket::getAuthenticator() {
+  std::array<byte, AUTH_LEN> auth;
+  std::copy(buffer.begin() + AUTH_OFFSET,
+            buffer.begin() + AUTH_OFFSET + auth.size(), auth.begin());
   return auth;
 }
 
@@ -81,8 +80,17 @@ void RadiusPacket::addAVP(const RadiusAVP &avp) {
 }
 std::vector<RadiusAVP> RadiusPacket::getAVPList() {
   std::vector<RadiusAVP> avpList;
+  std::vector<byte> avpListBytes(buffer.begin() + AVP_OFFSET, buffer.end());
 
-  // TODO
+  std::vector<byte>::iterator it = avpListBytes.begin();
+
+  while (it != avpListBytes.end()) {
+    byte size = *(it + 1);
+    std::vector<byte> avpBytes(it, it + size);
+
+    RadiusAVP avp(avpBytes);
+    avpList.push_back(avp);
+    it = it + size;
+  }
   return avpList;
-
 }

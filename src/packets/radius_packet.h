@@ -23,6 +23,7 @@ protected:
 
 public:
   RadiusAVP() : buffer(VAL_OFFSET) {}
+  RadiusAVP(const std::vector<byte>& bytes) : buffer(bytes) {}
 
   void setType(byte type) { buffer[0] = type; }
   byte getType() { return buffer[0]; }
@@ -35,6 +36,7 @@ public:
   }
   std::vector<byte> getValue() {
     std::vector<byte> value(buffer.begin() + VAL_OFFSET, buffer.end());
+    return value;
   }
 
   std::vector<byte> getBuffer() { return buffer; }
@@ -43,7 +45,7 @@ public:
 /**
  * type : 79
  * length : varying
- * value -> (EapPacket)
+ * value -> (concatenated EapPacket)
  *      0 : type
  *      1 : identifier
  *      2-3 : length
@@ -52,7 +54,7 @@ public:
  *          1+ : type-data (if any)
  *
  * EapPacket can have >253 bytes so byte arrays have to be retrieved
- * and concatanted (or split) per instance
+ * and concatenated (or split) per instance
  */
 class EapMessage : public RadiusAVP {
 protected:
@@ -68,7 +70,7 @@ public:
  * value : md5
  */
 class MessageAuthenticator : public RadiusAVP {
-  const byte length = 16;
+  const byte length = 18;
 
 public:
   MessageAuthenticator();
@@ -127,7 +129,7 @@ public:
   // codes
   static const byte ACCESS_REQUEST = 1, ACCESS_ACCEPT = 2, ACCESS_REJECT = 3,
                     ACCESS_CHALLENGE = 11;
-  static const int AVP_OFFSET = 20;
+  static const int AVP_OFFSET = 20, AUTH_OFFSET = 4, AUTH_LEN = 16;
 
   RadiusPacket() : buffer(radiusMinSize) {}
   RadiusPacket(const byte inputBuf[], int n);
@@ -141,11 +143,11 @@ public:
   void setLength(unsigned short length);
   short getLength();
 
-  void setAuthenticator(const std::array<byte, 16> &arr);
+  void setAuthenticator(const std::array<byte, AUTH_LEN> &arr);
   std::array<byte, 16> getAuthenticator();
 
-    std::vector<byte> getBuffer() { return buffer; }
+  std::vector<byte> getBuffer() { return buffer; }
 
-    void addAVP(const RadiusAVP &avp);
-    std::vector<RadiusAVP> getAVPList();
+  void addAVP(const RadiusAVP &avp);
+  std::vector<RadiusAVP> getAVPList();
 };
