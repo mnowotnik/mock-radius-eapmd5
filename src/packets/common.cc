@@ -1,8 +1,8 @@
-#include "packet.h"
+#include "common.h"
 
 
 namespace radius {
-namespace internal {
+namespace packets {
 unsigned short networkBytes2Short(std::array<byte, 2> bytes) {
   return (unsigned short)(bytes[0] << 8 & 0xFF) | (bytes[1] & 0xFF);
 }
@@ -15,9 +15,4 @@ std::array<byte, 2> short2NetworkBytes(unsigned short s) {
   return b;
 }
 }
-}
-
-RadiusPacket::RadiusPacket(byte inputBuf[], int n) {
-    std::vector<byte> tmpBuf(inputBuf,inputBuf+n);
-    buffer.insert(buffer.end(),tmpBuf.begin(),tmpBuf.end());
 }
