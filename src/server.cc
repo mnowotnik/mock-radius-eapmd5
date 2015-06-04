@@ -2,10 +2,10 @@
 #include "server.h"
 #include "tclap/CmdLine.h"
 
-using namespace TCLAP;
-using namespace std;
 
 int main(int argc, char **argv) {
+    using namespace TCLAP;
+    using namespace std;
   try {
 
     CmdLine cmd("RADIUS Server with EAP-MD5", ' ');
@@ -39,8 +39,6 @@ int main(int argc, char **argv) {
     string logpath = logpathArg.getValue();
     string dbpath = dbArg.getValue();
     start(ip.c_str());
-  } catch (ArgException &e) {
-    cerr << "error: " << e.error() << " for arg " << e.argId() << endl;
   } catch (CmdLineParseException &ce) {
     cerr << "error: " << ce.error() << ce.argId() << endl;
   }
@@ -117,3 +115,4 @@ SOCKET s;
     closesocket(s);
     WSACleanup();
 }
+

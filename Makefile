@@ -15,10 +15,10 @@ CSV_PARSER=$(ROOT)\fast-cpp-csv-parser\include
 
 
 ### Object dependencies ###
-SERVER_OBJS=server.obj md5.obj
-CLIENT_OBJS=client.obj md5.obj
-TESTS_OBJS=all_tests.obj md5.obj packet.obj \
-		  radius_packet.obj eap_packet.obj
+SERVER_OBJS=server.obj $(HASHLIB)\md5.obj
+CLIENT_OBJS=client.obj $(HASHLIB)\md5.obj
+TESTS_OBJS=all_tests.obj $(HASHLIB)\md5.obj packets\common.obj \
+		  packets\radius_packet.obj packets\eap_packet.obj
 
 
 ### Targets ###
@@ -43,35 +43,39 @@ test: $(TESTS)
 	$(TESTS)
 
 $(SERVER): $(SERVER_OBJS)
-	$(CC) $(CFLAGS) $**
+	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
 
 $(CLIENT): $(CLIENT_OBJS)
-	$(CC) $(CFLAGS) $**
+	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
 
 $(TESTS): $(TESTS_OBJS)
-	$(CC) $(CFLAGS) $**
+	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
 
 server.obj: $(SRC)\server.cc
-	$(CC) $(CFLAGS) $(SERVER_INC) -c $?
+	pushd $(SRC) & $(CC) $(CFLAGS) $(SERVER_INC) -c $? \
+		& popd
 
 client.obj: $(SRC)\client.cc
-	$(CC) $(CFLAGS) $(CLIENT_INC) -c $?
+	pushd $(SRC) & $(CC) $(CFLAGS) $(CLIENT_INC) -c $? \
+		& popd
 
 all_tests.obj: $(SRC)\all_tests.cc
-	$(CC) $(CFLAGS) $(TESTS_INC) -c $?
+	pushd $(SRC) & $(CC) $(CFLAGS) $(TESTS_INC) -c $? \
+		& popd
 
 clean:
-	del *.obj *.exe
+	del *.obj *.exe $(SRC)\*.obj $(SRC)\packets\*.obj \
+		$(HASHLIB)\*.obj
 
 
 
 ### Rules ### 
-{$(HASHLIB)}.cpp{}.obj::
-	$(CC) $(CFLAGS) /I$(HASHLIB) -c $<
+{$(HASHLIB)}.cpp{$(HASHLIB)}.obj::
+	pushd $(HASHLIB) & $(CC) $(CFLAGS) /I$(HASHLIB) -c $< & popd
 
 {$(SRC)}.cc{}.obj:
-	$(CC) $(CFLAGS) $(COMMON_INC) -c $<
+	pushd $(SRC) & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
 
-{$(SRC)/packets}.cc{}.obj:
-	$(CC) $(CFLAGS) $(COMMON_INC) -c $<
+{$(SRC)\packets}.cc{packets}.obj:
+	pushd $(SRC)\packets & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
 

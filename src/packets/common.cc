@@ -1,8 +1,8 @@
-#include "packet.h"
+#include "common.h"
 
 
 namespace radius {
-namespace internal {
+namespace packets {
 unsigned short networkBytes2Short(std::array<byte, 2> bytes) {
   return (unsigned short)(bytes[0] << 8 & 0xFF) | (bytes[1] & 0xFF);
 }

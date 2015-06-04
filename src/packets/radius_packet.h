@@ -1,7 +1,12 @@
 #pragma once
-#include "packets/packet.h"
+#include "packets/common.h"
 #include "packets/eap_packet.h"
+#include <vector>
+#include <array>
+#include <string>
 
+namespace radius{
+    namespace packets{
 class RadiusPacket;
 
 /**
@@ -154,3 +159,4 @@ public:
   void addAVP(const RadiusAVP &avp);
   std::vector<RadiusAVP> getAVPList();
 };
+}}

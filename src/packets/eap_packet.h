@@ -1,6 +1,14 @@
 #pragma once
-#include "packets/packet.h"
+#include "packets/common.h"
+#include "typedefs.h"
+#include <string>
+#include <vector>
 
+namespace{
+    using std::vector;
+}
+namespace radius{
+    namespace packets{
 class EapMessage;
 class EapPacket;
 
@@ -130,3 +138,5 @@ class EapPacket {
 
     EapData getData();
 };
+}
+}

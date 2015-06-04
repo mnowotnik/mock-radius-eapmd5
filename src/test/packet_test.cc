@@ -1,7 +1,11 @@
+#include "packets/common.h"
 #include "packets/packet.h"
 #include "packets/radius_packet.h"
 #include "packets/eap_packet.h"
 #include <array>
+
+namespace radius{
+    namespace packets{
 
 // md5 of char '0'
 const std::array<byte, 16> MD5_0 = {0xcf, 0xcd, 0x20, 0x84, 0x95, 0xd5,
@@ -24,14 +28,14 @@ const std::vector<byte> RADIUS_BASE_BUF = {0x01,       // code
 
 TEST_CASE("Conversion of network bytes to short", "[networkBytes2Short]") {
     std::array<byte, 2> bytes = {0x00, 0x38};
-    unsigned short s = radius::internal::networkBytes2Short(bytes);
+    unsigned short s = networkBytes2Short(bytes);
     REQUIRE(s == 56);
 }
 
 TEST_CASE("Conversion of short to network bytes", "[short2NetworkBytes]") {
     std::array<byte, 2> bytes;
     unsigned short s = 56;
-    bytes = radius::internal::short2NetworkBytes(s);
+    bytes = short2NetworkBytes(s);
     REQUIRE(bytes[0] == 0x00);
     REQUIRE(bytes[1] == 0x38);
 }
@@ -144,7 +148,7 @@ TEST_CASE("Initalize RadiusPacket with AVP byte array") {
     buffer.insert(buffer.end(), TXT_BYTES.begin(), TXT_BYTES.end());
 
     unsigned short size = buffer.size();
-    std::array<byte, 2> sizeBytes = radius::internal::short2NetworkBytes(size);
+    std::array<byte, 2> sizeBytes = short2NetworkBytes(size);
     buffer[2] = sizeBytes[0];
     buffer[3] = sizeBytes[1];
     RadiusPacket packet(buffer);
@@ -233,3 +237,4 @@ TEST_CASE("EapMd5Challenge integrity", "[EapData]") {
     REQUIRE(ch2.getBuffer() == buffer);
     REQUIRE(ch2.getType() == 4);
 }
+}}
