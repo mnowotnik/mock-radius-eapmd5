@@ -1,41 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-*.com
-*.class
-*.dll
-*.exe
-*.obj
-*.o
-*.so
- 
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-*.img
-
-*.log
-*.sql
-*.sqlite
- 
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-*~
-
-.syntastic
-/tags
-=======
-=======
->>>>>>> merge
 *.com
 *.class
 *.dll
@@ -68,9 +30,7 @@ Thumbs.db
 vcvarsall.bat
 *~
 
+.clang-format
 .syntastic
+/comline.bat
 /tags
-<<<<<<< HEAD
->>>>>>> zamiana buf na vector
-=======
->>>>>>> merge
