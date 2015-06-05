@@ -94,7 +94,8 @@ SOCKET s;
          
         //clear the buffer by filling null, it might have previously received data
         //memset(buf,'\0', BUFLEN);
-         
+         buf.clear();
+		 buf.resize(BUFLEN,'/0');
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(s, &buf[0], BUFLEN, 0, (struct sockaddr *) &dest_addr, &slen)) == SOCKET_ERROR)
         {
