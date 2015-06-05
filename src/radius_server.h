@@ -4,21 +4,18 @@
 #include "packets/packet.h"
 #include "typedefs.h"
 
-namespace{
-    using std::map;
-    using std::string;
-    using std::vector;
-}
-
 namespace radius{
 class RadiusServer {
+    typedef std::map<std::string,std::string> UserPassMap;
+    typedef packets::Packet Packet;
+
+    public:
     /**
-     * @param usersAuth user credentials login x password
+     * @param userPassMap user credentials login x password
      * @param secret the secret shared with client (NAS)
      **/
-    RadiusServer(map<string,string>usersAuth,string secret);
+    RadiusServer(const UserPassMap &userPassMap,const std::string &secret);
 
-    void recvPacket(Packet packet);
-    vector<Packet> sendPackets();
-}
+    std::vector<Packet> recvPacket(const Packet &packet);
+};
 }
