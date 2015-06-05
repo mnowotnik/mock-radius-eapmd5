@@ -6,10 +6,10 @@ namespace radius{
     namespace packets{
 
 struct Packet{
-    const std::vector<char> bytes;
+    const std::vector<byte> bytes;
     const sockaddr_in addr;
 
-    Packet(const std::vector<char> &b,const sockaddr_in &a):bytes(b),
+    Packet(const std::vector<byte> &b,const sockaddr_in &a):bytes(b),
     addr(a){}
 
 };
