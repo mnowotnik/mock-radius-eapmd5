@@ -9,10 +9,10 @@ namespace radius{
     namespace packets{
 
 struct Packet{
-    const vector<byte> bytes;
+    const vector<char> bytes;
     const sockaddr_in addr;
 
-    Packet(const vector<byte> &b,const sockaddr_in &a):bytes(b),
+    Packet(const vector<char> &b,const sockaddr_in &a):bytes(b),
     addr(a){}
 
 };

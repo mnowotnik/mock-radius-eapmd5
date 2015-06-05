@@ -51,7 +51,7 @@ SOCKET s;
     const int PORT = 32000;
     struct sockaddr_in server, dest_addr;
     int slen , recv_len;
-    vector<byte> buf(BUFLEN,'\0');
+    vector<char> buf(BUFLEN,'\0');
 
     WSADATA wsa;
  
