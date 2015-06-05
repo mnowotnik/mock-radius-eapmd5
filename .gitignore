@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.com
 *.class
 *.dll
@@ -31,3 +32,39 @@ Thumbs.db
 
 .syntastic
 /tags
+=======
+*.com
+*.class
+*.dll
+*.exe
+*.obj
+*.o
+*.so
+ 
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.img
+
+*.log
+*.sql
+*.sqlite
+ 
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+vcvarsall.bat
+*~
+
+.syntastic
+/tags
+>>>>>>> zamiana buf na vector

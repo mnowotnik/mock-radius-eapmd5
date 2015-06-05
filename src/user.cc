@@ -9,11 +9,7 @@ private:
   std::string username,password;
 
 public:
-  User(const std::string Username,const std::string Password)
-  {
-    username = Username;
-    password = Password;
-  }
+  User(const std::string &u,const std::string &p):username(u),password(p){};
   std::string getPassword()
   {
     return password;
