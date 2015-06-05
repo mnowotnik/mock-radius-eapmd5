@@ -57,10 +57,14 @@ SOCKET s;
     struct sockaddr_in server, dest_addr;
     int slen , recv_len;
 <<<<<<< HEAD
+<<<<<<< HEAD
     char buf[BUFLEN];
 =======
     vector<char> buf(BUFLEN,'\0');
 >>>>>>> zamiana buf na vector
+=======
+    vector<byte> buf(BUFLEN,'\0');
+>>>>>>> change buf to vector
     WSADATA wsa;
  
     slen = sizeof(dest_addr) ;
