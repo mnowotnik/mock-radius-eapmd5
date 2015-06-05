@@ -4,9 +4,6 @@
 #include <string>
 #include <vector>
 
-namespace{
-    using std::vector;
-}
 namespace radius{
     namespace packets{
 class EapMessage;
