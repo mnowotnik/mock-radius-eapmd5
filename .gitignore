@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.com
 *.class
 *.dll
@@ -33,6 +34,8 @@ Thumbs.db
 .syntastic
 /tags
 =======
+=======
+>>>>>>> merge
 *.com
 *.class
 *.dll
@@ -67,4 +70,7 @@ vcvarsall.bat
 
 .syntastic
 /tags
+<<<<<<< HEAD
 >>>>>>> zamiana buf na vector
+=======
+>>>>>>> merge
