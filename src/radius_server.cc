@@ -2,16 +2,14 @@
 using std::map;
 using std::string;
 using std::vector;
+using radius::packets::Packet;
 
 namespace radius{
-RadiusServer::RadiusServer(map<string,string>usersAuth,string secret){
+RadiusServer::RadiusServer(const map<string,string> &userPassMap,const string &secret){
 }
 
-void Server::recvPacket(Packet packet){
-
+vector<Packet> RadiusServer::recvPacket(const Packet &packet){
+    return vector<Packet>();
 }
 
-vector<Packet> sendPackets(){
-    return vector<Packet>;
-}
 }
