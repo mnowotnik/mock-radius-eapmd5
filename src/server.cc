@@ -103,11 +103,19 @@ SOCKET s;
             exit(EXIT_FAILURE);
         }
 		//vector<byte> buffr(&buf[0],&buf[BUFLEN]);
-         radius::packets::Packet rec_pack(buf,dest_addr);
+		//wyslij pakiet do servera
+		vector<byte> buffr(&buf[0],&buf[BUFLEN]);
+         radius::packets::Packet rec_pack(buffr,dest_addr);
+		//RadiusServer.recvPacket(rec_pack);
+		
         //print details of the client/peer and the data received
         printf("Received packet from %s:%d\n", inet_ntoa(dest_addr.sin_addr), ntohs(dest_addr.sin_port));
         printf("Data: %s\n" , buf);
-         
+
+		//radius::packets::Packet sen_pack RadiusServer.sendPacket();
+		//buf=sen_pack.bytes;
+		//dest_addr=sen_pack.addr;
+		
         //now reply the client with the same data
         if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr*) &dest_addr, slen) == SOCKET_ERROR)
 
@@ -120,4 +128,7 @@ SOCKET s;
     closesocket(s);
     WSACleanup();
 }
-
+byte char2byte(char ch)
+{
+	return (byte)ch;
+}

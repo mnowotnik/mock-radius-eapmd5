@@ -1,15 +1,18 @@
 #pragma once
 #include "packets/common.h"
-#include <vector>
+
+namespace{
+using std::vector;
+}
 
 namespace radius{
     namespace packets{
 
 struct Packet{
-    const std::vector<char> bytes;
+    const vector<byte> bytes;
     const sockaddr_in addr;
 
-    Packet(const std::vector<char> &b,const sockaddr_in &a):bytes(b),
+    Packet(const vector<byte> &b,const sockaddr_in &a):bytes(b),
     addr(a){}
 
 };
