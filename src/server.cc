@@ -1,13 +1,8 @@
 #include <iostream>
 #include "server.h"
-<<<<<<< HEAD
-#include "tclap/CmdLine.h"
-
-=======
 #include <vector>
 #include "tclap/CmdLine.h"
 #include "packets/Packet.h"
->>>>>>> zamiana buf na vector
 
 int main(int argc, char **argv) {
     using namespace TCLAP;
@@ -56,15 +51,8 @@ SOCKET s;
     const int PORT = 32000;
     struct sockaddr_in server, dest_addr;
     int slen , recv_len;
-<<<<<<< HEAD
-<<<<<<< HEAD
-    char buf[BUFLEN];
-=======
-    vector<char> buf(BUFLEN,'\0');
->>>>>>> zamiana buf na vector
-=======
     vector<byte> buf(BUFLEN,'\0');
->>>>>>> change buf to vector
+
     WSADATA wsa;
  
     slen = sizeof(dest_addr) ;
@@ -105,37 +93,23 @@ SOCKET s;
         fflush(stdout);
          
         //clear the buffer by filling null, it might have previously received data
-<<<<<<< HEAD
-        memset(buf,'\0', BUFLEN);
-         
-        //try to receive some data, this is a blocking call
-        if ((recv_len = recvfrom(s, buf, BUFLEN, 0, (struct sockaddr *) &dest_addr, &slen)) == SOCKET_ERROR)
-=======
         //memset(buf,'\0', BUFLEN);
          
         //try to receive some data, this is a blocking call
         if ((recv_len = recvfrom(s, &buf[0], BUFLEN, 0, (struct sockaddr *) &dest_addr, &slen)) == SOCKET_ERROR)
->>>>>>> zamiana buf na vector
         {
             printf("recvfrom() failed with error code : %d" , WSAGetLastError());
             exit(EXIT_FAILURE);
         }
-<<<<<<< HEAD
-         
-=======
 		//vector<byte> buffr(&buf[0],&buf[BUFLEN]);
          radius::packets::Packet rec_pack(buf,dest_addr);
->>>>>>> zamiana buf na vector
         //print details of the client/peer and the data received
         printf("Received packet from %s:%d\n", inet_ntoa(dest_addr.sin_addr), ntohs(dest_addr.sin_port));
         printf("Data: %s\n" , buf);
          
         //now reply the client with the same data
-<<<<<<< HEAD
-        if (sendto(s, buf, recv_len, 0, (struct sockaddr*) &dest_addr, slen) == SOCKET_ERROR)
-=======
         if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr*) &dest_addr, slen) == SOCKET_ERROR)
->>>>>>> zamiana buf na vector
+
         {
             printf("sendto() failed with error code : %d" , WSAGetLastError());
             exit(EXIT_FAILURE);
