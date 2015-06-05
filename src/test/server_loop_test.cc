@@ -9,10 +9,7 @@
 using std::vector;
 using std::string;
 
-namespace radius{
+namespace radius {
 
-TEST_CASE("A test", "[A tag]") {
-    REQUIRE(true==true);
-}
-
+TEST_CASE("A test", "[A tag]") { REQUIRE(true == true); }
 }

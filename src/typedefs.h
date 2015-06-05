@@ -1,5 +1,5 @@
 #pragma once
 
-namespace radius{
+namespace radius {
 typedef unsigned __int8 byte;
 }

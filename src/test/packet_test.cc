@@ -4,8 +4,8 @@
 #include "packets/eap_packet.h"
 #include <array>
 
-namespace radius{
-    namespace packets{
+namespace radius {
+namespace packets {
 
 // md5 of char '0'
 const std::array<byte, 16> MD5_0 = {0xcf, 0xcd, 0x20, 0x84, 0x95, 0xd5,
@@ -215,7 +215,7 @@ TEST_CASE("Check EapData types", "[EapData]") {
 }
 TEST_CASE("EapMd5Challenge integrity", "[EapData]") {
 
-    std::vector<byte> md5(MD5_0.begin(),MD5_0.end());
+    std::vector<byte> md5(MD5_0.begin(), MD5_0.end());
     std::vector<byte> buffer(md5);
     std::vector<byte> eapMd5Header{0x04, 0x10};
     buffer.insert(buffer.begin(), eapMd5Header.begin(), eapMd5Header.end());
@@ -237,4 +237,5 @@ TEST_CASE("EapMd5Challenge integrity", "[EapData]") {
     REQUIRE(ch2.getBuffer() == buffer);
     REQUIRE(ch2.getType() == 4);
 }
-}}
+}
+}
