@@ -6,5 +6,5 @@
 
 void startServer(const char *addr);
 void stopServer();
-radius::packets::Packet reciveData(SOCKET s);
+radius::packets::Packet receiveData(SOCKET s);
 void sendData(SOCKET s,radius::packets::Packet sen_pack);
