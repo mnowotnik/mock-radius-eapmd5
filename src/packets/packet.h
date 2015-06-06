@@ -6,8 +6,8 @@ namespace radius {
 namespace packets {
 
 struct Packet {
-    const std::vector<byte> bytes;
-    const sockaddr_in addr;
+    std::vector<byte> bytes;
+    sockaddr_in addr;
 
     Packet(const std::vector<byte> &b, const sockaddr_in &a)
         : bytes(b), addr(a) {}

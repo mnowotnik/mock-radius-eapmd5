@@ -9,20 +9,21 @@ class RadiusServer {
     typedef std::map<std::string, std::string> UserPassMap;
     typedef packets::Packet Packet;
 
+    const int PENDING_LIMIT=5;
     // pending EAP-Request with a counter
     struct PendingPacket {
-        int counter = 0;
-        const Packet packet;
+        int counter= 0;
+        Packet packet;
         PendingPacket(const Packet &p) : packet(p) {}
     };
 
     // list of pending EAP-Requests
-    const std::vector<PendingPacket> pendingPackets;
+    std::vector<PendingPacket> pendingPackets;
 
     const UserPassMap userPassMap;
     const std::string secret;
 
-    void incrementCounters();
+    void updatePending();
 
   public:
     /**

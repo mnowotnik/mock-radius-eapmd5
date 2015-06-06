@@ -20,5 +20,17 @@ vector<const Packet> RadiusServer::recvPacket(const Packet &packet) {
     return packetsToSend;
 }
 
-void RadiusServer::incrementCounters() {}
+void RadiusServer::updatePending() {
+    std::for_each(pendingPackets.begin(),pendingPackets.end(),
+            [](PendingPacket &p){p.counter++;});
+
+    for(auto it=pendingPackets.begin();it!=pendingPackets.end();){
+        if(it->counter > PENDING_LIMIT){
+            it = pendingPackets.erase(it);
+        }else{
+            ++it;
+        }
+    }
+}
+
 }
