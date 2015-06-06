@@ -42,7 +42,7 @@ TEST_CASE("Create basic Packet","[Packet]")
 }
 
 
-TEST_CASE ("What you send is what you get","[RadiusServer]"")
+TEST_CASE ("What you send is what you get","[RadiusServer]")
 {
 	Packet rec_pack (RADIUS_BASE_BUF,DEST_ADDR);
 	RadiusServer testServer(USER_MAP,SECRET);
