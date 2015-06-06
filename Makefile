@@ -38,7 +38,7 @@ CLIENT_INC=$(COMMON_INC)
 TESTS_INC=/I$(HASHLIB) /I$(CATCH) /I$(SRC) /I$(SPDLOG)
 
 ### Other flags ###
-CFLAGS = /EHsc
+CFLAGS = /EHsc /MP
 
 
 all: $(SERVER) $(CLIENT) $(TESTS)
