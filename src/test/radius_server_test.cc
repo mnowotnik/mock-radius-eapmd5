@@ -15,7 +15,7 @@ const string secret = "secret";
 
 namespace radius {
 
-TEST_CASE("def") { 
+TEST_CASE("RadiusServer test") { 
 
     auto console = spdlog::stdout_logger_mt("console");
     console->info("Log");

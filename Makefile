@@ -15,13 +15,14 @@ CSV_PARSER=$(ROOT)\fast-cpp-csv-parser\include
 
 
 ### Object dependencies ###
-SERVER_OBJS=server.obj server_loop.obj
-CLIENT_OBJS=client.obj $(HASHLIB)\md5.obj
-TESTS_OBJS=all_tests.obj $(HASHLIB)\md5.obj packets\common.obj \
-		  packets\radius_packet.obj packets\eap_packet.obj \
-		  radius_server.obj server_loop.obj logging.obj \
-		  test\radius_server_test.obj test\logging_test.obj test\server_loop_test.obj \
-		  test\packet_test.obj
+COMMON_OBJS=packets\radius_packet.obj packets\eap_packet.obj logging.obj \
+			$(HASHLIB)\md5.obj packets\common.obj auth_common.obj 
+SERVER_OBJS=server.obj server_loop.obj $(COMMON_OBJS)
+CLIENT_OBJS=client.obj $(COMMON_OBJS)
+TESTS_OBJS=all_tests.obj test\radius_server_test.obj test\logging_test.obj \
+		   test\server_loop_test.obj  test\packet_test.obj test\auth_common_test.obj \
+		   radius_server.obj server_loop.obj \
+		   $(COMMON_OBJS)
 
 
 
