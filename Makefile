@@ -15,13 +15,16 @@ CSV_PARSER=$(ROOT)\fast-cpp-csv-parser\include
 
 
 ### Object dependencies ###
-COMMON_OBJS=packets\radius_packet.obj packets\eap_packet.obj logging.obj \
-			$(HASHLIB)\md5.obj packets\common.obj auth_common.obj 
-SERVER_OBJS=server.obj server_loop.obj $(COMMON_OBJS)
-CLIENT_OBJS=client.obj $(COMMON_OBJS)
-TESTS_OBJS=all_tests.obj test\radius_server_test.obj test\logging_test.obj \
-		   test\server_loop_test.obj  test\packet_test.obj test\auth_common_test.obj \
-		   radius_server.obj server_loop.obj \
+COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC)\logging.obj \
+			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj 
+
+SERVER_OBJ=$(SRC)\server.obj $(SRC)\server_loop.obj $(COMMON_OBJS)
+
+CLIENT_OBJS=$(SRC)\client.obj $(COMMON_OBJS)
+	
+TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
+		   $(SRC)\test\server_loop_test.obj  $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj \
+		   $(SRC)\radius_server.obj $(SRC)\server_loop.obj \
 		   $(COMMON_OBJS)
 
 
@@ -56,15 +59,15 @@ $(CLIENT): $(CLIENT_OBJS)
 $(TESTS): $(TESTS_OBJS)
 	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
 
-server.obj: $(SRC)\server.cc
+$(SRC)\server.obj: $(SRC)\server.cc
 	pushd $(SRC) & $(CC) $(CFLAGS) $(SERVER_INC) -c $? \
 		& popd
 
-client.obj: $(SRC)\client.cc
+$(SRC)\client.obj: $(SRC)\client.cc
 	pushd $(SRC) & $(CC) $(CFLAGS) $(CLIENT_INC) -c $? \
 		& popd
 
-all_tests.obj: $(SRC)\all_tests.cc
+$(SRC)\all_tests.obj: $(SRC)\all_tests.cc
 	pushd $(SRC) & $(CC) $(CFLAGS) $(TESTS_INC) -c $? \
 		& popd
 
@@ -78,12 +81,12 @@ clean:
 {$(HASHLIB)}.cpp{$(HASHLIB)}.obj::
 	pushd $(HASHLIB) & $(CC) $(CFLAGS) /I$(HASHLIB) -c $< & popd
 
-{$(SRC)}.cc{}.obj:
+{$(SRC)}.cc{$(SRC)}.obj:
 	pushd $(SRC) & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
 
-{$(SRC)\packets}.cc{packets}.obj:
+{$(SRC)\packets}.cc{$(SRC)\packets}.obj:
 	pushd $(SRC)\packets & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
 
-{$(SRC)\test}.cc{test}.obj:
+{$(SRC)\test}.cc{$(SRC)\test}.obj:
 	pushd $(SRC)\test & $(CC) $(CFLAGS) $(TESTS_INC) -c $< & popd
 
