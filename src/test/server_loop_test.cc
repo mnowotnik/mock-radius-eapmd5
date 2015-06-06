@@ -5,6 +5,7 @@
 #include <vector>
 #include "server_loop.h"
 #include "packets/packet.h"
+#include "catch.hpp"
 
 using std::vector;
 using std::string;
