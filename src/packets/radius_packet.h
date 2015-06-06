@@ -141,16 +141,16 @@ class RadiusPacket {
     RadiusPacket(const std::vector<byte> &bytes);
 
     void setCode(byte code) { buffer[0] = code; }
-    byte getCode() { return buffer[0]; }
+    byte getCode() const { return buffer[0]; }
 
     void setIdentifier(byte identifier) { buffer[1] = identifier; }
-    byte getIdentifier() { return buffer[1]; }
+    byte getIdentifier() const { return buffer[1]; }
 
     void setLength(unsigned short length);
-    short getLength();
+    short getLength() const;
 
     void setAuthenticator(const std::array<byte, AUTH_LEN> &arr);
-    std::array<byte, 16> getAuthenticator();
+    std::array<byte, 16> getAuthenticator() const;
 
     std::vector<byte> getBuffer() { return buffer; }
     std::vector<byte> getBufferWoAVP() const;
