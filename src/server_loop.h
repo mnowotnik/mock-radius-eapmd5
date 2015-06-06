@@ -2,5 +2,9 @@
 #pragma comment(lib, "ws2_32.lib")
 #include <WS2tcpip.h>
 #include <stdio.h>
+#include "radius_server.h"
 
-void start(const char *addr);
+void startServer(const char *addr);
+void stopServer();
+radius::packets::Packet reciveData(SOCKET s);
+void sendData(SOCKET s,radius::packets::Packet sen_pack);

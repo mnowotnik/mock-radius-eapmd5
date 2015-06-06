@@ -2,16 +2,15 @@
 #include "packets/common.h"
 #include <vector>
 
-namespace radius{
-    namespace packets{
+namespace radius {
+namespace packets {
 
-struct Packet{
-    const std::vector<char> bytes;
-    const sockaddr_in addr;
+struct Packet {
+    std::vector<byte> bytes;
+    sockaddr_in addr;
 
-    Packet(const std::vector<char> &b,const sockaddr_in &a):bytes(b),
-    addr(a){}
-
+    Packet(const std::vector<byte> &b, const sockaddr_in &a)
+        : bytes(b), addr(a) {}
 };
-
-}}
+}
+}
