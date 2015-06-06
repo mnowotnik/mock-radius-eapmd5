@@ -8,6 +8,7 @@
 namespace radius {
 namespace packets {
 
+    namespace{
 // md5 of char '0'
 const std::array<byte, 16> MD5_0 = {0xcf, 0xcd, 0x20, 0x84, 0x95, 0xd5,
                                     0x65, 0xef, 0x66, 0xe7, 0xdf, 0xf9,
@@ -26,6 +27,7 @@ const std::vector<byte> RADIUS_BASE_BUF = {0x01,       // code
                                            0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
                                            0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
                                            0x0c, 0x0d, 0x0e, 0x0f};
+    }
 
 TEST_CASE("Conversion of network bytes to short", "[networkBytes2Short]") {
     std::array<byte, 2> bytes = {0x00, 0x38};
