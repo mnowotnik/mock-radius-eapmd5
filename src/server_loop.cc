@@ -57,7 +57,7 @@ void stopServer()
 }
 
 
-radius::packets::Packet reciveData(SOCKET s)
+radius::packets::Packet receiveData()
 {
 	    printf("Waiting for data...");
         fflush(stdout);
@@ -78,7 +78,7 @@ radius::packets::Packet reciveData(SOCKET s)
 		//	rad.recvPacket(rec_pack);
 return rec_pack;
 }
-void sendData(SOCKET s,radius::packets::Packet sen_pack)
+void sendData(radius::packets::Packet sen_pack)
 {
 			int slen , recv_len;
 			sockaddr_in dest_addr =sen_pack.addr;
