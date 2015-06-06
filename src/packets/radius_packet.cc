@@ -3,9 +3,8 @@ using std::array;
 using std::string;
 using std::vector;
 
-namespace radius{
-    namespace packets{
-
+namespace radius {
+namespace packets {
 
 MessageAuthenticator::MessageAuthenticator() {
     this->buffer.resize(length);
@@ -68,13 +67,13 @@ void RadiusPacket::setLength(unsigned short length) {
 }
 
 short RadiusPacket::getLength() {
-    unsigned short l = networkBytes2Short(
-        array<byte, 2>({{buffer[2], buffer[3]}}));
+    unsigned short l =
+        networkBytes2Short(array<byte, 2>({{buffer[2], buffer[3]}}));
     return l;
 }
 
-void RadiusPacket::setAuthenticator(
-    const array<byte, RadiusPacket::AUTH_LEN> &arr) {
+void
+RadiusPacket::setAuthenticator(const array<byte, RadiusPacket::AUTH_LEN> &arr) {
     for (int i = 0; i < AUTH_LEN; i++) {
         buffer[i + 4] = arr[i];
     }
@@ -82,7 +81,7 @@ void RadiusPacket::setAuthenticator(
 array<byte, RadiusPacket::AUTH_LEN> RadiusPacket::getAuthenticator() {
     array<byte, AUTH_LEN> auth;
     copy(buffer.begin() + AUTH_OFFSET,
-              buffer.begin() + AUTH_OFFSET + auth.size(), auth.begin());
+         buffer.begin() + AUTH_OFFSET + auth.size(), auth.begin());
     return auth;
 }
 
@@ -106,4 +105,5 @@ vector<RadiusAVP> RadiusPacket::getAVPList() {
     }
     return avpList;
 }
-}}
+}
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 /**
-Safely get string from standard input ('*' instead of input when show_asterix=true)
+Safely get string from standard input ('*' instead of input when
+show_asterix=true)
  */
-std::string getPassword(const string& prompt);
+std::string getPassword(const string &prompt);

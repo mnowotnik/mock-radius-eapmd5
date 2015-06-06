@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-namespace radius{
-    namespace packets{
+namespace radius {
+namespace packets {
 class EapMessage;
 class EapPacket;
 
@@ -40,7 +40,6 @@ class EapData {
  * type-data : username/message
  */
 class EapIdentity : public EapData {
-
 
   public:
     EapIdentity(const std::vector<byte> &bytes) : EapData(bytes) {}
