@@ -66,7 +66,7 @@ void RadiusPacket::setLength(unsigned short length) {
     buffer[3] = bytes[1];
 }
 
-short RadiusPacket::getLength() {
+short RadiusPacket::getLength() const{
     unsigned short l =
         networkBytes2Short(array<byte, 2>({{buffer[2], buffer[3]}}));
     return l;
@@ -78,7 +78,7 @@ RadiusPacket::setAuthenticator(const array<byte, RadiusPacket::AUTH_LEN> &arr) {
         buffer[i + 4] = arr[i];
     }
 }
-array<byte, RadiusPacket::AUTH_LEN> RadiusPacket::getAuthenticator() {
+array<byte, RadiusPacket::AUTH_LEN> RadiusPacket::getAuthenticator() const{
     array<byte, AUTH_LEN> auth;
     copy(buffer.begin() + AUTH_OFFSET,
          buffer.begin() + AUTH_OFFSET + auth.size(), auth.begin());
