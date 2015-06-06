@@ -152,7 +152,7 @@ class RadiusPacket {
     void setAuthenticator(const std::array<byte, AUTH_LEN> &arr);
     std::array<byte, 16> getAuthenticator() const;
 
-    std::vector<byte> getBuffer() { return buffer; }
+    std::vector<byte> getBuffer() const{ return buffer; }
     std::vector<byte> getBufferWoAVP() const;
 
     void addAVP(const RadiusAVP &avp);
