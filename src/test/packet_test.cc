@@ -102,6 +102,7 @@ TEST_CASE("Create basic AVP and add to RadiusPacket", "[RadiusAVP]") {
         static_cast<const MessageAuthenticator &>(avpList[0]);
     std::array<byte, 16> rMd5 = m.getMd5();
     REQUIRE(rMd5 == MD5_0);
+
 }
 
 TEST_CASE("Add 3 AVP to RadiusPacket", "[RadiusAVP]") {
@@ -156,6 +157,9 @@ TEST_CASE("Initalize RadiusPacket with AVP byte array") {
     buffer[3] = sizeBytes[1];
     RadiusPacket packet(buffer);
 
+    REQUIRE(packet.getBufferWoAVP().size() == 20);
+    REQUIRE(packet.getBufferWoAVP() == std::vector<byte>(buffer.begin(),buffer.begin()+20));
+
     std::vector<RadiusAVP> avpList = packet.getAVPList();
     REQUIRE(avpList.size() == 3);
     NasIpAddr nasAddr = static_cast<const NasIpAddr &>(avpList[0]);
@@ -179,6 +183,7 @@ TEST_CASE("Initalize RadiusPacket with AVP byte array") {
     REQUIRE(ma.getBuffer().size() == 18);
     REQUIRE(ma.getLength() == 18);
     REQUIRE(ma.getMd5() == MD5_0);
+
 }
 
 TEST_CASE("EapPacket integrity", "[EapPacket]") {

@@ -89,7 +89,12 @@ void RadiusPacket::addAVP(const RadiusAVP &avp) {
     buffer.insert(buffer.end(), avp.buffer.begin(), avp.buffer.end());
     setLength(buffer.size());
 }
-vector<RadiusAVP> RadiusPacket::getAVPList() {
+
+std::vector<byte> RadiusPacket::getBufferWoAVP()const{
+    vector<byte> bytes(buffer.begin(),buffer.begin()+AVP_OFFSET);
+    return bytes;
+}
+vector<RadiusAVP> RadiusPacket::getAVPList() const{
     vector<RadiusAVP> avpList;
     vector<byte> avpListBytes(buffer.begin() + AVP_OFFSET, buffer.end());
 

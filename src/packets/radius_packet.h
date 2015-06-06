@@ -31,7 +31,7 @@ class RadiusAVP {
     RadiusAVP(const std::vector<byte> &bytes) : buffer(bytes) {}
 
     void setType(byte type) { buffer[0] = type; }
-    byte getType() { return buffer[0]; }
+    byte getType()const { return buffer[0]; }
 
     void setLength(byte length) { buffer[1] = length; }
     byte getLength() { return buffer[1]; }
@@ -153,9 +153,10 @@ class RadiusPacket {
     std::array<byte, 16> getAuthenticator();
 
     std::vector<byte> getBuffer() { return buffer; }
+    std::vector<byte> getBufferWoAVP() const;
 
     void addAVP(const RadiusAVP &avp);
-    std::vector<RadiusAVP> getAVPList();
+    std::vector<RadiusAVP> getAVPList() const;
 };
 }
 }
