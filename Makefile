@@ -19,7 +19,10 @@ SERVER_OBJS=server.obj server_loop.obj
 CLIENT_OBJS=client.obj $(HASHLIB)\md5.obj
 TESTS_OBJS=all_tests.obj $(HASHLIB)\md5.obj packets\common.obj \
 		  packets\radius_packet.obj packets\eap_packet.obj \
-		  radius_server.obj server_loop.obj
+		  radius_server.obj server_loop.obj logging.obj \
+		  test\radius_server_test.obj test\logging_test.obj test\server_loop_test.obj \
+		  test\packet_test.obj
+
 
 
 ### Targets ###
@@ -66,7 +69,7 @@ all_tests.obj: $(SRC)\all_tests.cc
 
 clean:
 	del *.obj *.exe $(SRC)\*.obj $(SRC)\packets\*.obj \
-		$(HASHLIB)\*.obj
+		$(HASHLIB)\*.obj $(SRC)\test\*.obj
 
 
 
@@ -79,4 +82,7 @@ clean:
 
 {$(SRC)\packets}.cc{packets}.obj:
 	pushd $(SRC)\packets & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
+
+{$(SRC)\test}.cc{test}.obj:
+	pushd $(SRC)\test & $(CC) $(CFLAGS) $(TESTS_INC) -c $< & popd
 

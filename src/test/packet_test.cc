@@ -2,6 +2,7 @@
 #include "packets/packet.h"
 #include "packets/radius_packet.h"
 #include "packets/eap_packet.h"
+#include "catch.hpp"
 #include <array>
 
 namespace radius {

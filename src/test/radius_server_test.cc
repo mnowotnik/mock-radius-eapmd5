@@ -1,5 +1,6 @@
 #include "radius_server.h"
 #include "spdlog/spdlog.h"
+#include "catch.hpp"
 #include <map>
 #include <string>
 
