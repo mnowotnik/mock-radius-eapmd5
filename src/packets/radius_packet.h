@@ -34,17 +34,17 @@ class RadiusAVP {
     byte getType()const { return buffer[0]; }
 
     void setLength(byte length) { buffer[1] = length; }
-    byte getLength() { return buffer[1]; }
+    byte getLength()const { return buffer[1]; }
 
     void setValue(const std::vector<byte> &value) {
         buffer.insert(buffer.begin() + VAL_OFFSET, value.begin(), value.end());
     }
-    std::vector<byte> getValue() {
+    std::vector<byte> getValue() const{
         std::vector<byte> value(buffer.begin() + VAL_OFFSET, buffer.end());
         return value;
     }
 
-    std::vector<byte> getBuffer() { return buffer; }
+    std::vector<byte> getBuffer() const{ return buffer; }
 };
 
 /**
