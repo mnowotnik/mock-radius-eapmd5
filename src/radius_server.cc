@@ -7,8 +7,8 @@ using radius::packets::Packet;
 namespace radius {
 
 RadiusServer::RadiusServer(const map<string, string> &userPassMap,
-                           const string &secret)
-    : userPassMap(userPassMap), secret(secret) {}
+        const string &secret,const Logger &logger)
+    : userPassMap(userPassMap), secret(secret),logger(logger) {}
 
 vector<const Packet> RadiusServer::recvPacket(const Packet &packet) {
     vector<const Packet> packetsToSend;
