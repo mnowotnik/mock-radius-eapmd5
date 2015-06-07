@@ -3,7 +3,6 @@
 #include <vector>
 #include "packets/Packet.h"
 namespace radius {
-	namespace server{
 using std::vector;
     const int BUFLEN = 1000;
     const int PORT = 32000;
@@ -105,4 +104,5 @@ void sendData(radius::packets::Packet sen_pack)
 				printf("sendto() failed with error code : %d" , WSAGetLastError());
 				exit(EXIT_FAILURE);
 			}
+}
 }
