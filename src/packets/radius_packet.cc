@@ -1,4 +1,5 @@
 #include "packets/radius_packet.h"
+#include <iostream>
 using std::array;
 using std::string;
 using std::vector;
@@ -111,21 +112,35 @@ vector<RadiusAVP> RadiusPacket::getAVPList() const{
     return avpList;
 }
 
-bool RadiusPacket::replaceAVP(const RadiusAVP & oldAVP,const RadiusAVP & newAVP){
-    if(oldAVP.getBuffer().size()!=newAVP.getBuffer().size()){
+std::vector<byte>::iterator RadiusPacket::findAVP(const RadiusAVP &avp){
+    return std::search(buffer.begin(),buffer.end(),avp.buffer.begin(),avp.buffer.end());
+    }
+
+bool RadiusPacket::removeAVP(const RadiusAVP & avp){
+    if(avp.buffer.size()==0){
         return false;
     }
-    auto itBeg = std::search(buffer.begin(),buffer.end(),oldAVP.getBuffer().begin(),
-            oldAVP.getBuffer().end());
+    auto it = findAVP(avp);
+    if(it == buffer.end()){
+        return false;
+    }
+    buffer.erase(it,it+avp.buffer.size());
+    setLength(buffer.size());
+    return true;
+}
+bool RadiusPacket::replaceAVP(const RadiusAVP & oldAVP,const RadiusAVP & newAVP){
+    auto itBeg = findAVP(oldAVP);
 
+    if(itBeg == buffer.end()){
+    std::cout<<"here"<<std::endl;
+    }
     if(itBeg == buffer.begin() || itBeg == buffer.end()){
         return false;
     }
-    auto itInsert = buffer.erase(itBeg,itBeg+oldAVP.getBuffer().size());
-    buffer.insert(itInsert, newAVP.getBuffer().begin(),newAVP.getBuffer().begin());
+    auto itIns = buffer.erase(itBeg,itBeg+oldAVP.buffer.size());
+    buffer.insert(itIns, newAVP.buffer.begin(),newAVP.buffer.end());
+    setLength(buffer.size());
     return true;
-
-
 }
 }
 }

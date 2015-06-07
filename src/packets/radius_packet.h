@@ -66,6 +66,7 @@ class EapMessage : public RadiusAVP {
     const int MIN_LENGTH = 4;
 
   public:
+    EapMessage(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     EapMessage() { setType(RadiusAVP::EAP_MESSAGE); }
 };
 
@@ -78,6 +79,7 @@ class MessageAuthenticator : public RadiusAVP {
     const byte length = 18;
 
   public:
+    MessageAuthenticator(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     MessageAuthenticator();
 
     void setMd5(const std::array<byte, 16> &md5);
@@ -94,6 +96,7 @@ class NasIpAddr : public RadiusAVP {
     const byte length = 4;
 
   public:
+    NasIpAddr(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     NasIpAddr() { setType(RadiusAVP::NAS_IP_ADDRESS); }
 
     void setIp(std::array<byte, 4> ip);
@@ -111,6 +114,7 @@ class NasIpAddr : public RadiusAVP {
 class NasIdentifier : public RadiusAVP {
 
   public:
+    NasIdentifier(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     NasIdentifier() { setType(NAS_IDENTIFIER); }
 
     void setIdentifier(const std::vector<byte> &id);
@@ -130,6 +134,7 @@ class RadiusPacket {
   private:
     const int radiusMinSize = 20;
     std::vector<byte> buffer;
+    std::vector<byte>::iterator findAVP(const RadiusAVP &avp);
 
   public:
     // codes
@@ -160,9 +165,13 @@ class RadiusPacket {
     std::vector<byte> getBufferWoAVP() const;
 
     bool replaceAVP(const RadiusAVP & oldAvp,const RadiusAVP & newAVP);
-
+    bool removeAVP(const RadiusAVP & avp);
     void addAVP(const RadiusAVP &avp);
     std::vector<RadiusAVP> getAVPList() const;
+
+    bool operator==(const RadiusPacket &rhs){
+        return rhs.buffer == buffer;
+    }
 };
 }
 }
