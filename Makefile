@@ -24,6 +24,7 @@ CLIENT_OBJS=$(SRC)\client.obj $(COMMON_OBJS)
 	
 TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
 		   $(SRC)\test\server_loop_test.obj $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj \
+		   $(SRC)\test\crypto_test.obj \
 		   $(SRC)\radius_server.obj $(SRC)\server_loop.obj \
 		   $(COMMON_OBJS)
 

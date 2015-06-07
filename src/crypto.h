@@ -8,9 +8,7 @@
 #include <sstream>
 
 namespace radius {
-namespace crypto {
 std::array<byte, 16> md5Bin(const std::vector<byte> &data);
 std::array<byte, 16> md5HmacBin(const std::vector<byte> &data,
                                 const std::string &secret);
-}
 }

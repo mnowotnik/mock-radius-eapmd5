@@ -31,7 +31,7 @@ bool checkMessageAuthenticator(const RadiusPacket &packet,
 
     refPacket.replaceAVP(*ma, emptyMa);
 
-    return crypto::md5HmacBin(refPacket.getBuffer(), secret) == md5;
+    return md5HmacBin(refPacket.getBuffer(), secret) == md5;
 }
 bool checkIntegrity(const RadiusPacket &packet, const std::string &secret,
                     const std::vector<byte> &authenticator) {

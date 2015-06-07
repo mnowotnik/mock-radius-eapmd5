@@ -30,7 +30,7 @@ TEST_CASE("Testing MessageAuthenticator checking",
     ma.setMd5(EMPTY_MD5);
     packet.addAVP(static_cast<RadiusAVP>(ma));
 
-    std::array<byte, 16> md5 = crypto::md5HmacBin(packet.getBuffer(), secret);
+    std::array<byte, 16> md5 = md5HmacBin(packet.getBuffer(), secret);
     MessageAuthenticator oma = ma;
 
     REQUIRE(oma.getMd5() == EMPTY_MD5);
