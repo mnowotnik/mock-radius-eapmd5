@@ -153,7 +153,13 @@ class RadiusPacket {
     std::array<byte, 16> getAuthenticator() const;
 
     std::vector<byte> getBuffer() const{ return buffer; }
+
+    /**
+     * get buffer without avp list
+     */
     std::vector<byte> getBufferWoAVP() const;
+
+    bool replaceAVP(const RadiusAVP & oldAvp,const RadiusAVP & newAVP);
 
     void addAVP(const RadiusAVP &avp);
     std::vector<RadiusAVP> getAVPList() const;

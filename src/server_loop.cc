@@ -2,13 +2,16 @@
 #include "server_loop.h"
 #include <vector>
 #include "packets/Packet.h"
-namespace radius {
 using std::vector;
+
+namespace radius {
+    namespace{
     const int BUFLEN = 1000;
     const int PORT = 32000;
 	SOCKET s;
 	bool isRunning;
 	std::string log = "";
+}
 void startServer(const char *addr) {
 
 	if (isRunning)
@@ -62,7 +65,7 @@ void stopServer()
 }
 
 
-radius::packets::Packet receiveData()
+packets::Packet receiveData()
 {
 			if (!isRunning)
 	{
@@ -87,7 +90,7 @@ radius::packets::Packet receiveData()
 		//	rad.recvPacket(rec_pack);
 return rec_pack;
 }
-void sendData(radius::packets::Packet sen_pack)
+void sendData(packets::Packet sen_pack)
 {
 		if (!isRunning)
 	{

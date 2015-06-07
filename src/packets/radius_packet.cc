@@ -110,5 +110,22 @@ vector<RadiusAVP> RadiusPacket::getAVPList() const{
     }
     return avpList;
 }
+
+bool RadiusPacket::replaceAVP(const RadiusAVP & oldAVP,const RadiusAVP & newAVP){
+    if(oldAVP.getBuffer().size()!=newAVP.getBuffer().size()){
+        return false;
+    }
+    auto itBeg = std::search(buffer.begin(),buffer.end(),oldAVP.getBuffer().begin(),
+            oldAVP.getBuffer().end());
+
+    if(itBeg == buffer.begin() || itBeg == buffer.end()){
+        return false;
+    }
+    auto itInsert = buffer.erase(itBeg,itBeg+oldAVP.getBuffer().size());
+    buffer.insert(itInsert, newAVP.getBuffer().begin(),newAVP.getBuffer().begin());
+    return true;
+
+
+}
 }
 }
