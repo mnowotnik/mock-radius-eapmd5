@@ -9,7 +9,7 @@
 namespace radius{
 
 
-    bool checkMessageAuth(const packets::RadiusPacket &packet,const std::string &secret);
+    bool checkMessageAuthenticator(const packets::RadiusPacket &packet,const std::string &secret);
     bool checkIntegrity(const packets::RadiusPacket &packet,
             const std::string &secret,
             const std::vector<byte>&authenticator=std::vector<byte>());

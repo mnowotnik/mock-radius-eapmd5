@@ -13,11 +13,10 @@ namespace{
 
 namespace radius{
 
-    bool checkMessageAuth(const RadiusPacket &packet,const std::string &secret){
-        RadiusPacket refPacket(packet.getBufferWoAVP());
+    bool checkMessageAuthenticator(const RadiusPacket &packet,const std::string &secret){
+        RadiusPacket refPacket = packet;
         std::vector<RadiusAVP> avpList = packet.getAVPList();
         
-
         MessageAuthenticator*ma;
         std::for_each(avpList.begin(),avpList.end(),[&](const RadiusAVP&avp){
                 if(avp.getType() == RadiusAVP::MESSAGE_AUTHENTICATOR){
@@ -27,12 +26,13 @@ namespace radius{
                 });
 
         std::array<byte,16>md5 = ma->getMd5();
-        ma->setMd5(nullAuth);
 
-        std::for_each(avpList.begin(),avpList.end(),
-                [&](const RadiusAVP&avp){refPacket.addAVP(avp);});
+        MessageAuthenticator emptyMa = *ma;
+        emptyMa.setMd5(nullAuth);
 
-        return crypto::md5Bin(refPacket.getBuffer()) == md5;
+        refPacket.replaceAVP(*ma,emptyMa);
+
+        return crypto::md5HmacBin(refPacket.getBuffer(),secret) == md5;
     }
     bool checkIntegrity(const RadiusPacket &packet,
             const std::string &secret,
