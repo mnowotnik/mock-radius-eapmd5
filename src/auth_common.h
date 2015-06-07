@@ -6,11 +6,11 @@
 #include "crypto.h"
 #include "typedefs.h"
 
-namespace radius{
+namespace radius {
 
-
-    bool checkMessageAuthenticator(const packets::RadiusPacket &packet,const std::string &secret);
-    bool checkIntegrity(const packets::RadiusPacket &packet,
-            const std::string &secret,
-            const std::vector<byte>&authenticator=std::vector<byte>());
+bool checkMessageAuthenticator(const packets::RadiusPacket &packet,
+                               const std::string &secret);
+bool
+checkIntegrity(const packets::RadiusPacket &packet, const std::string &secret,
+               const std::vector<byte> &authenticator = std::vector<byte>());
 }

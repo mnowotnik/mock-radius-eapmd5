@@ -8,7 +8,7 @@
 namespace radius {
 namespace packets {
 
-    namespace{
+namespace {
 // md5 of char '0'
 const std::array<byte, 16> MD5_0 = {0xcf, 0xcd, 0x20, 0x84, 0x95, 0xd5,
                                     0x65, 0xef, 0x66, 0xe7, 0xdf, 0xf9,
@@ -27,7 +27,7 @@ const std::vector<byte> RADIUS_BASE_BUF = {0x01,       // code
                                            0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
                                            0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
                                            0x0c, 0x0d, 0x0e, 0x0f};
-    }
+}
 
 TEST_CASE("Conversion of network bytes to short", "[networkBytes2Short]") {
     std::array<byte, 2> bytes = {0x00, 0x38};
@@ -102,7 +102,6 @@ TEST_CASE("Create basic AVP and add to RadiusPacket", "[RadiusAVP]") {
         static_cast<const MessageAuthenticator &>(avpList[0]);
     std::array<byte, 16> rMd5 = m.getMd5();
     REQUIRE(rMd5 == MD5_0);
-
 }
 
 TEST_CASE("Add 3 AVP to RadiusPacket", "[RadiusAVP]") {
@@ -133,8 +132,7 @@ TEST_CASE("Add 3 AVP to RadiusPacket", "[RadiusAVP]") {
     REQUIRE(m.getMd5() == m2.getMd5());
     REQUIRE(n.getIdentifier() == "foo");
 }
-TEST_CASE("replacing,removing AVP","[RadiusPacket]"){
-
+TEST_CASE("replacing,removing AVP", "[RadiusPacket]") {
 
     RadiusPacket packet(RADIUS_BASE_BUF);
     MessageAuthenticator ma = MessageAuthenticator();
@@ -142,21 +140,21 @@ TEST_CASE("replacing,removing AVP","[RadiusPacket]"){
     packet.addAVP(static_cast<RadiusAVP>(ma));
 
     MessageAuthenticator oMa = MessageAuthenticator(ma.getBuffer());
-    oMa.setMd5(std::array<byte,16>{});
+    oMa.setMd5(std::array<byte, 16>{});
 
-    std::vector<byte>bufref(packet.getBufferWoAVP());
-    std::vector<byte>oMaVec = oMa.getBuffer();
-    bufref.insert(bufref.end(),oMaVec.begin(),oMaVec.end());
-    REQUIRE(bufref.size()==38);
+    std::vector<byte> bufref(packet.getBufferWoAVP());
+    std::vector<byte> oMaVec = oMa.getBuffer();
+    bufref.insert(bufref.end(), oMaVec.begin(), oMaVec.end());
+    REQUIRE(bufref.size() == 38);
 
-    bool success = packet.replaceAVP(ma,oMa);
+    bool success = packet.replaceAVP(ma, oMa);
     REQUIRE(success == true);
     REQUIRE(bufref == packet.getBuffer());
 
     success = packet.removeAVP(oMa);
     REQUIRE(success == true);
     RadiusPacket op(RADIUS_BASE_BUF);
-    REQUIRE(packet == op); 
+    REQUIRE(packet == op);
 }
 
 TEST_CASE("Initalize RadiusPacket with AVP byte array") {
@@ -183,7 +181,8 @@ TEST_CASE("Initalize RadiusPacket with AVP byte array") {
     RadiusPacket packet(buffer);
 
     REQUIRE(packet.getBufferWoAVP().size() == 20);
-    REQUIRE(packet.getBufferWoAVP() == std::vector<byte>(buffer.begin(),buffer.begin()+20));
+    REQUIRE(packet.getBufferWoAVP() ==
+            std::vector<byte>(buffer.begin(), buffer.begin() + 20));
 
     std::vector<RadiusAVP> avpList = packet.getAVPList();
     REQUIRE(avpList.size() == 3);
@@ -208,7 +207,6 @@ TEST_CASE("Initalize RadiusPacket with AVP byte array") {
     REQUIRE(ma.getBuffer().size() == 18);
     REQUIRE(ma.getLength() == 18);
     REQUIRE(ma.getMd5() == MD5_0);
-
 }
 
 TEST_CASE("EapPacket integrity", "[EapPacket]") {
@@ -270,6 +268,5 @@ TEST_CASE("EapMd5Challenge integrity", "[EapData]") {
     REQUIRE(ch2.getBuffer() == buffer);
     REQUIRE(ch2.getType() == 4);
 }
-
 }
 }

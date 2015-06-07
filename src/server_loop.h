@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include "radius_server.h"
 
-namespace radius{
+namespace radius {
 void startServer(const char *addr);
 void stopServer();
 radius::packets::Packet receiveData();
-void sendData(SOCKET s,radius::packets::Packet sen_pack);
+void sendData(SOCKET s, radius::packets::Packet sen_pack);
 }

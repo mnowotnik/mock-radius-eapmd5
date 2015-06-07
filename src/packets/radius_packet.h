@@ -31,20 +31,20 @@ class RadiusAVP {
     RadiusAVP(const std::vector<byte> &bytes) : buffer(bytes) {}
 
     void setType(byte type) { buffer[0] = type; }
-    byte getType()const { return buffer[0]; }
+    byte getType() const { return buffer[0]; }
 
     void setLength(byte length) { buffer[1] = length; }
-    byte getLength()const { return buffer[1]; }
+    byte getLength() const { return buffer[1]; }
 
     void setValue(const std::vector<byte> &value) {
         buffer.insert(buffer.begin() + VAL_OFFSET, value.begin(), value.end());
     }
-    std::vector<byte> getValue() const{
+    std::vector<byte> getValue() const {
         std::vector<byte> value(buffer.begin() + VAL_OFFSET, buffer.end());
         return value;
     }
 
-    std::vector<byte> getBuffer() const{ return buffer; }
+    std::vector<byte> getBuffer() const { return buffer; }
 };
 
 /**
@@ -157,21 +157,19 @@ class RadiusPacket {
     void setAuthenticator(const std::array<byte, AUTH_LEN> &arr);
     std::array<byte, 16> getAuthenticator() const;
 
-    std::vector<byte> getBuffer() const{ return buffer; }
+    std::vector<byte> getBuffer() const { return buffer; }
 
     /**
      * get buffer without avp list
      */
     std::vector<byte> getBufferWoAVP() const;
 
-    bool replaceAVP(const RadiusAVP & oldAvp,const RadiusAVP & newAVP);
-    bool removeAVP(const RadiusAVP & avp);
+    bool replaceAVP(const RadiusAVP &oldAvp, const RadiusAVP &newAVP);
+    bool removeAVP(const RadiusAVP &avp);
     void addAVP(const RadiusAVP &avp);
     std::vector<RadiusAVP> getAVPList() const;
 
-    bool operator==(const RadiusPacket &rhs){
-        return rhs.buffer == buffer;
-    }
+    bool operator==(const RadiusPacket &rhs) { return rhs.buffer == buffer; }
 };
 }
 }

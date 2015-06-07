@@ -15,11 +15,11 @@ const string secret = "secret";
 
 namespace radius {
 
-TEST_CASE("RadiusServer test") { 
+TEST_CASE("RadiusServer test") {
 
     auto console = spdlog::stdout_logger_mt("console");
     console->info("Log");
     /* auto logger = make_shared<spdlog::logger>("null_logger", null_sink); */
-    RadiusServer server(userPassMap, secret,console); 
+    RadiusServer server(userPassMap, secret, console);
 }
 }
