@@ -7,8 +7,8 @@ using std::vector;
     const int BUFLEN = 1000;
     const int PORT = 32000;
 	SOCKET s;
-	bool isRunning;
-	std::string log = "";
+	bool isRunning;//#TODO log
+	std::string log = "";//
 void startServer(const char *addr) {
 
 	if (isRunning)
@@ -91,7 +91,7 @@ void sendData(radius::packets::Packet sen_pack)
 {
 		if (!isRunning)
 	{
-		return;
+		exit(EXIT_FAILURE);
 	}
 			int slen , recv_len;
 			sockaddr_in dest_addr =sen_pack.addr;
@@ -99,7 +99,7 @@ void sendData(radius::packets::Packet sen_pack)
 			vector<char> buf(&(sen_pack.bytes[0]),&(sen_pack.bytes[BUFLEN]));
 			recv_len=BUFLEN*sizeof(byte);//??czy to zadziala?
 			//now reply the client with the same data
-			if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr*) &dest_addr, slen) == SOCKET_ERROR)
+			if (sendto(s, &buf[0], BUFLEN, 0, (struct sockaddr*) &dest_addr, slen) == SOCKET_ERROR)
 			{
 				printf("sendto() failed with error code : %d" , WSAGetLastError());
 				exit(EXIT_FAILURE);

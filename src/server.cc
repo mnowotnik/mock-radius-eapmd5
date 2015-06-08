@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
         string dbpath = dbArg.getValue();
-        startServer(ip.c_str());
+		radius::startServer(ip.c_str());
     } catch (CmdLineParseException &ce) {
         cerr << "error: " << ce.error() << ce.argId() << endl;
     }
