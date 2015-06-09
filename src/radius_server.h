@@ -11,37 +11,32 @@ class RadiusServer {
     typedef packets::Packet Packet;
     typedef std::shared_ptr<spdlog::logger> Logger;
 
-    const int PENDING_LIMIT=5;
+    const int PENDING_LIMIT = 5;
     // pending EAP-Request with a counter
     struct PendingPacket {
-        int counter= 0;
+        int counter = 0;
         Packet packet;
         PendingPacket(const Packet &p) : packet(p) {}
     };
 
-    struct AuthRequestId{
+    struct AuthRequestId {
         std::string userName;
         sockaddr_in addr;
         byte eapMsgId;
     };
-    struct AuthRequestIdCompare
-    {
-        bool operator() (const AuthRequestId& lhs, const AuthRequestId& rhs)
-        {
+    struct AuthRequestIdCompare {
+        bool operator()(const AuthRequestId &lhs, const AuthRequestId &rhs) {
             return lhs.userName < rhs.userName &&
-                lhs.addr.sin_addr.s_addr < rhs.addr.sin_addr.s_addr && 
-                lhs.addr.sin_port < lhs.addr.sin_port &&
-                lhs.eapMsgId < lhs.eapMsgId;
+                   lhs.addr.sin_addr.s_addr < rhs.addr.sin_addr.s_addr &&
+                   lhs.addr.sin_port < lhs.addr.sin_port &&
+                   lhs.eapMsgId < lhs.eapMsgId;
         }
     };
-    struct AuthData{
+    struct AuthData {
         std::vector<byte> challenge;
     };
 
-
-    std::map<AuthRequestId,AuthData, AuthRequestIdCompare>authProcMap;
-
-
+    std::map<AuthRequestId, AuthData, AuthRequestIdCompare> authProcMap;
 
     // list of pending EAP-Requests
     std::vector<PendingPacket> pendingPackets;
@@ -58,7 +53,8 @@ class RadiusServer {
      * @param userPassMap user credentials login x password
      * @param secret the secret shared with client (NAS)
      **/
-    RadiusServer(const UserPassMap &userPassMap, const std::string &secret,const Logger &logger);
+    RadiusServer(const UserPassMap &userPassMap, const std::string &secret,
+                 const Logger &logger);
 
     std::vector<const Packet> recvPacket(const Packet &packet);
 };
