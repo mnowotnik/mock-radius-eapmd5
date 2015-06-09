@@ -6,6 +6,6 @@
 namespace radius {
 void startServer(const char *addr);
 void stopServer();
-radius::packets::Packet receiveData(SOCKET s);
-void sendData(SOCKET s,radius::packets::Packet sen_pack);
+radius::packets::Packet receiveData();
+void sendData(radius::packets::Packet sen_pack);
 }

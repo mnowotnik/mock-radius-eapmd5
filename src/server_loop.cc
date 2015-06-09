@@ -8,11 +8,11 @@ namespace radius {
 const int BUFLEN = 1000;
 const int PORT = 32000;
 SOCKET s;
-bool isRunning;
-std::string log = "";
+static bool isRunning;
 void startServer(const char *addr) {
 
     if (isRunning) {
+		printf("Server is running");
         return;
     }
     struct sockaddr_in server, dest_addr;
@@ -22,13 +22,13 @@ void startServer(const char *addr) {
 
     slen = sizeof(dest_addr);
     // Initialise winsock
-    // printf("\nInitialising Winsock...");
+     printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
         printf("Failed. Error Code : %d", WSAGetLastError());
 
         exit(EXIT_FAILURE);
     }
-    // printf("Initialised.\n");
+     printf("Initialised.\n");
 
     // Create a socket
     if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) {
@@ -58,6 +58,7 @@ void stopServer() {
 
 packets::Packet receiveData() {
     if (!isRunning) {
+		printf("Server is not running");
         exit(EXIT_FAILURE);
     }
     // printf("Waiting for data...");
@@ -74,21 +75,20 @@ packets::Packet receiveData() {
         exit(EXIT_FAILURE);
     }
     // vector<byte> buffr(&buf[0],&buf[BUFLEN]);
-    // wyslij pakiet do servera
     vector<byte> buffr(&buf[0], &buf[BUFLEN]);
     radius::packets::Packet rec_pack(buffr, dest_addr);
-    //	rad.recvPacket(rec_pack);
     return rec_pack;
 }
 void sendData(packets::Packet sen_pack) {
     if (!isRunning) {
+		printf("Server is not running");
         exit(EXIT_FAILURE);
     }
     int slen, recv_len;
     sockaddr_in dest_addr = sen_pack.addr;
     slen = sizeof(dest_addr);
     vector<char> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
-    recv_len = BUFLEN * sizeof(byte); //??czy to zadziala?
+    recv_len = BUFLEN * sizeof(byte); 
     // now reply the client with the same data
     if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr *)&dest_addr, slen) ==
         SOCKET_ERROR) {

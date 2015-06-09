@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 		radius::startServer(ip.c_str());
 		//temporary server loop
 		while(1){	
-			radius::sendData(radius::recieveData());
+			radius::sendData(radius::receiveData());
 		}	
 		
 		radius::stopServer();
