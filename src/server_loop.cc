@@ -51,9 +51,9 @@ void startServer(const char *addr) {
 }
 
 void stopServer() {
-    isRunning = false;
     closesocket(s);
     WSACleanup();
+	isRunning = false;
 }
 
 packets::Packet receiveData() {

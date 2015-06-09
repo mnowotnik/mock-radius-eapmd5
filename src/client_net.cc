@@ -3,7 +3,7 @@
 namespace radius{
 	const int BUFLEN = 1000;
     const int PORT = 32000;
-    struct sockaddr_in dest_addr;
+    static struct sockaddr_in dest_addr;
     int s, slen = sizeof(dest_addr);
 	bool isRunning;
 	
@@ -14,8 +14,8 @@ void startClient(const char *addr){
 	{
 		return;
 	}
-    char buf[BUFLEN];
-    char message[BUFLEN];
+    //char buf[BUFLEN];
+    //char message[BUFLEN];
 	
     WSADATA wsa;
 
@@ -43,9 +43,9 @@ void startClient(const char *addr){
 }
 
 void stopClient(){
-	isRunning=false;
     closesocket(s);
     WSACleanup();
+	isRunning=false;
 	}
 
 void sendPack(packets::Packet sen_pack){
@@ -54,8 +54,9 @@ void sendPack(packets::Packet sen_pack){
 		exit(EXIT_FAILURE);
 	}
 			//sockaddr_in dest_addr =sen_pack.addr;
-			std::vector<char> buf(&(sen_pack.bytes[0]),&(sen_pack.bytes[BUFLEN]));
-	        if (sendto(s, &buf[0], BUFLEN, 0,
+			printf("To: %d/n",dest_addr.sin_addr.S_un.S_addr);
+			std::vector<char> buf(&(sen_pack.bytes[0]),&(sen_pack.bytes[sen_pack.bytes.size()-1]));
+	        if (sendto(s, &buf[0], 8, 0,
                    (struct sockaddr *)&dest_addr, slen) == SOCKET_ERROR){
             printf("sendto() failed with error code : %d", WSAGetLastError());
             exit(EXIT_FAILURE);
