@@ -39,6 +39,12 @@ int main(int argc, char **argv) {
         string logpath = logpathArg.getValue();
         string dbpath = dbArg.getValue();
 		radius::startServer(ip.c_str());
+		//temporary server loop
+		while(1){	
+			radius::sendData(radius::recieveData());
+		}	
+		
+		radius::stopServer();
     } catch (CmdLineParseException &ce) {
         cerr << "error: " << ce.error() << ce.argId() << endl;
     }
