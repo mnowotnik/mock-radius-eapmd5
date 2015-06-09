@@ -20,7 +20,7 @@ COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC
 
 SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_loop.obj $(COMMON_OBJS)
 
-CLIENT_OBJS=$(SRC)\client.obj $(COMMON_OBJS)
+CLIENT_OBJS=$(SRC)\client.obj $(SRC)\client_net.obj $(COMMON_OBJS)
 	
 TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
 		   $(SRC)\test\server_loop_test.obj $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj \

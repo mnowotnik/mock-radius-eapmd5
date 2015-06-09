@@ -7,6 +7,9 @@
 #include <iostream>
 #include "packets/Packet.h"
 namespace radius{
+	
 void startClient(const char *addr);
-packets::Packet message(packets::Packet sender);
+void stopClient();
+void sendPack(packets::Packet sen_pack);
+packets::Packet receivePack();
 }

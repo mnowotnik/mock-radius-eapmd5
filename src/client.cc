@@ -1,7 +1,9 @@
-#include "client_loop.h"
+#include "client_net.h"
 using namespace TCLAP;
 using namespace std;
-
+        const std::vector<byte> msgMd5 = 
+        {0xac,0xbd,0x18,0xdb,0x4c,0xc2,0xf8,0x5c,
+            0xed,0xef,0x65,0x4f,0xcc,0xc4,0xa4,0xd8};
 int main(int argc, char **argv) {
     try {
 
@@ -47,7 +49,21 @@ int main(int argc, char **argv) {
         string login = loginArg.getValue();
         string pas = passArg.getValue();
         bool inter = interSwitch.getValue();
-        //radius::startClient(ip.c_str());
+		
+		// setup address structure //adres serwera
+		struct sockaddr_in server_addr;
+		memset((char *)&server_addr, 0, sizeof(server_addr));
+		
+		radius::packets::Packet newPack(msgMd5,server_addr);
+		printf("send data:\n");
+		printf("%d\n",newPack.bytes[0]);
+        radius::startClient(ip.c_str());
+		radius::sendPack(newPack);
+		newPack = radius::receivePack();
+		printf("recieve data:\n");
+		
+		printf("%d",newPack.bytes[0]);
+		radius::stopClient();
     } catch (ArgException &e) {
         cerr << "error: " << e.error() << " for arg " << e.argId() << endl;
     }
