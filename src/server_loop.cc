@@ -5,13 +5,11 @@
 using std::vector;
 
 namespace radius {
-namespace {
 const int BUFLEN = 1000;
 const int PORT = 32000;
 SOCKET s;
 bool isRunning;
 std::string log = "";
-}
 void startServer(const char *addr) {
 
     if (isRunning) {
@@ -84,7 +82,7 @@ packets::Packet receiveData() {
 }
 void sendData(packets::Packet sen_pack) {
     if (!isRunning) {
-        return;
+        exit(EXIT_FAILURE);
     }
     int slen, recv_len;
     sockaddr_in dest_addr = sen_pack.addr;
@@ -99,3 +97,4 @@ void sendData(packets::Packet sen_pack) {
     }
 }
 }
+
