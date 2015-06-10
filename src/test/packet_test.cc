@@ -4,6 +4,7 @@
 #include "packets/eap_packet.h"
 #include "catch.hpp"
 #include <array>
+#include <memory>
 
 namespace radius {
 namespace packets {
@@ -91,15 +92,15 @@ TEST_CASE("Create basic AVP and add to RadiusPacket", "[RadiusAVP]") {
     REQUIRE(avp.getValue().size() == 16);
     REQUIRE(avp.getBuffer().size() == 18);
 
-    packet.addAVP(static_cast<RadiusAVP>(avp));
+    packet.addAVP(static_cast<const RadiusAVP&>(avp));
 
     REQUIRE(packet.getBuffer().size() == 38);
     REQUIRE(packet.getLength() == 38);
 
-    std::vector<RadiusAVP> avpList = packet.getAVPList();
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
     REQUIRE(avpList.size() == 1);
     MessageAuthenticator m =
-        static_cast<const MessageAuthenticator &>(avpList[0]);
+        static_cast<const MessageAuthenticator &>(*avpList[0]);
     std::array<byte, 16> rMd5 = m.getMd5();
     REQUIRE(rMd5 == MD5_0);
 }
@@ -110,24 +111,24 @@ TEST_CASE("Add 3 AVP to RadiusPacket", "[RadiusAVP]") {
     MessageAuthenticator ma = MessageAuthenticator();
     ma.setMd5(MD5_0);
 
-    packet.addAVP(static_cast<RadiusAVP>(ma));
-    packet.addAVP(static_cast<RadiusAVP>(ma));
+    packet.addAVP(static_cast<const RadiusAVP&>(ma));
+    packet.addAVP(static_cast<const RadiusAVP&>(ma));
 
     NasIdentifier ni;
     ni.setIdentifier("foo");
 
-    packet.addAVP(static_cast<RadiusAVP>(ni));
+    packet.addAVP(static_cast<const RadiusAVP&>(ni));
 
     REQUIRE(packet.getBuffer().size() == (20 + 2 * 18 + 5));
     REQUIRE(packet.getLength() == (20 + 2 * 18 + 5));
 
-    std::vector<RadiusAVP> avpList = packet.getAVPList();
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
     REQUIRE(avpList.size() == 3);
     MessageAuthenticator m =
-        static_cast<const MessageAuthenticator &>(avpList[0]);
+        static_cast<const MessageAuthenticator &>(*avpList[0]);
     MessageAuthenticator m2 =
-        static_cast<const MessageAuthenticator &>(avpList[1]);
-    NasIdentifier n = static_cast<const NasIdentifier &>(avpList[2]);
+        static_cast<const MessageAuthenticator &>(*avpList[1]);
+    NasIdentifier n = static_cast<const NasIdentifier &>(*avpList[2]);
 
     REQUIRE(m.getMd5() == m2.getMd5());
     REQUIRE(n.getIdentifier() == "foo");
@@ -137,7 +138,7 @@ TEST_CASE("replacing,removing AVP", "[RadiusPacket]") {
     RadiusPacket packet(RADIUS_BASE_BUF);
     MessageAuthenticator ma = MessageAuthenticator();
     ma.setMd5(MD5_0);
-    packet.addAVP(static_cast<RadiusAVP>(ma));
+    packet.addAVP(static_cast<const RadiusAVP&>(ma));
 
     MessageAuthenticator oMa = MessageAuthenticator(ma.getBuffer());
     oMa.setMd5(std::array<byte, 16>{});
@@ -184,12 +185,12 @@ TEST_CASE("Initalize RadiusPacket with AVP byte array") {
     REQUIRE(packet.getBufferWoAVP() ==
             std::vector<byte>(buffer.begin(), buffer.begin() + 20));
 
-    std::vector<RadiusAVP> avpList = packet.getAVPList();
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
     REQUIRE(avpList.size() == 3);
-    NasIpAddr nasAddr = static_cast<const NasIpAddr &>(avpList[0]);
+    NasIpAddr nasAddr = static_cast<const NasIpAddr &>(*avpList[0]);
     MessageAuthenticator ma =
-        static_cast<const MessageAuthenticator &>(avpList[1]);
-    NasIdentifier ni = static_cast<const NasIdentifier &>(avpList[2]);
+        static_cast<const MessageAuthenticator &>(*avpList[1]);
+    NasIdentifier ni = static_cast<const NasIdentifier &>(*avpList[2]);
 
     REQUIRE(nasAddr.getType() == 4);
     REQUIRE(nasAddr.getBuffer().size() == 6);
@@ -267,6 +268,28 @@ TEST_CASE("EapMd5Challenge integrity", "[EapData]") {
     REQUIRE(ch2.getBuffer().size() == 18);
     REQUIRE(ch2.getBuffer() == buffer);
     REQUIRE(ch2.getType() == 4);
+}
+
+TEST_CASE("Invalid RadiusPacket test", "[RadiusPacket]"){
+
+    //Radius packet length field value is too big
+    std::vector<byte> buffer(RADIUS_BASE_BUF);
+    buffer[3]=255;
+    buffer[4]=255;
+    REQUIRE_THROWS(RadiusPacket packet(buffer));
+
+    //Radius packet length field value is too small
+    buffer[3]=0;
+    buffer[4]=1;
+    REQUIRE_THROWS(RadiusPacket packet(buffer));
+
+    //AVP "length" field value is too big
+    std::array<byte, 2> inAvpH = {0x04, 0xFF};
+    buffer.insert(buffer.end(), inAvpH.begin(), inAvpH.end());
+    REQUIRE_THROWS(RadiusPacket packet(buffer));
+
+
+
 }
 }
 }

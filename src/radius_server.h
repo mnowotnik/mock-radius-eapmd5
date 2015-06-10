@@ -21,14 +21,14 @@ class RadiusServer {
 
     struct AuthRequestId {
         std::string userName;
-        sockaddr_in addr;
+        sockaddr_in nasAddr;
         byte eapMsgId;
     };
     struct AuthRequestIdCompare {
         bool operator()(const AuthRequestId &lhs, const AuthRequestId &rhs) {
             return lhs.userName < rhs.userName &&
-                   lhs.addr.sin_addr.s_addr < rhs.addr.sin_addr.s_addr &&
-                   lhs.addr.sin_port < lhs.addr.sin_port &&
+                   lhs.nasAddr.sin_addr.s_addr < rhs.nasAddr.sin_addr.s_addr &&
+                   lhs.nasAddr.sin_port < lhs.nasAddr.sin_port &&
                    lhs.eapMsgId < lhs.eapMsgId;
         }
     };

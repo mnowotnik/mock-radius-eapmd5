@@ -13,9 +13,9 @@ class PacketAccessException : public Exception {
     explicit PacketAccessException(const std::string &message)
         : Exception(message) {}
 };
-class IncorrectPacketSize : public Exception {
+class InvalidPacket : public Exception {
   public:
-    explicit IncorrectPacketSize(const std::string &message)
+    explicit InvalidPacket(const std::string &message)
         : Exception(message) {}
 };
 

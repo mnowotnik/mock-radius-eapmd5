@@ -28,7 +28,7 @@ TEST_CASE("Testing MessageAuthenticator checking",
     RadiusPacket packet(RADIUS_BASE_BUF);
     MessageAuthenticator ma;
     ma.setMd5(EMPTY_MD5);
-    packet.addAVP(static_cast<RadiusAVP>(ma));
+    packet.addAVP(static_cast<const RadiusAVP&>(ma));
 
     std::array<byte, 16> md5 = md5HmacBin(packet.getBuffer(), secret);
     MessageAuthenticator oma = ma;
@@ -37,12 +37,12 @@ TEST_CASE("Testing MessageAuthenticator checking",
     ma.setMd5(md5);
 
     // successful hmac check
-    packet.replaceAVP(static_cast<RadiusAVP>(oma), static_cast<RadiusAVP>(ma));
+    packet.replaceAVP(static_cast<const RadiusAVP&>(oma), static_cast<const RadiusAVP&>(ma));
     bool success = checkMessageAuthenticator(packet, secret);
     REQUIRE(success == true);
 
     // unsuccessful hmac check
-    packet.replaceAVP(static_cast<RadiusAVP>(ma), static_cast<RadiusAVP>(oma));
+    packet.replaceAVP(static_cast<const RadiusAVP&>(ma), static_cast<const RadiusAVP&>(oma));
     success = checkMessageAuthenticator(packet, secret);
     REQUIRE(success == false);
 }
