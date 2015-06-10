@@ -9,14 +9,14 @@ const int BUFLEN = 1000;
 int PORT = 32000;
 SOCKET s;
 static bool isRunning;
-void startServer(const char *addr,const int port) {
+void startServer(const char *addr,const int port=0) {
  PORT=port;
  //printf("port:%d\n",PORT);
     if (isRunning) {
 		printf("Server is running");
         return;
     }
-    struct sockaddr_in server, dest_addr;
+    struct sockaddr_in server;
     int slen;
 
     WSADATA wsa;
@@ -39,8 +39,15 @@ void startServer(const char *addr,const int port) {
 
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-	server.sin_addr.S_un.S_addr = inet_addr(addr);
-    //server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
+	if (addr=="")
+	{
+		printf("no_addr");
+		server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
+	}
+	else
+	{
+		server.sin_addr.S_un.S_addr = inet_addr(addr);
+	}
     server.sin_port = htons(PORT);
 
     // Bind

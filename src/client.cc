@@ -51,13 +51,7 @@ int main(int argc, char **argv) {
         string login = loginArg.getValue();
         string pas = passArg.getValue();
         bool inter = interSwitch.getValue();
-		
-
-    } catch (ArgException &e) {
-        cerr << "error: " << e.error() << " for arg " << e.argId() << endl;
-    }
-	
-		// setup address structure //adres serwera
+				// setup address structure //adres serwera
 		struct sockaddr_in server_addr;
 		memset((char *)&server_addr, 0, sizeof(server_addr));
 		server_addr.sin_family = AF_INET;
@@ -78,6 +72,12 @@ int main(int argc, char **argv) {
 		//printf("recieve data:\n");
 		//printf("%d",newPack.bytes[0]);
 		radius::stopClient();
+
+    } catch (ArgException &e) {
+        cerr << "error: " << e.error() << " for arg " << e.argId() << endl;
+    }
+	
+
 }
 
 

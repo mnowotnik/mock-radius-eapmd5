@@ -20,13 +20,13 @@ int main(int argc, char **argv) {
         cmd.add(dbArg);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
-                                   true, "", "string");
+                                   false, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("p", "port", "Binded port", true, -1, "number");
+        ValueArg<int> portArg("p", "port", "Binded port", false, -1, "number");
         cmd.add(portArg);
 
-        ValueArg<string> ipArg("a", "address", "Binded IP address", true, "",
+        ValueArg<string> ipArg("a", "address", "Binded IP address", false, "",
                                "IP");
 
         cmd.add(ipArg);
