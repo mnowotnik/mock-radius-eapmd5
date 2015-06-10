@@ -39,6 +39,7 @@ void startClient(const char *addr,const int port){
     dest_addr.sin_family = AF_INET;
     dest_addr.sin_port = htons(PORT);
     dest_addr.sin_addr.S_un.S_addr = inet_addr(addr);
+	
 	//Client is running
 	isRunning=true;
 }

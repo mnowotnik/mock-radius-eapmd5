@@ -35,11 +35,14 @@ int main(int argc, char **argv) {
 
         ValueArg<int> portArg("", "port", "Binded port", false, 8080, "number");
         cmd.add(portArg);
+		
 
         ValueArg<string> ipArg("a", "address", "Binded IP address", false, "127.0.0.1","IP");
-
         cmd.add(ipArg);
 
+		ValueArg<string> hashArg("", "hash", "Type of hashing function", false, "","string");
+		cmd.add(hashArg);
+		
         cmd.parse(argc, argv);
 
         int port = portArg.getValue();
@@ -79,4 +82,10 @@ int main(int argc, char **argv) {
 
 }
 
+std::string hashString(std::string input,std::string hash)
+{
+	//#TODO
+	std::string output;
+	return output;
+}
 
