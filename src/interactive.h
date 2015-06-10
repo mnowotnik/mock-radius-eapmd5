@@ -4,4 +4,7 @@
 Safely get string from standard input ('*' instead of input when
 show_asterix=true)
  */
-std::string getPassword(const string &prompt);
+ namespace radius{
+std::string getPassword(const std::string &prompt);
+std::string getUsername();
+ }

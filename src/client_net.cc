@@ -11,7 +11,6 @@ namespace radius{
 
 void startClient(const char *addr,const int port){
 	PORT=port;
-	printf("port:%d\n",PORT);
 	if (isRunning)
 	{
 		return;
@@ -66,6 +65,10 @@ void sendPack(packets::Packet sen_pack){
 }
 
 packets::Packet receivePack(){
+		if (!isRunning)
+	{
+		exit(EXIT_FAILURE);
+	}
         // data
 		std::vector<char> buf(BUFLEN,'\0');
         // try to receive some data, this is a blocking call
@@ -79,4 +82,7 @@ packets::Packet receivePack(){
         radius::packets::Packet rec_pack(buffr,dest_addr);
 		return rec_pack;
 }
+
+
+
 }//radius

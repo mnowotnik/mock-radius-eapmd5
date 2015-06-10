@@ -11,6 +11,7 @@ SOCKET s;
 static bool isRunning;
 void startServer(const char *addr,const int port) {
  PORT=port;
+ //printf("port:%d\n",PORT);
     if (isRunning) {
 		printf("Server is running");
         return;
@@ -22,23 +23,24 @@ void startServer(const char *addr,const int port) {
 
     slen = sizeof(dest_addr);
     // Initialise winsock
-     printf("\nInitialising Winsock...");
+    // printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
         printf("Failed. Error Code : %d", WSAGetLastError());
 
         exit(EXIT_FAILURE);
     }
-     printf("Initialised.\n");
+     //printf("Initialised.\n");
 
     // Create a socket
     if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) {
         printf("Could not create socket : %d", WSAGetLastError());
     }
-    printf("Socket created.\n");
+    //printf("Socket created.\n");
 
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-    server.sin_addr.s_addr = INADDR_ANY;
+	server.sin_addr.S_un.S_addr = inet_addr(addr);
+    //server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
     server.sin_port = htons(PORT);
 
     // Bind
@@ -47,7 +49,7 @@ void startServer(const char *addr,const int port) {
         exit(EXIT_FAILURE);
     }
     isRunning = true;
-    puts("Bind done");
+    //puts("Bind done");
 }
 
 void stopServer() {

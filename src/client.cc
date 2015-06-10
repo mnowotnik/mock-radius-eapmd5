@@ -1,8 +1,10 @@
 #include "client_net.h"
+#include "interactive.h"
+
 using namespace TCLAP;
 using namespace std;
         const std::vector<byte> temp = 
-        {0xac,0xbd,0x18,0xdb,0x4c,0xc2,0xf8,0x5c,
+        {0xfe,0xbd,0x18,0xdb,0x4c,0xc2,0xf8,0x5c,
             0xed,0xef,0x65,0x4f,0xcc,0xc4,0xa4,0xd8};
 int main(int argc, char **argv) {
     try {
@@ -50,22 +52,32 @@ int main(int argc, char **argv) {
         string pas = passArg.getValue();
         bool inter = interSwitch.getValue();
 		
-		// setup address structure //adres serwera
-		struct sockaddr_in server_addr;
-		memset((char *)&server_addr, 0, sizeof(server_addr));
-		
-		radius::packets::Packet newPack(temp,server_addr);
-		printf("send data:\n");
-		printf("%d\n",newPack.bytes[0]);
-        radius::startClient(ip.c_str(),port);
-		radius::sendPack(newPack);
-		newPack = radius::receivePack();
-		printf("recieve data:\n");
-		
-		printf("%d",newPack.bytes[0]);
-		radius::stopClient();
+
     } catch (ArgException &e) {
         cerr << "error: " << e.error() << " for arg " << e.argId() << endl;
     }
+	
+		// setup address structure //adres serwera
+		struct sockaddr_in server_addr;
+		memset((char *)&server_addr, 0, sizeof(server_addr));
+		server_addr.sin_family = AF_INET;
+		server_addr.sin_addr.s_addr = INADDR_ANY;
+		server_addr.sin_port = htons(port);
+	
+		if (inter){
+			login=radius::getUsername();
+			pas=radius::getPassword("Enter password:\n");
+		}
+		
+		radius::packets::Packet newPack(temp,server_addr);
+		//printf("send data:\n");
+		//printf("%d\n",newPack.bytes[0]);
+        radius::startClient(ip.c_str(),port);
+		radius::sendPack(newPack);
+		newPack = radius::receivePack();
+		//printf("recieve data:\n");
+		//printf("%d",newPack.bytes[0]);
+		radius::stopClient();
 }
+
 
