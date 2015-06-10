@@ -1,6 +1,10 @@
 #include "client_net.h"
 #include "interactive.h"
-
+#include "crc32.h"
+#include "md5.h"
+#include "sha1.h"
+#include "sha256.h"
+#include "sha3.h"
 using namespace TCLAP;
 using namespace std;
         const std::vector<byte> temp = 
@@ -84,8 +88,31 @@ int main(int argc, char **argv) {
 
 std::string hashString(std::string input,std::string hash)
 {
-	//#TODO
 	std::string output;
+							
+		if (hash=="sha256"){
+			SHA256 sha256;
+		output= sha256(input);
+		}
+		else if (hash=="sha1"){
+		SHA1 sha1;
+		output= sha1(input);
+		}
+		else if (hash=="sha3"){
+		SHA3 sha3;
+		output= sha3(input);
+		}
+		else if (hash=="md5"){
+		MD5 md5;
+		output= md5(input);
+		}
+		else if (hash=="crc32"){
+		CRC32 crc32;
+		output= crc32(input);
+		}
+		else{
+		output=input;
+		}
 	return output;
 }
 
