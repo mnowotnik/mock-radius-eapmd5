@@ -6,11 +6,11 @@ using std::vector;
 
 namespace radius {
 const int BUFLEN = 1000;
-const int PORT = 32000;
+int PORT = 32000;
 SOCKET s;
 static bool isRunning;
-void startServer(const char *addr) {
-
+void startServer(const char *addr,const int port) {
+ PORT=port;
     if (isRunning) {
 		printf("Server is running");
         return;

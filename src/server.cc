@@ -38,7 +38,7 @@ int main(int argc, char **argv) {
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
         string dbpath = dbArg.getValue();
-		radius::startServer(ip.c_str());
+		radius::startServer(ip.c_str(),port);
 		//temporary server loop
 		while(1){	
 			radius::sendData(radius::receiveData());

@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 		radius::packets::Packet newPack(temp,server_addr);
 		printf("send data:\n");
 		printf("%d\n",newPack.bytes[0]);
-        radius::startClient(ip.c_str());
+        radius::startClient(ip.c_str(),port);
 		radius::sendPack(newPack);
 		newPack = radius::receivePack();
 		printf("recieve data:\n");

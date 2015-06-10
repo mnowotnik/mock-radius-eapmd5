@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "radius_server.h"
 namespace radius {
-void startServer(const char *addr);
+void startServer(const char *addr,const int port);
 void stopServer();
 radius::packets::Packet receiveData();
 void sendData(radius::packets::Packet sen_pack);

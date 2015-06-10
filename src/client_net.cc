@@ -2,14 +2,16 @@
 #include <vector>
 namespace radius{
 	const int BUFLEN = 1000;
-    const int PORT = 32000;
+    int PORT = 32000;
     static struct sockaddr_in dest_addr;
     int s, slen = sizeof(dest_addr);
 	bool isRunning;
 	
 	
 
-void startClient(const char *addr){
+void startClient(const char *addr,const int port){
+	PORT=port;
+	printf("port:%d\n",PORT);
 	if (isRunning)
 	{
 		return;
@@ -54,7 +56,6 @@ void sendPack(packets::Packet sen_pack){
 		exit(EXIT_FAILURE);
 	}
 			//sockaddr_in dest_addr =sen_pack.addr;
-			printf("To: %d/n",dest_addr.sin_addr.S_un.S_addr);
 			std::vector<char> buf(&(sen_pack.bytes[0]),&(sen_pack.bytes[sen_pack.bytes.size()-1]));
 	        if (sendto(s, &buf[0], 8, 0,
                    (struct sockaddr *)&dest_addr, slen) == SOCKET_ERROR){
