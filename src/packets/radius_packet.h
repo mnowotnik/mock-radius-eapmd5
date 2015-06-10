@@ -103,7 +103,7 @@ class MessageAuthenticator : public RadiusAVP {
  */
 class NasIpAddr : public RadiusAVP {
 
-    const byte LENGTH = 4;
+    const byte LENGTH = 6;
   protected:
     bool isValid();
 

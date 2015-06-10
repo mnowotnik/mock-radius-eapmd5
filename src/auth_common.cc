@@ -33,9 +33,23 @@ bool checkMessageAuthenticator(const RadiusPacket &packet,
 
     return md5HmacBin(refPacket.getBuffer(), secret) == md5;
 }
-bool checkIntegrity(const RadiusPacket &packet, const std::string &secret,
-                    const std::vector<byte> &authenticator) {
 
-    return false;
+bool checkAuthenticator(const RadiusPacket &packet,const std::array<byte,16>&authenticator){
+    if(packet.getCode() == RadiusPacket::ACCESS_REQUEST){
+        return true;
+    }
+    RadiusPacket refPacket(packet);
+    refPacket.setAuthenticator(nullAuth);
+    std::array<byte, 16>md5 = md5Bin(refPacket.getBuffer());
+    if(md5 != authenticator){
+        return false;
+    }
+    return true;
+}
+bool checkIntegrity(const RadiusPacket &packet, const std::string &secret,
+                    const std::array<byte,16> &authenticator) {
+
+    return checkAuthenticator(packet,authenticator) &&
+        checkMessageAuthenticator(packet,secret);
 }
 }
