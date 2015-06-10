@@ -4,7 +4,7 @@
 using namespace TCLAP;
 using namespace std;
         const std::vector<byte> temp = 
-        {0xfe,0xbd,0x18,0xdb,0x4c,0xc2,0xf8,0x5c,
+        {0xe0,0xbd,0x18,0xdb,0x4c,0xc2,0xf8,0x5c,
             0xed,0xef,0x65,0x4f,0xcc,0xc4,0xa4,0xd8};
 int main(int argc, char **argv) {
     try {
@@ -33,11 +33,10 @@ int main(int argc, char **argv) {
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("", "port", "Binded port", false, -1, "number");
+        ValueArg<int> portArg("", "port", "Binded port", false, 8080, "number");
         cmd.add(portArg);
 
-        ValueArg<string> ipArg("a", "address", "Binded IP address", true, "",
-                               "IP");
+        ValueArg<string> ipArg("a", "address", "Binded IP address", false, "127.0.0.1","IP");
 
         cmd.add(ipArg);
 
@@ -69,8 +68,8 @@ int main(int argc, char **argv) {
         radius::startClient(ip.c_str(),port);
 		radius::sendPack(newPack);
 		newPack = radius::receivePack();
-		//printf("recieve data:\n");
-		//printf("%d",newPack.bytes[0]);
+		printf("recieve data:\n");
+		printf("%d",newPack.bytes[0]);
 		radius::stopClient();
 
     } catch (ArgException &e) {

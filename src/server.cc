@@ -20,13 +20,13 @@ int main(int argc, char **argv) {
         cmd.add(dbArg);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
-                                   false, "", "string");
+                                   true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("p", "port", "Binded port", false, -1, "number");
+        ValueArg<int> portArg("p", "port", "Binded port", false,8080, "number");
         cmd.add(portArg);
 
-        ValueArg<string> ipArg("a", "address", "Binded IP address", false, "",
+        ValueArg<string> ipArg("a", "address", "Binded IP address", false, "inany",
                                "IP");
 
         cmd.add(ipArg);
@@ -38,6 +38,7 @@ int main(int argc, char **argv) {
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
         string dbpath = dbArg.getValue();
+		
 		radius::startServer(ip.c_str(),port);
 		//temporary server loop
 		while(1){	

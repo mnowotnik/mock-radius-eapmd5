@@ -17,11 +17,9 @@ void startServer(const char *addr,const int port=0) {
         return;
     }
     struct sockaddr_in server;
-    int slen;
 
     WSADATA wsa;
 
-    slen = sizeof(dest_addr);
     // Initialise winsock
     // printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
@@ -39,7 +37,8 @@ void startServer(const char *addr,const int port=0) {
 
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-	if (addr=="")
+	
+	if ((std::string)addr=="inany")
 	{
 		printf("no_addr");
 		server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
