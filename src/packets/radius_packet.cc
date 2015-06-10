@@ -7,6 +7,10 @@ using std::vector;
 namespace radius {
 namespace packets {
 
+    namespace{
+        typedef std::unique_ptr<RadiusAVP> RadiusAVPPtr;
+    }
+
 MessageAuthenticator::MessageAuthenticator() {
     this->buffer.resize(LENGTH);
     setType(RadiusAVP::MESSAGE_AUTHENTICATOR);
@@ -59,15 +63,24 @@ string NasIdentifier::getIdentifier() {
 }
 
 bool MessageAuthenticator::isValid(){
+    if(buffer.size()!=LENGTH){
+        return false;
+    }
     return true;
 }
 bool EapMessage::isValid(){
+    if(buffer.size()<MIN_LENGTH){
+        return false;
+    }
     return true;
 }
 bool NasIdentifier::isValid(){
     return true;
 }
 bool NasIpAddr::isValid(){
+    if(buffer.size()!=LENGTH){
+        return false;
+    }
     return true;
 }
 
@@ -181,10 +194,19 @@ bool RadiusPacket::isValid(){
         if(buffer.end() - it < size){
             return false;
         }
+        if(size <= 0 ){
+            return false;
+        }
         it = it + size;
     }
 
-    std::vector<std::unique_ptr<RadiusAVP>> avpList = getAVPList();
+    std::vector<RadiusAVPPtr> avpList = getAVPList();
+    for(const auto& avpPtr : avpList){
+        if(!avpPtr->isValid()){
+            return false;
+        }
+    }
+
     return true;
 }
 

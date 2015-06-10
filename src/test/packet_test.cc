@@ -270,7 +270,7 @@ TEST_CASE("EapMd5Challenge integrity", "[EapData]") {
     REQUIRE(ch2.getType() == 4);
 }
 
-TEST_CASE("Invalid RadiusPacket test", "[RadiusPacket]"){
+TEST_CASE("Invalid RadiusPacket Exception", "[RadiusPacket]"){
 
     //Radius packet length field value is too big
     std::vector<byte> buffer(RADIUS_BASE_BUF);
@@ -287,9 +287,6 @@ TEST_CASE("Invalid RadiusPacket test", "[RadiusPacket]"){
     std::array<byte, 2> inAvpH = {0x04, 0xFF};
     buffer.insert(buffer.end(), inAvpH.begin(), inAvpH.end());
     REQUIRE_THROWS(RadiusPacket packet(buffer));
-
-
-
 }
 }
 }

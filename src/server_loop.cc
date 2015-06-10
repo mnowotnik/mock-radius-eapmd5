@@ -17,11 +17,9 @@ void startServer(const char *addr,const int port=0) {
         return;
     }
     struct sockaddr_in server;
-    int slen;
 
     WSADATA wsa;
 
-    slen = sizeof(dest_addr);
     // Initialise winsock
     // printf("\nInitialising Winsock...");
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {

@@ -9,3 +9,4 @@ class Exception : public std::exception {
   protected:
     std::string msg_;
 };
+
