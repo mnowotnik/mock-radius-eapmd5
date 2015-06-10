@@ -4,9 +4,12 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <memory>
 
 namespace radius {
 namespace packets {
+
+
 class RadiusPacket;
 
 /**
@@ -21,13 +24,15 @@ class RadiusAVP {
     // types
     static const byte MESSAGE_AUTHENTICATOR = 80, EAP_MESSAGE = 79,
                       NAS_IP_ADDRESS = 4, NAS_IDENTIFIER = 32;
-    static const byte VAL_OFFSET = 2;
+    static const byte MIN_SIZE = 2;
+    static const byte VAL_OFFSET = MIN_SIZE;
 
   protected:
     std::vector<byte> buffer;
+    virtual bool isValid()=0;
 
   public:
-    RadiusAVP() : buffer(VAL_OFFSET) {}
+    RadiusAVP() : buffer(MIN_SIZE) {}
     RadiusAVP(const std::vector<byte> &bytes) : buffer(bytes) {}
 
     void setType(byte type) { buffer[0] = type; }
@@ -45,6 +50,8 @@ class RadiusAVP {
     }
 
     std::vector<byte> getBuffer() const { return buffer; }
+
+    static RadiusAVP * factoryFun(const std::vector<byte> &bytes);
 };
 
 /**
@@ -64,6 +71,7 @@ class RadiusAVP {
 class EapMessage : public RadiusAVP {
   protected:
     const int MIN_LENGTH = 4;
+    bool isValid();
 
   public:
     EapMessage(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
@@ -76,7 +84,9 @@ class EapMessage : public RadiusAVP {
  * value : md5
  */
 class MessageAuthenticator : public RadiusAVP {
-    const byte length = 18;
+    const byte LENGTH = 18;
+  protected:
+    bool isValid();
 
   public:
     MessageAuthenticator(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
@@ -93,13 +103,15 @@ class MessageAuthenticator : public RadiusAVP {
  */
 class NasIpAddr : public RadiusAVP {
 
-    const byte length = 4;
+    const byte LENGTH = 4;
+  protected:
+    bool isValid();
 
   public:
     NasIpAddr(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     NasIpAddr() { setType(RadiusAVP::NAS_IP_ADDRESS); }
 
-    void setIp(std::array<byte, 4> ip);
+    void setIp( std::array<byte, 4> ip);
 
     void setIp(const std::string &ipStr);
 
@@ -113,6 +125,8 @@ class NasIpAddr : public RadiusAVP {
  */
 class NasIdentifier : public RadiusAVP {
 
+  protected:
+    bool isValid();
   public:
     NasIdentifier(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     NasIdentifier() { setType(NAS_IDENTIFIER); }
@@ -132,9 +146,10 @@ class NasIdentifier : public RadiusAVP {
  */
 class RadiusPacket {
   private:
-    const int radiusMinSize = 20;
+    const int MIN_LENGTH = 20;
     std::vector<byte> buffer;
     std::vector<byte>::iterator findAVP(const RadiusAVP &avp);
+    bool isValid();
 
   public:
     // codes
@@ -142,7 +157,7 @@ class RadiusPacket {
                       ACCESS_CHALLENGE = 11;
     static const int AVP_OFFSET = 20, AUTH_OFFSET = 4, AUTH_LEN = 16;
 
-    RadiusPacket() : buffer(radiusMinSize) { setLength(radiusMinSize); }
+    RadiusPacket() : buffer(MIN_LENGTH) { setLength(MIN_LENGTH); }
     RadiusPacket(const std::vector<byte> &bytes);
 
     void setCode(byte code) { buffer[0] = code; }
@@ -167,7 +182,7 @@ class RadiusPacket {
     bool replaceAVP(const RadiusAVP &oldAvp, const RadiusAVP &newAVP);
     bool removeAVP(const RadiusAVP &avp);
     void addAVP(const RadiusAVP &avp);
-    std::vector<RadiusAVP> getAVPList() const;
+    std::vector<std::unique_ptr<RadiusAVP>> getAVPList() const;
 
     bool operator==(const RadiusPacket &rhs) { return rhs.buffer == buffer; }
 };

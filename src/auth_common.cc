@@ -14,12 +14,12 @@ namespace radius {
 bool checkMessageAuthenticator(const RadiusPacket &packet,
                                const std::string &secret) {
     RadiusPacket refPacket = packet;
-    std::vector<RadiusAVP> avpList = packet.getAVPList();
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
 
     MessageAuthenticator *ma;
-    std::for_each(avpList.begin(), avpList.end(), [&](const RadiusAVP &avp) {
-        if (avp.getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
-            RadiusAVP *ap = const_cast<RadiusAVP *>(&avp);
+    std::for_each(avpList.begin(), avpList.end(), [&](const std::unique_ptr<RadiusAVP> &avp) {
+        if (avp->getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
+            RadiusAVP *ap = const_cast<RadiusAVP *>(avp.get());
             ma = static_cast<MessageAuthenticator *>(ap);
         }
     });
