@@ -39,9 +39,9 @@ bool checkAuthenticator(const RadiusPacket &packet,const std::array<byte,16>&aut
         return true;
     }
     RadiusPacket refPacket(packet);
-    refPacket.setAuthenticator(nullAuth);
+    refPacket.setAuthenticator(authenticator);
     std::array<byte, 16>md5 = md5Bin(refPacket.getBuffer());
-    if(md5 != authenticator){
+    if(md5 != packet.getAuthenticator()){
         return false;
     }
     return true;
