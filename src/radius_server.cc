@@ -32,7 +32,7 @@ const vector<Packet> RadiusServer::addPendingPackets(vector<Packet>packetsToSend
     std::transform(pendingPackets.begin(), pendingPackets.end(),
                    std::back_inserter(packetsToSend),
                    [](const PendingPacket &p) { return p.packet; });
-    return packetsTosend;
+    return packetsToSend;
 }
 
 void RadiusServer::updatePending() {

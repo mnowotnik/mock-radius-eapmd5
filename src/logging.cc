@@ -2,28 +2,8 @@
 using radius::packets::RadiusPacket;
 
 namespace radius {
-std::string packet2Log(const RadiusPacket &packet) {
-    std::string log = "";
+    namespace{
 
-    log += "1 Code = " + std::to_string(packet.getCode()) + '('+code2string(packet.getCode())+')'+'\n';
-    log += "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
-    log += "2 Length = " + std::to_string(packet.getLength()) + '\n'+'\n';
-    log += "16 Request Authenticator\n";
-    /*        std::string(packet.getAuthenticator().begin(), */
-    /*                    packet.getAuthenticator().end()) + */
-           '\n';
-    log += "Attributes: \n";
-	//log +=	"8  User-Name (1) =" + packet.getValue();
-
-    return log;
-}
-std::string packet2LogBytes(const RadiusPacket &packet) {
-    std::string log ="";
-	for(int i =0;i<(packet.getBuffer()).size();i++) {
-		log+= byte2hex(packet.getBuffer()[i]);
-	}
-    return log;
-}
 std::string byte2hex(const byte &byte){
 	char buf[5];
 	sprintf(buf,"%02X ",byte);
@@ -54,5 +34,30 @@ std::string code2string(int code){
 		
 	}
 }
-std::string 
+}
+
+
+
+std::string packet2Log(const RadiusPacket &packet) {
+    std::string log = "";
+
+    log += "1 Code = " + std::to_string(packet.getCode()) + '('+code2string(packet.getCode())+')'+'\n';
+    log += "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
+    log += "2 Length = " + std::to_string(packet.getLength()) + '\n'+'\n';
+    log += "16 Request Authenticator\n";
+    /*        std::string(packet.getAuthenticator().begin(), */
+    /*                    packet.getAuthenticator().end()) + */
+           '\n';
+    log += "Attributes: \n";
+	//log +=	"8  User-Name (1) =" + packet.getValue();
+
+    return log;
+}
+std::string packet2LogBytes(const RadiusPacket &packet) {
+    std::string log ="";
+	for(int i =0;i<(packet.getBuffer()).size();i++) {
+		log+= byte2hex(packet.getBuffer()[i]);
+	}
+    return log;
+}
 }
