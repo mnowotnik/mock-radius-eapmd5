@@ -26,11 +26,12 @@ int main(int argc, char **argv) {
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("p", "port", "Binded port", false,8080, "number");
+        ValueArg<int> portArg("p", "port", "Binded port", false, 8080,
+                              "number");
         cmd.add(portArg);
 
-        ValueArg<string> ipArg("a", "address", "Binded IP address", false, "inany",
-                               "IP");
+        ValueArg<string> ipArg("a", "address", "Binded IP address", false,
+                               "inany", "IP");
 
         cmd.add(ipArg);
 
@@ -40,19 +41,19 @@ int main(int argc, char **argv) {
         string ip = ipArg.getValue();
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
-        radius::initLogger(logpath,LOGGER_NAME);
+        radius::initLogger(logpath, LOGGER_NAME);
 
         auto logger = spdlog::get(LOGGER_NAME);
 
         string dbpath = dbArg.getValue();
-		
-		radius::startServer(ip.c_str(),port);
-		//temporary server loop
-		while(1){	
-			radius::sendData(radius::receiveData());
-		}	
-		
-		radius::stopServer();
+
+        radius::startServer(ip.c_str(), port);
+        // temporary server loop
+        while (1) {
+            radius::sendData(radius::receiveData());
+        }
+
+        radius::stopServer();
     } catch (CmdLineParseException &ce) {
         cerr << "error: " << ce.error() << ce.argId() << endl;
     }

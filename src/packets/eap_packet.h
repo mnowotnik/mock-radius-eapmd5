@@ -33,14 +33,13 @@ class EapData {
     byte getType() { return buffer[0]; }
 
     std::vector<byte> getBuffer() { return buffer; }
-    virtual void print(std::ostream& o) const =0;
-    friend std::ostream& operator<<(std::ostream& o, const EapData& e)
-    {
-        o<<std::to_string((int)e.buffer.size())+" ";
+    virtual void print(std::ostream &o) const = 0;
+    friend std::ostream &operator<<(std::ostream &o, const EapData &e) {
+        o << std::to_string((int)e.buffer.size()) + " ";
         e.print(o);
         return o;
     }
-    static EapData * factoryFun(const std::vector<byte> &bytes);
+    static EapData *factoryFun(const std::vector<byte> &bytes);
 };
 
 /**
@@ -56,9 +55,7 @@ class EapIdentity : public EapData {
     void setIdentity(const std::string &identity);
 
     std::string getIdentity() const;
-    void print(std::ostream& o) const{
-        o << "Identity: " + getIdentity();
-    }
+    void print(std::ostream &o) const { o << "Identity: " + getIdentity(); }
 };
 
 /**
@@ -80,9 +77,7 @@ class EapNak : public EapData {
     void setPrefAlgorithm(byte type) { buffer[1] = type; }
 
     byte getPrefAlgorithm() { return buffer[1]; }
-    void print(std::ostream& o) const{
-        o << "NaK";
-    }
+    void print(std::ostream &o) const { o << "NaK"; }
 };
 
 /**
@@ -110,9 +105,7 @@ class EapMd5Challenge : public EapData {
     std::vector<byte> getValue();
 
     std::string getName();
-    void print(std::ostream& o) const{
-        o << "EAP-MD5-Challenge";
-    }
+    void print(std::ostream &o) const { o << "EAP-MD5-Challenge"; }
 };
 
 /**
@@ -137,20 +130,20 @@ class EapPacket {
     }
 
     void setType(byte type) { buffer[0] = type; }
-    byte getType() const{ return buffer[0]; }
+    byte getType() const { return buffer[0]; }
 
     void setIdentifier(byte id) { buffer[1] = id; }
-    byte getIdentifier() const{ return buffer[1]; }
+    byte getIdentifier() const { return buffer[1]; }
 
     void setLength(unsigned short length);
-    short getLength()const;
+    short getLength() const;
 
     void setData(const EapData &data);
 
     std::vector<byte> getBuffer() { return buffer; }
 
     std::unique_ptr<EapData> getData() const;
-    friend std::ostream& operator<<(std::ostream& o, const EapPacket& e);
+    friend std::ostream &operator<<(std::ostream &o, const EapPacket &e);
     std::string typeStr() const;
 };
 }

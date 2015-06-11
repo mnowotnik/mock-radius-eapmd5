@@ -10,7 +10,6 @@
 namespace radius {
 namespace packets {
 
-
 class RadiusPacket;
 
 /**
@@ -30,7 +29,7 @@ class RadiusAVP {
 
   protected:
     std::vector<byte> buffer;
-    virtual bool isValid()=0;
+    virtual bool isValid() = 0;
 
   public:
     RadiusAVP() : buffer(MIN_SIZE) {}
@@ -43,7 +42,7 @@ class RadiusAVP {
     byte getLength() const { return buffer[1]; }
 
     void setValue(const std::vector<byte> &value) {
-        buffer.erase(buffer.begin() + VAL_OFFSET,buffer.end());
+        buffer.erase(buffer.begin() + VAL_OFFSET, buffer.end());
         buffer.insert(buffer.begin() + VAL_OFFSET, value.begin(), value.end());
         setLength(buffer.size());
     }
@@ -54,17 +53,15 @@ class RadiusAVP {
 
     std::vector<byte> getBuffer() const { return buffer; }
 
-    virtual void print(std::ostream& o) const =0;
-    static RadiusAVP * factoryFun(const std::vector<byte> &bytes);
+    virtual void print(std::ostream &o) const = 0;
+    static RadiusAVP *factoryFun(const std::vector<byte> &bytes);
 
-    friend std::ostream& operator<<(std::ostream& o, const RadiusAVP& b)
-    {
-        o<<std::to_string((int)b.buffer.size())+" ";
+    friend std::ostream &operator<<(std::ostream &o, const RadiusAVP &b) {
+        o << std::to_string((int)b.buffer.size()) + " ";
         b.print(o);
         return o;
     }
 };
-
 
 /**
  * type : 79
@@ -87,14 +84,12 @@ class EapMessage : public RadiusAVP {
 
   public:
     EapMessage(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
-    EapMessage() { 
+    EapMessage() {
         buffer.resize(MIN_LENGTH);
-        setType(RadiusAVP::EAP_MESSAGE); 
+        setType(RadiusAVP::EAP_MESSAGE);
         setLength(buffer.size());
     }
-    void print(std::ostream& o) const{
-        o << "Eap-Message";
-    }
+    void print(std::ostream &o) const { o << "Eap-Message"; }
 };
 
 /**
@@ -104,6 +99,7 @@ class EapMessage : public RadiusAVP {
  */
 class MessageAuthenticator : public RadiusAVP {
     const byte LENGTH = 18;
+
   protected:
     bool isValid();
 
@@ -113,9 +109,7 @@ class MessageAuthenticator : public RadiusAVP {
 
     void setMd5(const std::array<byte, 16> &md5);
     std::array<byte, 16> getMd5();
-    void print(std::ostream& o) const{
-        o << "Message Authenticator";
-    }
+    void print(std::ostream &o) const { o << "Message Authenticator"; }
 };
 
 /**
@@ -126,6 +120,7 @@ class MessageAuthenticator : public RadiusAVP {
 class NasIpAddr : public RadiusAVP {
 
     const byte LENGTH = 6;
+
   protected:
     bool isValid();
 
@@ -133,14 +128,12 @@ class NasIpAddr : public RadiusAVP {
     NasIpAddr(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     NasIpAddr() { setType(RadiusAVP::NAS_IP_ADDRESS); }
 
-    void setIp( std::array<byte, 4> ip);
+    void setIp(std::array<byte, 4> ip);
 
     void setIp(const std::string &ipStr);
 
     in_addr getIp();
-    void print(std::ostream& o) const{
-        o << "NAS-IP-Address";
-    }
+    void print(std::ostream &o) const { o << "NAS-IP-Address"; }
 };
 
 /**
@@ -152,6 +145,7 @@ class NasIdentifier : public RadiusAVP {
 
   protected:
     bool isValid();
+
   public:
     NasIdentifier(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     NasIdentifier() { setType(NAS_IDENTIFIER); }
@@ -160,9 +154,7 @@ class NasIdentifier : public RadiusAVP {
     void setIdentifier(const std::string &id);
 
     std::string getIdentifier();
-    void print(std::ostream& o) const{
-        o << "NAS Identifier";
-    }
+    void print(std::ostream &o) const { o << "NAS Identifier"; }
 };
 
 /**
@@ -213,7 +205,8 @@ class RadiusPacket {
     std::vector<std::unique_ptr<RadiusAVP>> getAVPList() const;
 
     bool operator==(const RadiusPacket &rhs) { return rhs.buffer == buffer; }
-    friend std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet);
+    friend std::ostream &operator<<(std::ostream &o,
+                                    const RadiusPacket &packet);
     std::string codeStr() const;
 };
 }

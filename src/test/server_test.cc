@@ -40,6 +40,5 @@ const std::string SECRET = "radius";
 TEST_CASE("Create basic Packet", "[Packet]") {
     Packet pack(RADIUS_BASE_BUF, DEST_ADDR);
 }
-
 }
 }

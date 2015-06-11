@@ -17,8 +17,7 @@ class PacketAccessException : public Exception {
 };
 class InvalidPacket : public Exception {
   public:
-    explicit InvalidPacket(const std::string &message)
-        : Exception(message) {}
+    explicit InvalidPacket(const std::string &message) : Exception(message) {}
 };
 
 unsigned short networkBytes2Short(std::array<byte, 2> bytes);

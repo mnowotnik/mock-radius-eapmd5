@@ -5,6 +5,6 @@
 #include <sstream>
 #include <vector>
 namespace radius {
-void initLogger(const std::string &logPath,const std::string &logName);
+void initLogger(const std::string &logPath, const std::string &logName);
 std::string packet2LogBytes(const packets::RadiusPacket &packet);
 }

@@ -28,7 +28,7 @@ TEST_CASE("Testing MessageAuthenticator checking",
     RadiusPacket packet(RADIUS_BASE_BUF);
     MessageAuthenticator ma;
     ma.setMd5(EMPTY_MD5);
-    packet.addAVP(static_cast<const RadiusAVP&>(ma));
+    packet.addAVP(static_cast<const RadiusAVP &>(ma));
 
     std::array<byte, 16> md5 = md5HmacBin(packet.getBuffer(), secret);
     MessageAuthenticator oma = ma;
@@ -37,24 +37,26 @@ TEST_CASE("Testing MessageAuthenticator checking",
     ma.setMd5(md5);
 
     // successful hmac check
-    packet.replaceAVP(static_cast<const RadiusAVP&>(oma), static_cast<const RadiusAVP&>(ma));
+    packet.replaceAVP(static_cast<const RadiusAVP &>(oma),
+                      static_cast<const RadiusAVP &>(ma));
     REQUIRE(checkMessageAuthenticator(packet, secret));
 
     // unsuccessful hmac check
-    packet.replaceAVP(static_cast<const RadiusAVP&>(ma), static_cast<const RadiusAVP&>(oma));
+    packet.replaceAVP(static_cast<const RadiusAVP &>(ma),
+                      static_cast<const RadiusAVP &>(oma));
     REQUIRE_FALSE(checkMessageAuthenticator(packet, secret));
 }
 
-TEST_CASE("Testing ResponseAuthenticator checking","[checkAuthenticator]"){
+TEST_CASE("Testing ResponseAuthenticator checking", "[checkAuthenticator]") {
 
     RadiusPacket packet(RADIUS_BASE_BUF);
-    std::array<byte,16> authen = packet.getAuthenticator();
-    std::array<byte,16> md5 = md5Bin(packet.getBuffer());
+    std::array<byte, 16> authen = packet.getAuthenticator();
+    std::array<byte, 16> md5 = md5Bin(packet.getBuffer());
     packet.setAuthenticator(md5);
 
-    REQUIRE(checkAuthenticator(packet,authen));
+    REQUIRE(checkAuthenticator(packet, authen));
 
     authen[0] = 0xFF;
-    REQUIRE_FALSE(checkAuthenticator(packet,authen));
+    REQUIRE_FALSE(checkAuthenticator(packet, authen));
 }
 }

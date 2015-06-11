@@ -15,20 +15,18 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
     /* Packet sendPacket; */
     vector<Packet> packetsToSend;
 
-    try{
+    try {
         RadiusPacket radiusPacket(packet.bytes);
-    
-        if(!checkIntegrity(radiusPacket,secret)){
+
+        if (!checkIntegrity(radiusPacket, secret)) {
             return addPendingPackets(packetsToSend);
         }
-    }catch(const packets::InvalidPacket& e){
+    } catch (const packets::InvalidPacket &e) {
         return addPendingPackets(packetsToSend);
     }
-
-
-
 }
-const vector<Packet> RadiusServer::addPendingPackets(vector<Packet>packetsToSend){
+const vector<Packet>
+RadiusServer::addPendingPackets(vector<Packet> packetsToSend) {
     std::transform(pendingPackets.begin(), pendingPackets.end(),
                    std::back_inserter(packetsToSend),
                    [](const PendingPacket &p) { return p.packet; });

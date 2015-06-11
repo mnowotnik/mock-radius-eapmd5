@@ -7,7 +7,7 @@ Functions for handling interactive mode for client;
 #include <string>
 #include <windows.h>
 using namespace std;
-namespace radius{
+namespace radius {
 string getPassword(const string &prompt = "Enter password> ") {
     string result;
 
@@ -42,11 +42,10 @@ string getPassword(const string &prompt = "Enter password> ") {
     return result;
 }
 
-std::string getUsername()
-{
-	std::string user;
-	puts("Enter Username");
-	cin>>user;
-	return user;
+std::string getUsername() {
+    std::string user;
+    puts("Enter Username");
+    cin >> user;
+    return user;
 }
 }

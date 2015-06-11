@@ -23,7 +23,7 @@ std::array<byte, 16> md5HmacBin(const std::vector<byte> &data,
     int bt;
     for (int i = 0; i < hmac_str.length(); i += 2) {
         std::string hex_str(hmac_str, i, 2);
-        std::stringstream(hex_str) >> std::hex >>bt;
+        std::stringstream(hex_str) >> std::hex >> bt;
         b = bt;
         hmac_bytes.push_back(b);
     }

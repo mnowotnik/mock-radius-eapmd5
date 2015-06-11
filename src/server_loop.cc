@@ -9,9 +9,9 @@ const int BUFLEN = 1000;
 int PORT = 32000;
 SOCKET s;
 static bool isRunning;
-void startServer(const char *addr,const int port=0) {
- PORT=port;
- //printf("port:%d\n",PORT);
+void startServer(const char *addr, const int port = 0) {
+    PORT = port;
+    // printf("port:%d\n",PORT);
     if (isRunning) {
         printf("Server is running");
         return;
@@ -27,24 +27,21 @@ void startServer(const char *addr,const int port=0) {
 
         exit(EXIT_FAILURE);
     }
-     //printf("Initialised.\n");
+    // printf("Initialised.\n");
 
     // Create a socket
     if ((s = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) {
         printf("Could not create socket : %d", WSAGetLastError());
     }
-    //printf("Socket created.\n");
+    // printf("Socket created.\n");
 
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-    
-    if ((std::string)addr=="inany")
-    {
+
+    if ((std::string)addr == "inany") {
         printf("no_addr");
-        server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
-    }
-    else
-    {
+        server.sin_addr.s_addr = INADDR_ANY; // slucha na wszystkich
+    } else {
         server.sin_addr.S_un.S_addr = inet_addr(addr);
     }
     server.sin_port = htons(PORT);
@@ -55,7 +52,7 @@ void startServer(const char *addr,const int port=0) {
         exit(EXIT_FAILURE);
     }
     isRunning = true;
-    //puts("Bind done");
+    // puts("Bind done");
 }
 
 void stopServer() {
@@ -96,7 +93,7 @@ void sendData(packets::Packet sen_pack) {
     sockaddr_in dest_addr = sen_pack.addr;
     slen = sizeof(dest_addr);
     vector<char> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
-    recv_len = BUFLEN * sizeof(byte); 
+    recv_len = BUFLEN * sizeof(byte);
     // now reply the client with the same data
     if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr *)&dest_addr, slen) ==
         SOCKET_ERROR) {
@@ -105,4 +102,3 @@ void sendData(packets::Packet sen_pack) {
     }
 }
 }
-

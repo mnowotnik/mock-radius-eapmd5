@@ -49,8 +49,8 @@ class RadiusServer {
     const std::string secret;
 
     void updatePending();
-    const std::vector<Packet> addPendingPackets(std::vector<Packet>packetsTosend);
-
+    const std::vector<Packet>
+    addPendingPackets(std::vector<Packet> packetsTosend);
 
   public:
     /**
