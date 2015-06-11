@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "tclap/CmdLine.h"
 #include <iostream>
-#include "packets/Packet.h"
+#include "packets/packet.h"
 namespace radius{
 
 void startClient(const char *addr,const int port);

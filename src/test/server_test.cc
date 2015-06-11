@@ -4,7 +4,7 @@
 #include <map>
 #include "server.h"
 #include "radius_server.h"
-#include "packets/Packet.h"
+#include "packets/packet.h"
 #include "packets/common.h"
 namespace radius {
 namespace packets {
@@ -41,11 +41,5 @@ TEST_CASE("Create basic Packet", "[Packet]") {
     Packet pack(RADIUS_BASE_BUF, DEST_ADDR);
 }
 
-TEST_CASE("What you send is what you get", "[RadiusServer]") {
-    Packet rec_pack(RADIUS_BASE_BUF, DEST_ADDR);
-    RadiusServer testServer(USER_MAP, SECRET);
-    testServer.recvPacket(pack);
-    vector<Packet> sen_pack = sendPacket();
-}
 }
 }

@@ -1,4 +1,5 @@
 #include "logging.h"
+
 using radius::packets::RadiusPacket;
 
 namespace radius {
@@ -45,10 +46,10 @@ std::string packet2Log(const RadiusPacket &packet) {
     log += "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
     log += "2 Length = " + std::to_string(packet.getLength()) + '\n'+'\n';
     log += "16 Request Authenticator\n";
-    /*        std::string(packet.getAuthenticator().begin(), */
-    /*                    packet.getAuthenticator().end()) + */
-           '\n';
     log += "Attributes: \n";
+    for(const auto&avpPtr : packet.getAVPList()){
+        log += avpPtr->getType() + '\n';
+    }
 	//log +=	"8  User-Name (1) =" + packet.getValue();
 
     return log;

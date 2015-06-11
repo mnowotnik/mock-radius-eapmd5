@@ -1,7 +1,7 @@
 #include <iostream>
 #include "server_loop.h"
 #include <vector>
-#include "packets/Packet.h"
+#include "packets/packet.h"
 using std::vector;
 
 namespace radius {
