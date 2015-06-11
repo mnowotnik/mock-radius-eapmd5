@@ -4,4 +4,5 @@
 namespace radius {
 std::string packet2Log(const packets::RadiusPacket &packet);
 std::string packet2LogBytes(const packets::RadiusPacket &packet);
+std::string byte2hex(const byte &byte);
 }

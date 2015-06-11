@@ -10,6 +10,7 @@ using namespace std;
         const std::vector<byte> temp = 
         {0xe0,0xbd,0x18,0xdb,0x4c,0xc2,0xf8,0x5c,
             0xed,0xef,0x65,0x4f,0xcc,0xc4,0xa4,0xd8};
+std::string hashString(std::string input,std::string hash);
 int main(int argc, char **argv) {
     try {
 
@@ -44,7 +45,7 @@ int main(int argc, char **argv) {
         ValueArg<string> ipArg("a", "address", "Binded IP address", false, "127.0.0.1","IP");
         cmd.add(ipArg);
 
-		ValueArg<string> hashArg("", "hash", "Type of hashing function", false, "","string");
+		ValueArg<string> hashArg("", "hash", "Type of hashing function (crc32 md5 sha1 sha256 sha3)", false, "","string");
 		cmd.add(hashArg);
 		
         cmd.parse(argc, argv);
@@ -53,7 +54,8 @@ int main(int argc, char **argv) {
         string ip = ipArg.getValue();
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
-
+		string hash = hashArg.getValue();
+		
         string login = loginArg.getValue();
         string pas = passArg.getValue();
         bool inter = interSwitch.getValue();
@@ -68,12 +70,20 @@ int main(int argc, char **argv) {
 			login=radius::getUsername();
 			pas=radius::getPassword("Enter password:\n");
 		}
+		pas=hashString(pas,hash);
+		
 		
 		radius::packets::Packet newPack(temp,server_addr);
 		//printf("send data:\n");
 		//printf("%d\n",newPack.bytes[0]);
         radius::startClient(ip.c_str(),port);
+		//1.access-request
 		radius::sendPack(newPack);
+		//2.otrzymuj odpowiedz od Radius server
+		newPack = radius::receivePack();
+		//3.access-request z hashem
+		radius::sendPack(newPack);
+		//4.success or failure 
 		newPack = radius::receivePack();
 		printf("recieve data:\n");
 		printf("%d",newPack.bytes[0]);
