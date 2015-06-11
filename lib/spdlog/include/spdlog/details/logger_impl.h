@@ -39,8 +39,6 @@ inline spdlog::logger::logger(const std::string& logger_name, const It& begin, c
     _formatter(std::make_shared<pattern_formatter>("%+"))
 {
 
-    // no support under vs2013 for member initialization for std::atomic
-    _level = level::info;
 }
 
 // ctor with sinks as init list
@@ -280,19 +278,30 @@ inline const std::string& spdlog::logger::name() const
     return _name;
 }
 
-inline void spdlog::logger::set_level(spdlog::level::level_enum log_level)
+inline void spdlog::logger::set_sinks_level(spdlog::level::level_enum log_level)
 {
-    _level.store(log_level);
+    for (auto& sink:_sinks)
+        sink->set_level(log_level);
 }
 
-inline spdlog::level::level_enum spdlog::logger::level() const
-{
-    return static_cast<spdlog::level::level_enum>(_level.load(std::memory_order_relaxed));
-}
 
 inline bool spdlog::logger::should_log(spdlog::level::level_enum msg_level) const
 {
-    return msg_level >= _level.load(std::memory_order_relaxed);
+    for (auto &sink:_sinks)
+        if (sink->get_level() <= msg_level)
+            return true;
+    return false;
+}
+
+
+inline std::vector<spdlog::sink_ptr>& spdlog::logger::sinks()
+{
+    return _sinks;
+}
+
+inline const std::vector<spdlog::sink_ptr>& spdlog::logger::sinks() const
+{
+    return _sinks;
 }
 
 //
@@ -314,7 +323,5 @@ inline void spdlog::logger::_set_formatter(formatter_ptr msg_formatter)
     _formatter = msg_formatter;
 }
 
-inline void spdlog::logger::flush() {
-    for (auto& sink : _sinks)
-        sink->flush();
-}
+
+

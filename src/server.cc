@@ -1,6 +1,9 @@
 #include <iostream>
 #include "server_loop.h"
 #include "tclap/CmdLine.h"
+#include "logging.h"
+
+const std::string LOGGER_NAME = "server";
 
 int main(int argc, char **argv) {
     using namespace TCLAP;
@@ -37,6 +40,10 @@ int main(int argc, char **argv) {
         string ip = ipArg.getValue();
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
+        radius::initLogger(logpath,LOGGER_NAME);
+
+        auto logger = spdlog::get(LOGGER_NAME);
+
         string dbpath = dbArg.getValue();
 		
 		radius::startServer(ip.c_str(),port);

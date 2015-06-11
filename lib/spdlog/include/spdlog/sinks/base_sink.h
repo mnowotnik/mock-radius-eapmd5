@@ -46,7 +46,7 @@ template<class Mutex>
 class base_sink:public sink
 {
 public:
-    base_sink():_mutex() {}
+    base_sink():_level(-1) {}
     virtual ~base_sink() = default;
 
     base_sink(const base_sink&) = delete;
@@ -54,13 +54,31 @@ public:
 
     void log(const details::log_msg& msg) override
     {
-        std::lock_guard<Mutex> lock(_mutex);
-        _sink_it(msg);
+
+        if (_level.load(std::memory_order_relaxed) > msg.level)
+            return;
+
+        {
+            std::lock_guard<Mutex> lock(_mutex);
+            _sink_it(msg);
+        }
     }
+
+    void set_level(level::level_enum log_level) override
+    {
+        _level.store(log_level);
+    }
+
+    level::level_enum get_level() override
+    {
+        return static_cast<level::level_enum>(_level.load(std::memory_order_relaxed));
+    }
+
 
 protected:
     virtual void _sink_it(const details::log_msg& msg) = 0;
     Mutex _mutex;
+    std::atomic<int> _level;
 };
 }
 }

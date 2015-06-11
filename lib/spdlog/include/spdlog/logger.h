@@ -56,8 +56,7 @@ public:
     logger(const logger&) = delete;
     logger& operator=(const logger&) = delete;
 
-    void set_level(level::level_enum);
-    level::level_enum level() const;
+    void set_sinks_level(level::level_enum);
 
     const std::string& name() const;
     bool should_log(level::level_enum) const;
@@ -107,7 +106,13 @@ public:
     void set_pattern(const std::string&);
     void set_formatter(formatter_ptr);
 
-    void flush();
+    //Return ref to sinks
+    //You can add/remove sinks but be aware that no thread safety guarateed here
+    std::vector<sink_ptr>& sinks() ;
+
+    //Return const ref to sinks
+    const std::vector<sink_ptr>& sinks() const;
+
 
 protected:
     virtual void _log_msg(details::log_msg&);
@@ -124,7 +129,6 @@ protected:
     std::string _name;
     std::vector<sink_ptr> _sinks;
     formatter_ptr _formatter;
-    std::atomic_int _level;
 
 };
 }

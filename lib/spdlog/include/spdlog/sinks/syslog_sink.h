@@ -30,9 +30,10 @@
 #include <string>
 #include <syslog.h>
 
-#include "./sink.h"
+#include "./base_sink.h"
 #include "../common.h"
 #include "../details/log_msg.h"
+#include "../details/null_mutex.h"
 
 
 namespace spdlog
@@ -44,7 +45,7 @@ namespace sinks
  *
  * Locking is not needed, as `syslog()` itself is thread-safe.
  */
-class syslog_sink : public sink
+class syslog_sink : public base_sink<details::null_mutex>
 {
 public:
     //
@@ -70,27 +71,22 @@ public:
         ::closelog();
     }
 
-    syslog_sink(const syslog_sink&) = delete;
-    syslog_sink& operator=(const syslog_sink&) = delete;
 
-    void log(const details::log_msg &msg) override
+
+protected:
+    virtual void _sink_it(const details::log_msg& msg) override
     {
         ::syslog(syslog_prio_from_level(msg), "%s", msg.formatted.str().c_str());
     }
 
-    void flush() override
-    {
-    }
-
-
 private:
     std::array<int, 10> _priorities;
-    //must store the ident because the man says openlog might use the pointer as is and not a string copy
+//must store the ident because the man says openlog might use the pointer as is and not a string copy
     const std::string _ident;
 
-    //
-    // Simply maps spdlog's log level to syslog priority level.
-    //
+//
+// Simply maps spdlog's log level to syslog priority level.
+//
     int syslog_prio_from_level(const details::log_msg &msg) const
     {
         return _priorities[static_cast<int>(msg.level)];
