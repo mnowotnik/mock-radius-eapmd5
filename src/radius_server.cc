@@ -3,6 +3,7 @@ using std::map;
 using std::string;
 using std::vector;
 using radius::packets::Packet;
+using radius::packets::RadiusPacket;
 
 namespace radius {
 
@@ -10,14 +11,28 @@ RadiusServer::RadiusServer(const map<string, string> &userPassMap,
                            const string &secret, const Logger &logger)
     : userPassMap(userPassMap), secret(secret), logger(logger) {}
 
-vector<const Packet> RadiusServer::recvPacket(const Packet &packet) {
-    vector<const Packet> packetsToSend;
+const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
+    /* Packet sendPacket; */
+    vector<Packet> packetsToSend;
 
+    try{
+        RadiusPacket radiusPacket(packet.bytes);
+    
+        if(!checkIntegrity(radiusPacket,secret)){
+            return addPendingPackets(packetsToSend);
+        }
+    }catch(const packets::InvalidPacket& e){
+        return addPendingPackets(packetsToSend);
+    }
+
+
+
+}
+const vector<Packet> RadiusServer::addPendingPackets(vector<Packet>packetsToSend){
     std::transform(pendingPackets.begin(), pendingPackets.end(),
                    std::back_inserter(packetsToSend),
                    [](const PendingPacket &p) { return p.packet; });
-
-    return packetsToSend;
+    return packetsTosend;
 }
 
 void RadiusServer::updatePending() {

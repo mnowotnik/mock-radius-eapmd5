@@ -2,8 +2,10 @@
 #include <string>
 #include <map>
 #include "packets/packet.h"
+#include "packets/radius_packet.h"
 #include "typedefs.h"
 #include "spdlog/spdlog.h"
+#include "auth_common.h"
 
 namespace radius {
 class RadiusServer {
@@ -47,6 +49,8 @@ class RadiusServer {
     const std::string secret;
 
     void updatePending();
+    const std::vector<Packet> addPendingPackets(std::vector<Packet>packetsTosend);
+
 
   public:
     /**
@@ -56,6 +60,6 @@ class RadiusServer {
     RadiusServer(const UserPassMap &userPassMap, const std::string &secret,
                  const Logger &logger);
 
-    std::vector<const Packet> recvPacket(const Packet &packet);
+    const std::vector<Packet> recvPacket(const Packet &packet);
 };
 }
