@@ -38,7 +38,6 @@ class EapData {
     {
         o<<std::to_string((int)e.buffer.size())+" ";
         e.print(o);
-        o<<'\n';
         return o;
     }
     static EapData * factoryFun(const std::vector<byte> &bytes);

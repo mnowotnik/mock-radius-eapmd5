@@ -42,6 +42,7 @@ TEST_CASE("Print RadiusPacket"){
 }
 TEST_CASE("Print RadiusPacket with AVPs"){
     RadiusPacket packet(RADIUS_BASE_BUF);
+    packet.setCode(RadiusPacket::ACCESS_ACCEPT);
     MessageAuthenticator ma;
     EapMessage em;
     packet.addAVP(static_cast<const RadiusAVP&>(ma));
@@ -49,7 +50,7 @@ TEST_CASE("Print RadiusPacket with AVPs"){
     std::ostringstream stream;
     stream << packet;
     REQUIRE(stream.str() == 
-            "1 Code = 1(Access-Request)\n"
+            "1 Code = 2(Access-Accept)\n"
             "1 ID = 1\n"
             "2 Length = 42\n"
             "16 Authenticator\n"
@@ -60,10 +61,34 @@ TEST_CASE("Print RadiusPacket with AVPs"){
 
 TEST_CASE("Print EapPacket"){
     EapPacket packet;
+    std::string foo("foo");
 
+    EapIdentity eapId;
+    eapId.setIdentity(foo);
 
+    packet.setIdentifier(1);
+    packet.setType(EapPacket::SUCCESS);
 
+    std::ostringstream stream;
+    stream << packet;
 
+    REQUIRE(stream.str() == "1 Type = 3(Success)\n"
+           "1 ID = 1\n"
+           "2 Length = 4\n"
+           "Type-data:\n"
+           "    None\n");
+    packet.setType(EapPacket::REQUEST);
+    packet.setData(eapId);
+
+    stream.str("");
+    stream.clear();
+
+    stream <<packet;
+    REQUIRE(stream.str() == "1 Type = 1(Request)\n"
+           "1 ID = 1\n"
+           "2 Length = 8\n"
+           "Type-data:\n"
+           "    4 Identity: foo\n");
 }
 
 }
