@@ -2,6 +2,7 @@
 #include "packets/packet.h"
 #include "packets/radius_packet.h"
 #include "packets/eap_packet.h"
+#include "packets/utils.h"
 #include "catch.hpp"
 #include <array>
 #include <memory>
@@ -233,6 +234,40 @@ TEST_CASE("EapPacket integrity", "[EapPacket]") {
     REQUIRE(desPacket.getLength() == 8);
     REQUIRE(desPacket.getBuffer().size() == 8);
     REQUIRE(buffer == desPacket.getBuffer());
+}
+
+TEST_CASE("EapPacket extraction integrity","[extractEapPacket]"){
+    std::string longString(200,'-');
+
+    EapPacket eapPacket;
+    EapIdentity eapId;
+    eapId.setIdentity(longString);
+    eapPacket.setData(eapId);
+    eapPacket.setIdentifier(1);
+    eapPacket.setType(EapPacket::REQUEST);
+
+    REQUIRE(eapPacket.getLength() == longString.length()+5);
+
+    std::vector<byte> bytes = eapPacket.getBuffer();
+
+    std::vector<byte> bytes1(bytes.begin(),bytes.begin()+100);
+    std::vector<byte> bytes2(bytes.begin()+100,bytes.end());
+    REQUIRE((bytes1.size()+bytes2.size()) == bytes.size());
+
+    EapMessage msg1;
+    msg1.setValue(bytes1);
+    EapMessage msg2;
+    msg2.setValue(bytes2);
+
+    RadiusPacket radiusPacket(RADIUS_BASE_BUF);
+    REQUIRE_THROWS(extractEapPacket(radiusPacket));
+    radiusPacket.addAVP(static_cast<const RadiusAVP&>(msg1));
+    REQUIRE(radiusPacket.getBuffer().size() == 122);
+    radiusPacket.addAVP(static_cast<const RadiusAVP&>(msg2));
+    REQUIRE(radiusPacket.getBuffer().size() == 229);
+    REQUIRE(radiusPacket.getAVPList(.size() == 2);
+    EapPacket refPacket = extractEapPacket(radiusPacket);
+    REQUIRE(refPacket.getBuffer() == eapPacket.getBuffer());
 }
 
 TEST_CASE("Check EapData types", "[EapData]") {

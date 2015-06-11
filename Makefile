@@ -16,7 +16,8 @@ CSV_PARSER=$(ROOT)\fast-cpp-csv-parser\include
 
 ### Object dependencies ###
 COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC)\logging.obj \
-			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj
+			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj \
+			$(SRC)\packets\utils.obj
 
 SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_loop.obj $(COMMON_OBJS)
 

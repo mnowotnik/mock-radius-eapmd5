@@ -7,12 +7,36 @@ using std::array;
 namespace radius {
 namespace packets {
 
+EapData * EapData::factoryFun(const std::vector<byte> &bytes){
+
+    if(bytes.size()<MIN_LENGTH){
+        throw InvalidPacket("EapData::factoryFun. Invalid input buffer. Too small.");
+    }
+    byte type = bytes[0];
+
+    EapData *ed;
+    switch(type){
+        case IDENTITY:
+            ed = new EapIdentity(bytes);
+            break;
+        case MD5_CHALLENGE:
+            ed = new EapMd5Challenge(bytes);
+            break;
+        case NAK:
+            ed = new EapNak(bytes);
+            break;
+        default:
+            throw InvalidPacket("EapData::factoryFun. Unsupported type : "+(int)type);
+    }
+    return ed;
+}
+
 void EapIdentity::setIdentity(const string &identity) {
     buffer.resize(buffer.size() + identity.size());
     copy(identity.begin(), identity.end(), buffer.begin() + DATA_OFFSET);
 }
 
-string EapIdentity::getIdentity() {
+std::string EapIdentity::getIdentity() const{
     return string((const char *)&(buffer[DATA_OFFSET]),
                   buffer.size() - DATA_OFFSET);
 }
@@ -47,7 +71,7 @@ void EapPacket::setLength(unsigned short length) {
     buffer[3] = bytes[1];
 }
 
-short EapPacket::getLength() {
+short EapPacket::getLength() const{
     unsigned short l =
         networkBytes2Short(array<byte, 2>({{buffer[2], buffer[3]}}));
     return l;
@@ -59,7 +83,7 @@ void EapPacket::setData(const EapData &data) {
     setLength(buffer.size());
 }
 
-EapData EapPacket::getData() {
+std::unique_ptr<EapData> EapPacket::getData() const{
     byte type = getType();
     if (type == SUCCESS || type == FAILURE) {
         throw PacketAccessException(
@@ -67,7 +91,40 @@ EapData EapPacket::getData() {
     }
 
     vector<byte> tdBytes(buffer.begin() + DATA_OFFSET, buffer.end());
-    return EapData(tdBytes);
+    return std::unique_ptr<EapData>(EapData::factoryFun(tdBytes));
+}
+
+std::ostream& operator<<(std::ostream& o, const EapPacket& packet){
+
+    const std::string ind1(4,' ');
+    o << "1 Type = " + std::to_string(packet.getType()) + '('+packet.typeStr()+')'+'\n';
+    o << "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
+    o << "2 Length = " + std::to_string(packet.getLength()) + '\n';
+    o << "Type-data:\n";
+    o << ind1;
+
+    if(packet.getType() == EapPacket::SUCCESS || packet.getType() == EapPacket::FAILURE){
+        o << "None\n";
+    } else{
+        o << *(packet.getData());
+        o << '\n';
+    }
+    return o;
+}
+std::string EapPacket::typeStr() const{
+    int type = getType();
+    switch (type)
+    {
+        case REQUEST:
+            return "Request";
+        case RESPONSE:
+            return "Response";
+        case 3:
+            return "Success";
+        default:
+            return "Failure";
+
+    }
 }
 }
 }

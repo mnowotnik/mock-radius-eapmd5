@@ -9,30 +9,6 @@ namespace packets {
 
     namespace{
         typedef std::unique_ptr<RadiusAVP> RadiusAVPPtr;
-        std::string code2string(int code){
-            switch (code)
-            {
-                case 1:
-                    return "Access-Request";
-                case 2:
-                    return "Access-Accept";
-                case 3:
-                    return "Access-Reject";
-                case 4:
-                    return "Accounting-Request";
-                case 5:
-                    return "Accounting-Response";
-                case 11:
-                    return "Access-Challenge";
-                case 12:
-                    return "Status-Server (experimental)";
-                case 13:
-                    return "Status-Client (experimental";
-                default:
-                    return "reserved";
-
-            }
-        }
     }
 
 MessageAuthenticator::MessageAuthenticator() {
@@ -63,6 +39,7 @@ void NasIpAddr::setIp(const string &ipStr) {
     memcpy((void *)&ip[0], &addr, sizeof(in_addr));
     setIp(ip);
 }
+
 in_addr NasIpAddr::getIp() {
     byte *addrPtr = &buffer[RadiusAVP::VAL_OFFSET];
     struct in_addr addr;
@@ -92,15 +69,18 @@ bool MessageAuthenticator::isValid(){
     }
     return true;
 }
+
 bool EapMessage::isValid(){
     if(buffer.size()<MIN_LENGTH){
         return false;
     }
     return true;
 }
+
 bool NasIdentifier::isValid(){
     return true;
 }
+
 bool NasIpAddr::isValid(){
     if(buffer.size()!=LENGTH){
         return false;
@@ -236,7 +216,7 @@ bool RadiusPacket::isValid(){
 
 RadiusAVP * RadiusAVP::factoryFun(const std::vector<byte> &bytes){
     if(bytes.size()<MIN_SIZE){
-        throw InvalidPacket("Invalid input buffer. Too small.");
+        throw InvalidPacket("RadiusAVP::factoryFun. Invalid input buffer. Too small.");
     }
     byte type = bytes[0];
 
@@ -262,7 +242,7 @@ RadiusAVP * RadiusAVP::factoryFun(const std::vector<byte> &bytes){
 
 std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet){
     std::string ind1(4,' ');
-    o << "1 Code = " + std::to_string(packet.getCode()) + '('+code2string(packet.getCode())+')'+'\n';
+    o << "1 Code = " + std::to_string(packet.getCode()) + '('+packet.codeStr()+')'+'\n';
     o << "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
     o << "2 Length = " + std::to_string(packet.getLength()) + '\n';
     o << "16 Authenticator\n";
@@ -279,5 +259,31 @@ std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet){
     
     return o;
 }
+std::string RadiusPacket::codeStr() const{
+    int code = getCode();
+    switch (code)
+    {
+        case ACCESS_REQUEST:
+            return "Access-Request";
+        case ACCESS_ACCEPT:
+            return "Access-Accept";
+        case ACCESS_REJECT:
+            return "Access-Reject";
+        case 4:
+            return "Accounting-Request";
+        case 5:
+            return "Accounting-Response";
+        case ACCESS_CHALLENGE:
+            return "Access-Challenge";
+        case 12:
+            return "Status-Server (experimental)";
+        case 13:
+            return "Status-Client (experimental)";
+        default:
+            return "reserved";
+
+    }
+}
+
 }
 }

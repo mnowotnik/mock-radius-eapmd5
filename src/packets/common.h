@@ -4,6 +4,8 @@
 #include <WS2tcpip.h>
 #include <array>
 #include "exception.h"
+#include <memory>
+#include <vector>
 
 namespace radius {
 namespace packets {

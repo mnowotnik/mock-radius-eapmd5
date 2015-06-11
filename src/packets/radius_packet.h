@@ -44,6 +44,7 @@ class RadiusAVP {
 
     void setValue(const std::vector<byte> &value) {
         buffer.insert(buffer.begin() + VAL_OFFSET, value.begin(), value.end());
+        setLength(buffer.size());
     }
     std::vector<byte> getValue() const {
         std::vector<byte> value(buffer.begin() + VAL_OFFSET, buffer.end());
@@ -209,6 +210,7 @@ class RadiusPacket {
 
     bool operator==(const RadiusPacket &rhs) { return rhs.buffer == buffer; }
     friend std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet);
+    std::string codeStr() const;
 };
 }
 }
