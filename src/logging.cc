@@ -5,21 +5,15 @@ namespace radius {
 std::string packet2Log(const RadiusPacket &packet) {
     std::string log = "";
 
-    log += "1 Code = " + std::to_string(packet.getCode()) + '\n';
+    log += "1 Code = " + std::to_string(packet.getCode()) + '('+code2string(packet.getCode())+')'+'\n';
     log += "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
-    log += "2 Length = " + std::to_string(packet.getLength()) + '\n';
-    /* log += "16 Request Authenticator = " + */
+    log += "2 Length = " + std::to_string(packet.getLength()) + '\n'+'\n';
+    log += "16 Request Authenticator\n";
     /*        std::string(packet.getAuthenticator().begin(), */
     /*                    packet.getAuthenticator().end()) + */
            '\n';
     log += "Attributes: \n";
-    for (const auto &attribute : packet.getAVPList()) {
-        log += std::to_string(attribute->getLength()) + " ";
-        log += std::to_string(attribute->getType()) + " ";
-        log += '\n';
-        /* log += "= " + std::string(attribute->getValue().begin(), */
-        /*                           attribute->getValue().end()) + */
-    }
+	//log +=	"8  User-Name (1) =" + packet.getValue();
 
     return log;
 }
@@ -36,4 +30,29 @@ std::string byte2hex(const byte &byte){
 	std::string out =buf;
 	return out;
 }
+std::string code2string(int code){
+	switch (code)
+	{
+		case 1:
+		return "Access-Request";
+		case 2:
+		return "Access-Accept";
+		case 3:
+		return "Access-Reject";
+		case 4:
+		return "Accounting-Request";
+		case 5:
+		return "Accounting-Response";
+		case 11:
+		return "Access-Challenge";
+		case 12:
+		return "Status-Server (experimental)";
+		case 13:
+		return "Status-Client (experimental";
+		default:
+		return "reserved";
+		
+	}
+}
+std::string 
 }
