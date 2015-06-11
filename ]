@@ -14,7 +14,6 @@ namespace packets {
 MessageAuthenticator::MessageAuthenticator() {
     this->buffer.resize(LENGTH);
     setType(RadiusAVP::MESSAGE_AUTHENTICATOR);
-    setLength(buffer.size());
 }
 void MessageAuthenticator::setMd5(const array<byte, 16> &md5) {
     copy(md5.begin(), md5.end(), buffer.begin() + VAL_OFFSET);
@@ -247,7 +246,7 @@ std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet){
     o << "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
     o << "2 Length = " + std::to_string(packet.getLength()) + '\n';
     o << "16 Authenticator\n";
-    std::vector<std::unique_ptr<RadiusAVP>> avps = packet.getAVPList();
+    std::vector<std::unique_ptr<RadiusAVP>> avps = getAVPList();
     o << "Attributes:\n";
     if (avps.size()==0){
         o << ind1+"None\n";

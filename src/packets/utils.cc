@@ -17,8 +17,6 @@ EapPacket extractEapPacket(const RadiusPacket& radiusPacket){
         throw InvalidPacket("extractEapPacket. The input packet does not contain"
                 " any EapMessage AVP");
     }
-
-    std::cout<<"size"<<buffer.size()<<std::endl;
     return EapPacket(buffer);
 }
 }}

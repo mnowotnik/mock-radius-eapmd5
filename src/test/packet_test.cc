@@ -265,7 +265,7 @@ TEST_CASE("EapPacket extraction integrity","[extractEapPacket]"){
     REQUIRE(radiusPacket.getBuffer().size() == 122);
     radiusPacket.addAVP(static_cast<const RadiusAVP&>(msg2));
     REQUIRE(radiusPacket.getBuffer().size() == 229);
-    REQUIRE(radiusPacket.getAVPList(.size() == 2);
+    REQUIRE(radiusPacket.getAVPList().size() == 2);
     EapPacket refPacket = extractEapPacket(radiusPacket);
     REQUIRE(refPacket.getBuffer() == eapPacket.getBuffer());
 }

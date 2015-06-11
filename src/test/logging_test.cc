@@ -28,7 +28,7 @@ TEST_CASE("Print bytes of RadiusPacket", "[packet2LogBytes]") {
     REQUIRE(logStr == "01 01 00 14 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F ");
 }
 
-TEST_CASE("Print RadiusPacket", "[packet2Log]") {
+TEST_CASE("Print RadiusPacket"){
     RadiusPacket packet(RADIUS_BASE_BUF);
     std::ostringstream stream;
     stream << packet;
@@ -39,6 +39,31 @@ TEST_CASE("Print RadiusPacket", "[packet2Log]") {
             "16 Authenticator\n"
             "Attributes:\n"
             "    None\n");
+}
+TEST_CASE("Print RadiusPacket with AVPs"){
+    RadiusPacket packet(RADIUS_BASE_BUF);
+    MessageAuthenticator ma;
+    EapMessage em;
+    packet.addAVP(static_cast<const RadiusAVP&>(ma));
+    packet.addAVP(static_cast<const RadiusAVP&>(em));
+    std::ostringstream stream;
+    stream << packet;
+    REQUIRE(stream.str() == 
+            "1 Code = 1(Access-Request)\n"
+            "1 ID = 1\n"
+            "2 Length = 42\n"
+            "16 Authenticator\n"
+            "Attributes:\n"
+            "    18 Message Authenticator\n"
+            "    4 Eap-Message\n");
+}
+
+TEST_CASE("Print EapPacket"){
+    EapPacket packet;
+
+
+
+
 }
 
 }

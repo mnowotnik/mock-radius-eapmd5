@@ -43,6 +43,7 @@ class RadiusAVP {
     byte getLength() const { return buffer[1]; }
 
     void setValue(const std::vector<byte> &value) {
+        buffer.erase(buffer.begin() + VAL_OFFSET,buffer.end());
         buffer.insert(buffer.begin() + VAL_OFFSET, value.begin(), value.end());
         setLength(buffer.size());
     }
@@ -60,7 +61,6 @@ class RadiusAVP {
     {
         o<<std::to_string((int)b.buffer.size())+" ";
         b.print(o);
-        o<<'\n';
         return o;
     }
 };
@@ -69,7 +69,7 @@ class RadiusAVP {
 /**
  * type : 79
  * length : varying
- * value -> (concatenated EapPacket)
+ * value -> (part of EapPacket or whole) EapPacket:
  *      0 : type
  *      1 : identifier
  *      2-3 : length
@@ -87,7 +87,11 @@ class EapMessage : public RadiusAVP {
 
   public:
     EapMessage(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
-    EapMessage() { setType(RadiusAVP::EAP_MESSAGE); }
+    EapMessage() { 
+        buffer.resize(MIN_LENGTH);
+        setType(RadiusAVP::EAP_MESSAGE); 
+        setLength(buffer.size());
+    }
     void print(std::ostream& o) const{
         o << "Eap-Message";
     }
