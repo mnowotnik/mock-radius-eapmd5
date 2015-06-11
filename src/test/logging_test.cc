@@ -1,7 +1,9 @@
 #include "packets/radius_packet.h"
 #include "packets/eap_packet.h"
 #include "logging.h"
+#include <sstream>
 #include <string>
+#include <iostream>
 #include "typedefs.h"
 #include "catch.hpp"
 
@@ -28,9 +30,15 @@ TEST_CASE("Print bytes of RadiusPacket", "[packet2LogBytes]") {
 
 TEST_CASE("Print RadiusPacket", "[packet2Log]") {
     RadiusPacket packet(RADIUS_BASE_BUF);
-    std::string logStr = packet2Log(packet);
-
-    REQUIRE(logStr == "");
+    std::ostringstream stream;
+    stream << packet;
+    REQUIRE(stream.str() == 
+            "1 Code = 1(Access-Request)\n"
+            "1 ID = 1\n"
+            "2 Length = 20\n"
+            "16 Authenticator\n"
+            "Attributes:\n"
+            "    None\n");
 }
 
 }

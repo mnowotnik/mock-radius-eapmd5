@@ -5,6 +5,7 @@
 #include <array>
 #include <string>
 #include <memory>
+#include <iostream>
 
 namespace radius {
 namespace packets {
@@ -51,8 +52,18 @@ class RadiusAVP {
 
     std::vector<byte> getBuffer() const { return buffer; }
 
+    virtual void print(std::ostream& o) const =0;
     static RadiusAVP * factoryFun(const std::vector<byte> &bytes);
+
+    friend std::ostream& operator<<(std::ostream& o, const RadiusAVP& b)
+    {
+        o<<std::to_string((int)b.buffer.size())+" ";
+        b.print(o);
+        o<<'\n';
+        return o;
+    }
 };
+
 
 /**
  * type : 79
@@ -76,6 +87,9 @@ class EapMessage : public RadiusAVP {
   public:
     EapMessage(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
     EapMessage() { setType(RadiusAVP::EAP_MESSAGE); }
+    void print(std::ostream& o) const{
+        o << "Eap-Message";
+    }
 };
 
 /**
@@ -94,6 +108,9 @@ class MessageAuthenticator : public RadiusAVP {
 
     void setMd5(const std::array<byte, 16> &md5);
     std::array<byte, 16> getMd5();
+    void print(std::ostream& o) const{
+        o << "Message Authenticator";
+    }
 };
 
 /**
@@ -116,6 +133,9 @@ class NasIpAddr : public RadiusAVP {
     void setIp(const std::string &ipStr);
 
     in_addr getIp();
+    void print(std::ostream& o) const{
+        o << "NAS-IP-Address";
+    }
 };
 
 /**
@@ -135,6 +155,9 @@ class NasIdentifier : public RadiusAVP {
     void setIdentifier(const std::string &id);
 
     std::string getIdentifier();
+    void print(std::ostream& o) const{
+        o << "NAS Identifier";
+    }
 };
 
 /**
@@ -185,6 +208,7 @@ class RadiusPacket {
     std::vector<std::unique_ptr<RadiusAVP>> getAVPList() const;
 
     bool operator==(const RadiusPacket &rhs) { return rhs.buffer == buffer; }
+    friend std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet);
 };
 }
 }

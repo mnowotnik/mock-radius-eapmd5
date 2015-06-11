@@ -13,7 +13,7 @@ void startServer(const char *addr,const int port=0) {
  PORT=port;
  //printf("port:%d\n",PORT);
     if (isRunning) {
-		printf("Server is running");
+        printf("Server is running");
         return;
     }
     struct sockaddr_in server;
@@ -37,16 +37,16 @@ void startServer(const char *addr,const int port=0) {
 
     // Prepare the sockaddr_in structure
     server.sin_family = AF_INET;
-	
-	if ((std::string)addr=="inany")
-	{
-		printf("no_addr");
-		server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
-	}
-	else
-	{
-		server.sin_addr.S_un.S_addr = inet_addr(addr);
-	}
+    
+    if ((std::string)addr=="inany")
+    {
+        printf("no_addr");
+        server.sin_addr.s_addr = INADDR_ANY;//slucha na wszystkich
+    }
+    else
+    {
+        server.sin_addr.S_un.S_addr = inet_addr(addr);
+    }
     server.sin_port = htons(PORT);
 
     // Bind
@@ -61,12 +61,12 @@ void startServer(const char *addr,const int port=0) {
 void stopServer() {
     closesocket(s);
     WSACleanup();
-	isRunning = false;
+    isRunning = false;
 }
 
 packets::Packet receiveData() {
     if (!isRunning) {
-		printf("Server is not running");
+        printf("Server is not running");
         exit(EXIT_FAILURE);
     }
     // printf("Waiting for data...");
@@ -89,7 +89,7 @@ packets::Packet receiveData() {
 }
 void sendData(packets::Packet sen_pack) {
     if (!isRunning) {
-		printf("Server is not running");
+        printf("Server is not running");
         exit(EXIT_FAILURE);
     }
     int slen, recv_len;

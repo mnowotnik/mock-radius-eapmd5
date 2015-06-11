@@ -3,6 +3,6 @@
 #include <string>
 #include <sstream>
 namespace radius {
-std::string packet2Log(const packets::RadiusPacket &packet);
+void initLoggers();
 std::string packet2LogBytes(const packets::RadiusPacket &packet);
 }

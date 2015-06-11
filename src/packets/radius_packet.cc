@@ -9,6 +9,30 @@ namespace packets {
 
     namespace{
         typedef std::unique_ptr<RadiusAVP> RadiusAVPPtr;
+        std::string code2string(int code){
+            switch (code)
+            {
+                case 1:
+                    return "Access-Request";
+                case 2:
+                    return "Access-Accept";
+                case 3:
+                    return "Access-Reject";
+                case 4:
+                    return "Accounting-Request";
+                case 5:
+                    return "Accounting-Response";
+                case 11:
+                    return "Access-Challenge";
+                case 12:
+                    return "Status-Server (experimental)";
+                case 13:
+                    return "Status-Client (experimental";
+                default:
+                    return "reserved";
+
+            }
+        }
     }
 
 MessageAuthenticator::MessageAuthenticator() {
@@ -234,6 +258,26 @@ RadiusAVP * RadiusAVP::factoryFun(const std::vector<byte> &bytes){
             throw InvalidPacket("Unsupported type : "+(int)type);
     }
     return avp;
+}
+
+std::ostream& operator<<(std::ostream& o, const RadiusPacket& packet){
+    std::string ind1(4,' ');
+    o << "1 Code = " + std::to_string(packet.getCode()) + '('+code2string(packet.getCode())+')'+'\n';
+    o << "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
+    o << "2 Length = " + std::to_string(packet.getLength()) + '\n';
+    o << "16 Authenticator\n";
+    std::vector<std::unique_ptr<RadiusAVP>> avps;
+    o << "Attributes:\n";
+    if (avps.size()==0){
+        o << ind1+"None\n";
+    }
+    for(const auto&avpPtr : avps){ 
+        o << ind1;
+        o << *avpPtr;
+        o << '\n';
+    }
+    
+    return o;
 }
 }
 }
