@@ -170,3 +170,9 @@ std::vector<byte> generateRandomBytes(unsigned int min,unsigned int max){
 	}
 
 }
+std::array<byte,16> generateRandom16(){
+    std::array<byte,16> arr;
+    std::vector<byte> vec = generateRandomBytes(4,4);
+    std::copy(vec.begin(),vec.end(),arr.begin());
+    return arr;
+}

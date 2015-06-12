@@ -43,4 +43,5 @@ void calcAndSetAuth(packets::RadiusPacket &packet);
 std::unique_ptr<packets::MessageAuthenticator> findMessageAuthenticator(const packets::RadiusPacket &packet);
 
 std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max);
+std::array<byte,16> generateRandom16();
 }
