@@ -1,11 +1,33 @@
 #include <iostream>
-#include "server_loop.h"
+#include "server_net.h"
 #include "tclap/CmdLine.h"
 #include "logging.h"
 #include "csv_reader.h"
 #include "radius_server.h"
+#include <windows.h>
 
 const std::string LOGGER_NAME = "server";
+
+using radius::RadiusServer;
+using radius::packets::Packet;
+
+void serverLoop(RadiusServer &radiusServer){
+
+    /*while (1) {
+      radius::sendData(radius::receiveData());
+      }*/
+    Packet iPacket = radius::receiveData();
+
+    radiusServer.recvPacket(iPacket);
+}
+
+BOOL WINAPI consoleHandler(DWORD signal) {
+
+    if (signal == CTRL_C_EVENT)
+        radius::stopServer();
+
+    return TRUE;
+}
 
 int main(int argc, char **argv) {
     using namespace TCLAP;
@@ -15,31 +37,31 @@ int main(int argc, char **argv) {
         CmdLine cmd("RADIUS Server with EAP-MD5", ' ');
 
         ValueArg<string> logpathArg("l", "log",
-                                    "The path where log file shall be written",
-                                    false, "server.log", "string");
+                                    "The path where the log file shall be written. "
+                                    "Default: server.log",
+                                    false, "server.log", "path\\to\\log.log");
         cmd.add(logpathArg);
 
         ValueArg<string> dbArg("d", "database",
-                               "The path to the plain text file with user data",
-                               false, "users.txt", "string");
+                               "The path to the plain text file with user data. "
+                               "Default: users.txt",
+                               false, ".\\users.txt", "path\\to\\db.csv");
         cmd.add(dbArg);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("p", "port", "Binded port", false, 8080,
+        ValueArg<int> portArg("p", "port", "Binded port", true, -1,
                               "number");
         cmd.add(portArg);
 
-        ValueArg<string> ipArg("a", "address", "Binded IP address", false,
-                               "inany", "IP");
+        ValueArg<string> ipArg("a", "address", "Binded IP address", true,
+                               "", "IP");
 
         cmd.add(ipArg);
 
         cmd.parse(argc, argv);
-using namespace radius;
-using namespace radius::packets;
 
         int port = portArg.getValue();
         string ip = ipArg.getValue();
@@ -52,16 +74,17 @@ using namespace radius::packets;
         string dbpath = dbArg.getValue();
 
         radius::startServer(ip.c_str(), port);
-        // temporary server loop
-		RadiusServer radServer(readCsvFile(dbpath),secret,logger);
-        /*while (1) {
-            radius::sendData(radius::receiveData());
-        }*/
-		Packet iPacket = radius::receiveData();
-		printf("%d", iPacket.bytes[0]);
-		radServer.recvPacket(iPacket);
-		
-        radius::stopServer();
+		radius::RadiusServer radiusServer(radius::readCsvFile(dbpath),secret,logger);
+
+        if (!SetConsoleCtrlHandler(consoleHandler, TRUE)) {
+            logger->error()<<"Could not set control handler!"; 
+            radius::stopServer();
+            return 1;
+        }
+
+        logger->info() << "Started server";
+        serverLoop(radiusServer);
+
     } catch (CmdLineParseException &ce) {
         cerr << "error: " << ce.error() << ce.argId() << endl;
     }

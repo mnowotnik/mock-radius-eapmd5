@@ -1,14 +1,19 @@
 #include <iostream>
-#include "server_loop.h"
+#include "server_net.h"
 #include <vector>
 #include "packets/packet.h"
 using std::vector;
 
 namespace radius {
-const int BUFLEN = 1000;
-int PORT = 32000;
-SOCKET s;
-static bool isRunning;
+    namespace{
+
+        const int BUFLEN = 1000;
+        int PORT = 32000;
+        SOCKET s;
+        bool isRunning;
+        const unsigned int INT_ERR_CODE = 10004;
+
+    }
 void startServer(const char *addr, const int port = 0) {
     PORT = port;
     // printf("port:%d\n",PORT);
@@ -76,7 +81,13 @@ packets::Packet receiveData() {
     if ((recv_len = recvfrom(s, &buf[0], BUFLEN, 0,
                              (struct sockaddr *)&dest_addr, &slen)) ==
         SOCKET_ERROR) {
-        printf("recvfrom() failed with error code : %d", WSAGetLastError());
+        unsigned int err = WSAGetLastError();
+        if(err==INT_ERR_CODE){
+            std::cout<<"Stopping server..";
+        }else{
+            printf("recvfrom() failed with error code : %d", err);
+        }
+        stopServer();
         exit(EXIT_FAILURE);
     }
     // vector<byte> buffr(&buf[0],&buf[BUFLEN]);

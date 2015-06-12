@@ -3,7 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "server_loop.h"
+#include "server_net.h"
 #include "packets/packet.h"
 #include "catch.hpp"
 
@@ -12,5 +12,5 @@ using std::string;
 
 namespace radius {
 
-TEST_CASE("A test", "[A tag]") { REQUIRE(true == true); }
+/* TEST_CASE("A test", "[A tag]") { REQUIRE(true == true); } */
 }
