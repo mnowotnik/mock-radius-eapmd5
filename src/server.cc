@@ -3,6 +3,7 @@
 #include "tclap/CmdLine.h"
 #include "logging.h"
 #include "csv_reader.h"
+#include "radius_server.h"
 
 const std::string LOGGER_NAME = "server";
 

@@ -39,7 +39,7 @@ void startServer(const char *addr, const int port = 0) {
     server.sin_family = AF_INET;
 
     if ((std::string)addr == "inany") {
-        printf("no_addr");
+       // printf("no_addr");
         server.sin_addr.s_addr = INADDR_ANY; // slucha na wszystkich
     } else {
         server.sin_addr.S_un.S_addr = inet_addr(addr);
