@@ -11,14 +11,18 @@ std::string byte2hex(const byte &byte) {
     std::string out = buf;
     return out;
 }
+const int HEX_ROW_WIDTH = 10;
 }
 
-std::string packet2LogBytes(const RadiusPacket &packet) {
-    std::string log = "";
-    for (int i = 0; i < (packet.getBuffer()).size(); i++) {
-        log += byte2hex(packet.getBuffer()[i]);
+std::string packet2LogBytes(const std::vector<byte>&packet) {
+    std::stringstream log;
+    for (int i = 0; i < packet.size(); i++) {
+        if(i%HEX_ROW_WIDTH==0 && i>0){
+            log << "\r\n";
+        }
+        log << byte2hex(packet[i]);
     }
-    return log;
+    return log.str();
 }
 
 void initLogger(const std::string &logPath, const std::string &logName) {

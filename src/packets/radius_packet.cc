@@ -202,8 +202,9 @@ void RadiusPacket::validate() {
         throw InvalidPacket("The packet is too short. Should be: "+ std::to_string((it+size-buffer.begin()))+
             " Is: "+std::to_string(buffer.size())+ ". According to AVP size at "+std::to_string((it+1-buffer.begin()))); 
         }
-        if (size <= 0) {
-        throw InvalidPacket("The AVP size value is incorrect (<0) at "+std::to_string((it+1-buffer.begin())));
+        if (size <= RadiusAVP::MIN_SIZE) {
+            throw InvalidPacket("The AVP size value is incorrect (<"+
+                    std::to_string(RadiusAVP::MIN_SIZE)+") at "+std::to_string((it+1-buffer.begin())));
         }
         it = it + size;
     }

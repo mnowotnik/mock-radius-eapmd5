@@ -20,11 +20,9 @@ const std::vector<radius::byte> RADIUS_BASE_BUF = {
 }
 
 TEST_CASE("Print bytes of RadiusPacket", "[packet2LogBytes]") {
-    RadiusPacket packet(RADIUS_BASE_BUF);
-    std::string logStr = packet2LogBytes(packet);
-
-    REQUIRE(logStr ==
-            "01 01 00 14 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F ");
+    REQUIRE(packet2LogBytes(RADIUS_BASE_BUF) ==
+            "01 01 00 14 00 01 02 03 04 05 \r\n"
+            "06 07 08 09 0A 0B 0C 0D 0E 0F ");
 }
 
 TEST_CASE("Print RadiusPacket") {

@@ -25,8 +25,8 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
     vector<Packet> packetsToSend;
 
     try {
+        logger -> error() << nl << packet2LogBytes(packet.bytes);
         RadiusPacket radiusPacket(packet.bytes);
-        logger -> debug() << nl << packet2LogBytes(radiusPacket);
         logger -> info() << nl << radiusPacket;
 
         if(!isValid(radiusPacket)){
