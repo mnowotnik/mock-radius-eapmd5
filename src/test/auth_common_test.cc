@@ -60,6 +60,42 @@ TEST_CASE("Testing ResponseAuthenticator checking", "[checkAuthenticator]") {
     authen[0] = 0xFF;
     REQUIRE_FALSE(checkAuthenticator(packet, authen));
 }
+TEST_CASE("Testing Authenticator generation", "[calcAndSetAuth]") {
+
+    RadiusPacket packet(RADIUS_BASE_BUF);
+    packet.setCode(RadiusPacket::ACCESS_CHALLENGE);
+    std::array<byte, 16> md5 = calcAuthenticatorChecksum(packet);
+    calcAndSetAuth(packet);
+
+    REQUIRE(md5 == packet.getAuthenticator());
+}
+TEST_CASE("Testing MessageAuthenticator generation", "[calcAndSetAuth]") {
+    RadiusPacket packet(RADIUS_BASE_BUF);
+    packet.setCode(RadiusPacket::ACCESS_CHALLENGE);
+    MessageAuthenticator ma;
+    ma.setMd5(EMPTY_MD5);
+    packet.addAVP(ma);
+    MessageAuthenticator nMa;
+    std::array<byte,16> md5 = md5HmacBin(packet.getBuffer(),secret);
+    calcAndSetMsgAuth(packet,secret);
+
+    std::unique_ptr<MessageAuthenticator> pMa(findMessageAuthenticator(packet));
+    REQUIRE(md5 == pMa->getMd5());
+}
+TEST_CASE("Testing MessageAuthenticator generation(with init)", "[calcAndSetAuth]") {
+    RadiusPacket packet(RADIUS_BASE_BUF);
+    packet.setCode(RadiusPacket::ACCESS_CHALLENGE);
+    MessageAuthenticator ma;
+    ma.setMd5(EMPTY_MD5);
+    packet.addAVP(ma);
+    MessageAuthenticator nMa;
+    std::array<byte,16> md5 = md5HmacBin(packet.getBuffer(),secret);
+    packet.removeAVP(ma);
+    calcAndSetMsgAuth(packet,secret);
+
+    std::unique_ptr<MessageAuthenticator> pMa(findMessageAuthenticator(packet));
+    REQUIRE(md5 == pMa->getMd5());
+}
 TEST_CASE("Testing generate random bytes", "[generateRandomBytes]") {
 	int i;
 	for(i=0;i<15;i++)

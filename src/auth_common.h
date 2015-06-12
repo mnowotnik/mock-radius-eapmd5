@@ -28,10 +28,19 @@ bool isValid(const packets::RadiusPacket &packet);
 
 std::array<byte,16> calcAuthenticatorChecksum(const packets::RadiusPacket &packet,
         const std::array<byte, 16> &authenticator);
+std::array<byte,16> calcAuthenticatorChecksum(const packets::RadiusPacket &packet);
 
 std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket &packet,
         const std::string &secret,
         const std::array<byte, 16> &authenticator);
+std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket &packet);
+
+void calcAndSetMsgAuth(packets::RadiusPacket &packet,const std::string &secret,const std::array<byte,16>&authenticator);
+void calcAndSetMsgAuth(packets::RadiusPacket &packet,const std::string &secret);
+void calcAndSetAuth(packets::RadiusPacket &packet,const std::array<byte,16>&authenticator);
+void calcAndSetAuth(packets::RadiusPacket &packet);
+
+std::unique_ptr<packets::MessageAuthenticator> findMessageAuthenticator(const packets::RadiusPacket &packet);
 
 std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max);
 }

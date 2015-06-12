@@ -12,6 +12,7 @@ typedef std::independent_bits_engine<std::mt19937,4,unsigned int> UniBiIntGenera
 std::mt19937 seedGen(std::random_device{}());
 UniBiIntGenerator genBytes(seedGen);
 
+const std::array<byte, 16> EMPTY_MD5{};
 }
 
 namespace radius {
@@ -46,6 +47,38 @@ bool checkAuthenticator(const RadiusPacket &packet,
     return true;
 }
 
+void calcAndSetAuth(packets::RadiusPacket &packet,const std::array<byte,16>&authenticator){
+    if (packet.getCode() == RadiusPacket::ACCESS_REQUEST) {
+        return;
+    }
+    packet.setAuthenticator(authenticator);
+    packet.setAuthenticator(calcAuthenticatorChecksum(packet));
+}
+void calcAndSetAuth(packets::RadiusPacket &packet){
+    calcAndSetAuth(packet,packet.getAuthenticator());
+}
+
+void calcAndSetMsgAuth(packets::RadiusPacket &packet,const std::string &secret,const std::array<byte,16>&authenticator){
+    packet.setAuthenticator(authenticator);
+    std::unique_ptr<MessageAuthenticator> maPtr = findMessageAuthenticator(packet);
+    if(maPtr.get() == nullptr){
+        maPtr.reset(new MessageAuthenticator());
+        packet.addAVP(static_cast<const MessageAuthenticator&>(*maPtr));
+    }
+
+    MessageAuthenticator nMa;
+    nMa.setMd5(calcMessageAuthenticatorChecksum(packet,secret,authenticator));
+    packet.replaceAVP(*maPtr,nMa);
+}
+
+void calcAndSetMsgAuth(packets::RadiusPacket &packet,const std::string &secret){
+    calcAndSetMsgAuth(packet,secret,packet.getAuthenticator());
+}
+
+std::array<byte,16> calcAuthenticatorChecksum(const packets::RadiusPacket &packet){
+    return calcAuthenticatorChecksum(packet,packet.getAuthenticator());
+}
+
 std::array<byte,16> calcAuthenticatorChecksum(const packets::RadiusPacket &packet,
         const std::array<byte, 16> &authenticator){
     RadiusPacket refPacket(packet);
@@ -55,6 +88,10 @@ std::array<byte,16> calcAuthenticatorChecksum(const packets::RadiusPacket &packe
 }
 
 std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket &packet,
+        const std::string &secret){
+    return calcMessageAuthenticatorChecksum(packet,secret,packet.getAuthenticator());
+}
+std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket &packet,
         const std::string &secret,
         const std::array<byte, 16> &authenticator){
 
@@ -63,9 +100,21 @@ std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket
     if (packet.getCode() != RadiusPacket::ACCESS_REQUEST) {
         refPacket.setAuthenticator(authenticator);
     }
-    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
 
-    MessageAuthenticator *ma;
+    std::unique_ptr<MessageAuthenticator> maPtr = findMessageAuthenticator(packet);
+    std::array<byte, 16> md5 = maPtr->getMd5();
+
+    MessageAuthenticator emptyMa;
+    emptyMa.setMd5(nullAuth);
+
+    refPacket.replaceAVP(*maPtr, emptyMa);
+
+    return md5HmacBin(refPacket.getBuffer(), secret);
+}
+
+std::unique_ptr<packets::MessageAuthenticator> findMessageAuthenticator(const packets::RadiusPacket &packet){
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
+    MessageAuthenticator *ma = nullptr;
     std::for_each(avpList.begin(), avpList.end(),
                   [&](const std::unique_ptr<RadiusAVP> &avp) {
         if (avp->getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
@@ -73,15 +122,10 @@ std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket
             ma = static_cast<MessageAuthenticator *>(ap);
         }
     });
-
-    std::array<byte, 16> md5 = ma->getMd5();
-
-    MessageAuthenticator emptyMa = *ma;
-    emptyMa.setMd5(nullAuth);
-
-    refPacket.replaceAVP(*ma, emptyMa);
-
-    return md5HmacBin(refPacket.getBuffer(), secret);
+    if(ma==nullptr){
+        return std::unique_ptr<MessageAuthenticator>(nullptr);
+    }
+    return std::unique_ptr<MessageAuthenticator>(new MessageAuthenticator(*ma));
 }
 
 bool checkIntegrity(const packets::RadiusPacket &packet, const std::string &secret,
@@ -90,12 +134,14 @@ bool checkIntegrity(const packets::RadiusPacket &packet, const std::string &secr
     return checkAuthenticator(packet, authenticator) &&
            checkMessageAuthenticator(packet, secret, authenticator);
 }
+
 bool isRequest(const RadiusPacket &packet){
     if(packet.getCode() == RadiusPacket::ACCESS_REQUEST){
         return true;
     }
     return false;
 }
+
 bool isValid(const RadiusPacket &packet){
     std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
     int messageAuthenticatorC = 0;
