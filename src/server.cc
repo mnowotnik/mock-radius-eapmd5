@@ -61,6 +61,9 @@ int main(int argc, char **argv) {
 
         cmd.add(ipArg);
 
+        SwitchArg verboseSwitch("v", "verbose","Run in the verbose mode",false);
+        cmd.add(verboseSwitch);
+
         cmd.parse(argc, argv);
 
         int port = portArg.getValue();
@@ -68,6 +71,12 @@ int main(int argc, char **argv) {
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
         radius::initLogger(logpath, LOGGER_NAME);
+
+        bool verbose = verboseSwitch.getValue();
+
+        if(verbose){
+            spdlog::set_level(spdlog::level::trace);
+        }
 
         auto logger = spdlog::get(LOGGER_NAME);
 

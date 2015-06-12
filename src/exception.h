@@ -9,3 +9,9 @@ class Exception : public std::exception {
   protected:
     std::string msg_;
 };
+
+class FileNotFound : public Exception {
+  public:
+    explicit FileNotFound(const std::string &message)
+        : Exception(message) {}
+};

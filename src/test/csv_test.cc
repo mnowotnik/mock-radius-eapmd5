@@ -10,12 +10,11 @@ std::map<std::string,std::string> csvData = {{"Micha³","5e884898da28047151d0e56f
 ,{"Ryœ","5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"}};
 }
 TEST_CASE("Simple read file test", "[readCsvFile]") { 
-std::map<std::string,std::string> csvRead = readCsvFile("src/test/csv.csv");
+std::map<std::string,std::string> csvRead = readCsvFile(".\\src\\test\\csv.csv");
 REQUIRE(csvRead.find("Basia") != csvRead.end());
 REQUIRE(csvData["Basia"] == csvRead["Basia"]);
  }
  TEST_CASE("File doesn't exists", "[readCsvFile]") { 
-std::map<std::string,std::string> csvRead = readCsvFile("k.csv");
-REQUIRE(csvRead.empty() == true );
+     REQUIRE_THROWS(readCsvFile("k.csv"));
  }
 }//namespace

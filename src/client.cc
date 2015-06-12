@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
         cmd.add(passArg);
 
         SwitchArg interSwitch("i", "interactive",
-                              "Run the client in the interactive mode", false);
+                              "Run in the interactive mode", false);
         cmd.add(interSwitch);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",

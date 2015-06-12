@@ -29,7 +29,7 @@ class RadiusAVP {
 
   protected:
     std::vector<byte> buffer;
-    virtual bool isValid() = 0;
+    virtual void validate() = 0;
 
   public:
     RadiusAVP() : buffer(MIN_SIZE) {}
@@ -80,7 +80,7 @@ class RadiusAVP {
 class EapMessage : public RadiusAVP {
   protected:
     const int MIN_LENGTH = 4;
-    bool isValid();
+    void validate();
 
   public:
     EapMessage(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
@@ -101,7 +101,7 @@ class MessageAuthenticator : public RadiusAVP {
     const byte LENGTH = 18;
 
   protected:
-    bool isValid();
+    void validate();
 
   public:
     MessageAuthenticator(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
@@ -122,7 +122,7 @@ class NasIpAddr : public RadiusAVP {
     const byte LENGTH = 6;
 
   protected:
-    bool isValid();
+    void validate();
 
   public:
     NasIpAddr(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
@@ -144,7 +144,7 @@ class NasIpAddr : public RadiusAVP {
 class NasIdentifier : public RadiusAVP {
 
   protected:
-    bool isValid();
+    void validate();
 
   public:
     NasIdentifier(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
@@ -169,7 +169,7 @@ class RadiusPacket {
     const int MIN_LENGTH = 20;
     std::vector<byte> buffer;
     std::vector<byte>::iterator findAVP(const RadiusAVP &avp);
-    bool isValid();
+    void validate();
 
   public:
     // codes

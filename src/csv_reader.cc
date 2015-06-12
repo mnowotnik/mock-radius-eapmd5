@@ -31,7 +31,7 @@ std::map<std::string,std::string> readCsvFile(const std::string &fileName){
   }
 else
 {
-		std::cout<<"unable to open file"<<std::endl;
+    throw FileNotFound("Cannot open the file at: "+fileName);
 }
 	fileStream.close();
   return map;

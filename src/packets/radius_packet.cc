@@ -64,36 +64,34 @@ string NasIdentifier::getIdentifier() {
     return string((const char *)&buffer[offset], buffer.size() - offset);
 }
 
-bool MessageAuthenticator::isValid() {
+void MessageAuthenticator::validate() {
     if (buffer.size() != LENGTH) {
-        return false;
+        throw InvalidPacket("The Message Authenticator length is incorrect"
+                "("+std::to_string(buffer.size())+")");
     }
-    return true;
 }
 
-bool EapMessage::isValid() {
+void EapMessage::validate() {
     if (buffer.size() < MIN_LENGTH) {
-        return false;
+        throw InvalidPacket("An EAP-Message length is too small"
+                "("+std::to_string(buffer.size())+")");
     }
-    return true;
 }
 
-bool NasIdentifier::isValid() { return true; }
+void NasIdentifier::validate() {}
 
-bool NasIpAddr::isValid() {
+void NasIpAddr::validate() {
     if (buffer.size() != LENGTH) {
-        return false;
+        throw InvalidPacket("The NAS-IP-Address length is incorrect"
+                "("+std::to_string(buffer.size())+")");
     }
-    return true;
 }
 
 RadiusPacket::RadiusPacket(const vector<byte> &bytes) : buffer(bytes) {
     if (getLength() < bytes.size()) {
         buffer.resize(getLength());
     }
-    if (!isValid()) {
-        throw InvalidPacket("The input packet to RadiusPacket is invalid.");
-    }
+    validate();
 }
 void RadiusPacket::setLength(unsigned short length) {
     array<byte, 2> bytes = short2NetworkBytes(length);
@@ -178,39 +176,41 @@ bool RadiusPacket::replaceAVP(const RadiusAVP &oldAVP,
     return true;
 }
 
-bool RadiusPacket::isValid() {
+void RadiusPacket::validate() {
     unsigned short len = getLength();
-    if (len < MIN_LENGTH || len != buffer.size()) {
-        return false;
+    if (len < MIN_LENGTH){
+        throw InvalidPacket("The length field value ("+std::to_string(len)+")" 
+               "is too small");
+    }
+    if (len != buffer.size()) {
+        throw InvalidPacket("The length field value ("+std::to_string(len)+")"
+                " is not equal to packet size("+std::to_string(buffer.size())+")" );
     }
     if (getLength() == MIN_LENGTH) {
-        return true;
+        return;
     }
 
     auto it = buffer.begin() + AVP_OFFSET;
 
     while (it != buffer.end()) {
         if (it + 1 == buffer.end()) {
-            return false;
+            throw InvalidPacket("Unrecognized byte at the position: "
+                    + std::to_string((buffer.begin()-it)));
         }
         byte size = *(it + 1);
-        if (buffer.end() - it < size) {
-            return false;
+        if (it + size > buffer.end()) {
+        throw InvalidPacket("The packet is too short. Should be: "+ std::to_string((it+size-buffer.begin()))+
+            " Is: "+std::to_string(buffer.size())+ ". According to AVP size at "+std::to_string((it+1-buffer.begin()))); 
         }
         if (size <= 0) {
-            return false;
+        throw InvalidPacket("The AVP size value is incorrect (<0) at "+std::to_string((it+1-buffer.begin())));
         }
         it = it + size;
     }
 
-    std::vector<RadiusAVPPtr> avpList = getAVPList();
-    for (const auto &avpPtr : avpList) {
-        if (!avpPtr->isValid()) {
-            return false;
-        }
+    for (const auto &avpPtr : getAVPList()) {
+        avpPtr->validate();
     }
-
-    return true;
 }
 
 RadiusAVP *RadiusAVP::factoryFun(const std::vector<byte> &bytes) {
