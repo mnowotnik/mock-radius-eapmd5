@@ -1,6 +1,11 @@
-#include "csv.h"
+
+#pragma once
 #include <string>
 #include <map>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 namespace radius{
-std::map<std::string,std::string> readFile(const std::string fileName);
+std::map<std::string,std::string> readCsvFile(const std::string &fileName);
 }
