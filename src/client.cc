@@ -96,7 +96,10 @@ int main(int argc, char **argv) {
 		using namespace radius;
 		using namespace radius::packets;	
 		EapPacket eapIdentity;
-		eapIdentity.setIdentity(login);
+		eapIdentity= makeIdentity(login);
+		eapIdentity.setType(EapPacket::RESPONSE);
+		eapIdentity.setIdentifier(1);
+		
 		EapMessage eapMessage;
 		eapMessage.setValue(eapIdentity.getBuffer());
 		
@@ -104,7 +107,7 @@ int main(int argc, char **argv) {
 		RadiusPacket arPacket;
 		arPacket.setIdentifier(1);
 		arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
-		std::array<byte,16> authTable= generateRandomBytes16();
+		std::array<radius::byte,16> authTable= generateRandom16();
 		arPacket.setAuthenticator(authTable);
 		arPacket.addAVP(static_cast <const RadiusAVP&>(eapMessage));
 		calcAndSetMsgAuth(arPacket,secret);

@@ -19,7 +19,7 @@ COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC
 			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj \
 			$(SRC)\packets\utils.obj $(SRC)\csv_reader.obj
 
-SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_loop.obj $(COMMON_OBJS)
+SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_loop.obj $(SRC)\radius_server.obj $(COMMON_OBJS)
 
 CLIENT_OBJS=$(SRC)\client.obj $(SRC)\client_net.obj $(SRC)\interactive.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj $(HASHLIB)\sha3.obj $(HASHLIB)\sha256.obj $(COMMON_OBJS)
 
