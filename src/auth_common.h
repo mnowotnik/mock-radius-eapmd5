@@ -16,4 +16,7 @@ bool checkAuthenticator(const packets::RadiusPacket &packet,
 bool checkIntegrity(
     const packets::RadiusPacket &packet, const std::string &secret,
     const std::array<byte, 16> &authenticator = std::array<byte, 16>{});
+
+bool isRequest(const packets::RadiusPacket &packet);
+bool isValid(const packets::RadiusPacket &packet);
 }

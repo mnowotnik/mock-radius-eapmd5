@@ -54,4 +54,26 @@ bool checkIntegrity(const RadiusPacket &packet, const std::string &secret,
     return checkAuthenticator(packet, authenticator) &&
            checkMessageAuthenticator(packet, secret);
 }
+bool isRequest(const RadiusPacket &packet){
+    if(packet.getCode() == RadiusPacket::ACCESS_REQUEST){
+        return true;
+    }
+    return false;
+}
+bool isValid(const RadiusPacket &packet){
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
+    int messageAuthenticatorC = 0;
+    int eapMessageC = 0;
+    for(const auto &avpPtr : avpList){
+        byte type = avpPtr->getType();
+        if(type == RadiusAVP::MESSAGE_AUTHENTICATOR){
+            messageAuthenticatorC++;
+        }else if(type == RadiusAVP::EAP_MESSAGE){
+            eapMessageC++;
+        }
+    }
+
+    return messageAuthenticatorC == 1 && eapMessageC > 0;
+}
+
 }

@@ -1,11 +1,19 @@
 #pragma once
 #include <string>
 #include <map>
+#include <vector>
+#include <random>
+/* #include <climits> */
+#include <algorithm>
+#include <functional>
 #include "packets/packet.h"
 #include "packets/radius_packet.h"
+#include "packets/eap_packet.h"
+#include "logging.h"
 #include "typedefs.h"
 #include "spdlog/spdlog.h"
 #include "auth_common.h"
+#include "packets/utils.h"
 
 namespace radius {
 class RadiusServer {
