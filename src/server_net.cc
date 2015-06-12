@@ -5,15 +5,14 @@
 using std::vector;
 
 namespace radius {
-    namespace{
+namespace {
 
-        const int BUFLEN = 1000;
-        int PORT = 32000;
-        SOCKET s;
-        bool isRunning;
-        const unsigned int INT_ERR_CODE = 10004;
-
-    }
+const int BUFLEN = 1000;
+int PORT = 32000;
+SOCKET s;
+bool isRunning;
+const unsigned int INT_ERR_CODE = 10004;
+}
 void startServer(const char *addr, const int port = 0) {
     PORT = port;
     // printf("port:%d\n",PORT);
@@ -44,7 +43,7 @@ void startServer(const char *addr, const int port = 0) {
     server.sin_family = AF_INET;
 
     if ((std::string)addr == "inany") {
-       // printf("no_addr");
+        // printf("no_addr");
         server.sin_addr.s_addr = INADDR_ANY; // slucha na wszystkich
     } else {
         server.sin_addr.S_un.S_addr = inet_addr(addr);
@@ -82,9 +81,9 @@ packets::Packet receiveData() {
                              (struct sockaddr *)&dest_addr, &slen)) ==
         SOCKET_ERROR) {
         unsigned int err = WSAGetLastError();
-        if(err==INT_ERR_CODE){
-            std::cout<<"Stopping server..";
-        }else{
+        if (err == INT_ERR_CODE) {
+            std::cout << "Stopping server..";
+        } else {
             printf("recvfrom() failed with error code : %d", err);
         }
         stopServer();

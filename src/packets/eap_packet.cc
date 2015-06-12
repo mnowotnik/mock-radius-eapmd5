@@ -104,7 +104,7 @@ std::ostream &operator<<(std::ostream &o, const EapPacket &packet) {
              packet.typeStr() + ')' + NL;
     o << "1 ID = " + std::to_string(packet.getIdentifier()) + NL;
     o << "2 Length = " + std::to_string(packet.getLength()) + NL;
-    o << "Type-data:"<< NL;
+    o << "Type-data:" << NL;
     o << ind1;
 
     if (packet.getType() == EapPacket::SUCCESS ||

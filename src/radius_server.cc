@@ -15,48 +15,50 @@ RadiusServer::RadiusServer(const map<string, string> &userPassMap,
     : userPassMap(userPassMap), secret(secret), logger(logger) {}
 
 const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
-    logger -> info() << "Incoming RADIUS packet";
+    logger->info() << "Incoming RADIUS packet";
 
     vector<Packet> packetsToSend;
 
     try {
         RadiusPacket radiusPacket(packet.bytes);
-        logger -> info() << NL << radiusPacket;
+        logger->info() << NL << radiusPacket;
 
-        if(!isValid(radiusPacket)){
-            logger -> warn() << "Input packet has invaild structure. Requires only one Message Authenticator and "<<NL
-                << "at least one EAP-Message";
+        if (!isValid(radiusPacket)) {
+            logger->warn() << "Input packet has invaild structure. Requires "
+                              "only one Message Authenticator and " << NL
+                           << "at least one EAP-Message";
             return addPendingPackets(packetsToSend);
         }
 
-        if(!isRequest(radiusPacket)){
-            logger -> warn() << "Packet has wrong type. Is not an Access-Request";
+        if (!isRequest(radiusPacket)) {
+            logger->warn() << "Packet has wrong type. Is not an Access-Request";
             return addPendingPackets(packetsToSend);
         }
 
         if (!checkIntegrity(radiusPacket, secret)) {
-            logger -> warn() << "Message Authenticator checksum does not match the packet";
+            logger->warn()
+                << "Message Authenticator checksum does not match the packet";
             return addPendingPackets(packetsToSend);
         }
 
         EapPacket eapPacket(extractEapPacket(radiusPacket));
-        logger -> info() << "Encapsulated EAP packet:" << NL << eapPacket;
+        logger->info() << "Encapsulated EAP packet:" << NL << eapPacket;
 
         std::unique_ptr<EapData> eapDataPtr(eapPacket.getData());
         byte eapDataT = eapDataPtr->getType();
 
-        if(eapDataT == EapData::IDENTITY){
-            EapIdentity * eapIden = static_cast<EapIdentity*>(eapDataPtr.get());
+        if (eapDataT == EapData::IDENTITY) {
+            EapIdentity *eapIden = static_cast<EapIdentity *>(eapDataPtr.get());
             std::string userName = eapIden->getIdentity();
             const auto passPtr = userPassMap.find(userName);
-            if(passPtr == userPassMap.end()){
+            if (passPtr == userPassMap.end()) {
                 return addPendingPackets(packetsToSend);
             }
-
         }
     } catch (const packets::InvalidPacket &e) {
-        logger -> error() << "Packet invalid. Reason :" << e.what();
-        logger -> error() << "Packet dump:"<<NL << packet2LogBytes(packet.bytes);
+        logger->error() << "Packet invalid. Reason :" << e.what();
+        logger->error() << "Packet dump:" << NL
+                        << packet2LogBytes(packet.bytes);
         return addPendingPackets(packetsToSend);
     }
     return addPendingPackets(packetsToSend);
@@ -68,7 +70,6 @@ RadiusServer::addPendingPackets(vector<Packet> packetsToSend) {
                    [](const PendingPacket &p) { return p.packet; });
     return packetsToSend;
 }
-
 
 void RadiusServer::updatePending() {
     std::for_each(pendingPackets.begin(), pendingPackets.end(),

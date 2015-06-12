@@ -79,61 +79,62 @@ TEST_CASE("Testing MessageAuthenticator generation", "[calcAndSetAuth]") {
     ma.setMd5(EMPTY_MD5);
     packet.addAVP(ma);
     MessageAuthenticator nMa;
-    std::array<byte,16> md5 = md5HmacBin(packet.getBuffer(),secret);
-    calcAndSetMsgAuth(packet,secret);
+    std::array<byte, 16> md5 = md5HmacBin(packet.getBuffer(), secret);
+    calcAndSetMsgAuth(packet, secret);
 
     std::unique_ptr<MessageAuthenticator> pMa(findMessageAuthenticator(packet));
     REQUIRE(md5 == pMa->getMd5());
 }
-TEST_CASE("Testing MessageAuthenticator generation(with init)", "[calcAndSetAuth]") {
+TEST_CASE("Testing MessageAuthenticator generation(with init)",
+          "[calcAndSetAuth]") {
     RadiusPacket packet(RADIUS_BASE_BUF);
     packet.setCode(RadiusPacket::ACCESS_CHALLENGE);
     MessageAuthenticator ma;
     ma.setMd5(EMPTY_MD5);
     packet.addAVP(ma);
     MessageAuthenticator nMa;
-    std::array<byte,16> md5 = md5HmacBin(packet.getBuffer(),secret);
+    std::array<byte, 16> md5 = md5HmacBin(packet.getBuffer(), secret);
     packet.removeAVP(ma);
-    calcAndSetMsgAuth(packet,secret);
+    calcAndSetMsgAuth(packet, secret);
 
     std::unique_ptr<MessageAuthenticator> pMa(findMessageAuthenticator(packet));
     REQUIRE(md5 == pMa->getMd5());
 }
 TEST_CASE("Testing generate random bytes", "[generateRandomBytes]") {
-	int i;
-	for(i=0;i<15;i++)
-	{
-	std::vector<byte> gen1 = generateRandomBytes((unsigned int)5,(unsigned int)5);
-	std::vector<byte> gen2 = generateRandomBytes((unsigned int)5,(unsigned int)5);
-	REQUIRE(gen1.size()==20);
-	REQUIRE_FALSE(gen1==gen2);
-	
-	}
+    int i;
+    for (i = 0; i < 15; i++) {
+        std::vector<byte> gen1 =
+            generateRandomBytes((unsigned int)5, (unsigned int)5);
+        std::vector<byte> gen2 =
+            generateRandomBytes((unsigned int)5, (unsigned int)5);
+        REQUIRE(gen1.size() == 20);
+        REQUIRE_FALSE(gen1 == gen2);
+    }
 }
 
 TEST_CASE("Testing min max", "[generateRandomBytes]") {
-	int i;
-	for(i=0;i<26;i++)
-	{
-	std::vector<byte> gen1 = generateRandomBytes((unsigned int)6,(unsigned int)9);
-	
-    REQUIRE(gen1.size()>=6*4);
-	REQUIRE(gen1.size()<=9*4);
-	}
+    int i;
+    for (i = 0; i < 26; i++) {
+        std::vector<byte> gen1 =
+            generateRandomBytes((unsigned int)6, (unsigned int)9);
+
+        REQUIRE(gen1.size() >= 6 * 4);
+        REQUIRE(gen1.size() <= 9 * 4);
+    }
 }
 
-TEST_CASE("Calculate challenge value","[calcChalVal]"){
+TEST_CASE("Calculate challenge value", "[calcChalVal]") {
     std::vector<byte> buffer;
     const byte ident = 1;
     buffer.push_back(ident);
-    buffer.insert(buffer.end(),secret.begin(),secret.end());
-    buffer.insert(buffer.end(),EMPTY_MD5.begin(),EMPTY_MD5.end());
+    buffer.insert(buffer.end(), secret.begin(), secret.end());
+    buffer.insert(buffer.end(), EMPTY_MD5.begin(), EMPTY_MD5.end());
 
     EapPacket packet;
     packet.setIdentifier(ident);
     EapMd5Challenge md5Chal;
-    md5Chal.setValue(std::vector<byte>(EMPTY_MD5.begin(),EMPTY_MD5.end()));
-    packet.setData(dynamic_cast<const EapData&>(md5Chal));
-    REQUIRE(md5Bin(buffer) == calcChalVal(packet,secret));
+    md5Chal.setValue(std::vector<byte>(EMPTY_MD5.begin(), EMPTY_MD5.end()));
+    packet.setData(dynamic_cast<const EapData &>(md5Chal));
+    REQUIRE(md5Bin(buffer) == calcChalVal(packet, secret));
 }
 }

@@ -12,7 +12,6 @@
 #include "packets/eap_packet.h"
 #include "packets/packet.h"
 
-
 using namespace std;
 const std::vector<byte> temp = {0xe0, 0xbd, 0x18, 0xdb, 0x4c, 0xc2, 0xf8, 0x5c,
                                 0xed, 0xef, 0x65, 0x4f, 0xcc, 0xc4, 0xa4, 0xd8};
@@ -39,11 +38,13 @@ int main(int argc, char **argv) {
                                  false, "", "string");
         cmd.add(passArg);
 
-/*         SwitchArg interSwitch("i", "interactive", */
-/*                               "Run in the interactive mode", false); */
-/*         cmd.add(interSwitch); */
+        /*         SwitchArg interSwitch("i", "interactive", */
+        /*                               "Run in the interactive mode", false);
+         */
+        /*         cmd.add(interSwitch); */
 
-        SwitchArg verboseSwitch("v", "verbose","Run in the verbose mode",false);
+        SwitchArg verboseSwitch("v", "verbose", "Run in the verbose mode",
+                                false);
         cmd.add(verboseSwitch);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
@@ -54,13 +55,13 @@ int main(int argc, char **argv) {
         cmd.add(portArg);
 
         ValueArg<string> bindIpArg("b", "bind-ip", "Binded IP address", false,
-                               "0.0.0.0", "IP");
-			
-		cmd.add(bindIpArg);
-			
-		ValueArg<string> ipArg("a", "address", "Server IP address", true,
-                               "", "IP");					   
-							   
+                                   "0.0.0.0", "IP");
+
+        cmd.add(bindIpArg);
+
+        ValueArg<string> ipArg("a", "address", "Server IP address", true, "",
+                               "IP");
+
         cmd.add(ipArg);
 
         ValueArg<string> hashArg(
@@ -72,13 +73,13 @@ int main(int argc, char **argv) {
 
         int port = portArg.getValue();
         string ip = ipArg.getValue();
-		string bindIp = ipArg.getValue();
+        string bindIp = ipArg.getValue();
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
         radius::initLogger(logpath, LOGGER_NAME);
 
         bool verbose = verboseSwitch.getValue();
-        if(verbose){
+        if (verbose) {
             spdlog::set_level(spdlog::level::trace);
         }
 
@@ -95,48 +96,46 @@ int main(int argc, char **argv) {
         server_addr.sin_family = AF_INET;
         server_addr.sin_addr.s_addr = INADDR_ANY;
         server_addr.sin_port = htons(port);
-		
+
         /* if (inter) { */
         /*     login = radius::getUsername(); */
         /*     pas = radius::getPassword("Enter password:\n"); */
         /* } */
         pas = hashString(pas, hash);
 
-        //radius::packets::Packet newPack(temp, server_addr);
-		
+        // radius::packets::Packet newPack(temp, server_addr);
+
         radius::startClient(ip.c_str(), port);
         // 1.access-request
-		using namespace radius;
-		using namespace radius::packets;	
-		EapPacket eapIdentity;
-		eapIdentity = makeIdentity(login);
-		eapIdentity.setType(EapPacket::RESPONSE);
-		eapIdentity.setIdentifier(1);
-		
-		EapMessage eapMessage;
-		eapMessage.setValue(eapIdentity.getBuffer());
-		
-	
-		RadiusPacket arPacket;
-		arPacket.setIdentifier(1);
-		arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
-		std::array<radius::byte,16> authTable= generateRandom16();
-		arPacket.setAuthenticator(authTable);
-		arPacket.addAVP(static_cast <const RadiusAVP&>(eapMessage));
-		calcAndSetMsgAuth(arPacket,secret);
+        using namespace radius;
+        using namespace radius::packets;
+        EapPacket eapIdentity;
+        eapIdentity = makeIdentity(login);
+        eapIdentity.setType(EapPacket::RESPONSE);
+        eapIdentity.setIdentifier(1);
 
-		radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
-        logger->error() <<"\r\n"<<packet2LogBytes(newPack.bytes);
-		
-		
+        EapMessage eapMessage;
+        eapMessage.setValue(eapIdentity.getBuffer());
+
+        RadiusPacket arPacket;
+        arPacket.setIdentifier(1);
+        arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
+        std::array<radius::byte, 16> authTable = generateRandom16();
+        arPacket.setAuthenticator(authTable);
+        arPacket.addAVP(static_cast<const RadiusAVP &>(eapMessage));
+        calcAndSetMsgAuth(arPacket, secret);
+
+        radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
+        logger->error() << "\r\n" << packet2LogBytes(newPack.bytes);
+
         radius::sendPack(newPack);
         // 2.otrzymuj odpowiedz od Radius server
-       // newPack = radius::receivePack();
+        // newPack = radius::receivePack();
         // 3.access-request z hashem tego jescze nie ma
-       // radius::sendPack(newPack);
+        // radius::sendPack(newPack);
         // 4.success or failure
         /* newPack = radius::receivePack(); */
-		
+
         radius::stopClient();
 
     } catch (ArgException &e) {
@@ -167,4 +166,3 @@ std::string hashString(std::string input, std::string hash) {
     }
     return output;
 }
-

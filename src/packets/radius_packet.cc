@@ -67,14 +67,16 @@ string NasIdentifier::getIdentifier() {
 void MessageAuthenticator::validate() {
     if (buffer.size() != LENGTH) {
         throw InvalidPacket("The Message Authenticator length is incorrect"
-                "("+std::to_string(buffer.size())+")");
+                            "(" +
+                            std::to_string(buffer.size()) + ")");
     }
 }
 
 void EapMessage::validate() {
     if (buffer.size() < MIN_LENGTH) {
         throw InvalidPacket("An EAP-Message length is too small"
-                "("+std::to_string(buffer.size())+")");
+                            "(" +
+                            std::to_string(buffer.size()) + ")");
     }
 }
 
@@ -83,7 +85,8 @@ void NasIdentifier::validate() {}
 void NasIpAddr::validate() {
     if (buffer.size() != LENGTH) {
         throw InvalidPacket("The NAS-IP-Address length is incorrect"
-                "("+std::to_string(buffer.size())+")");
+                            "(" +
+                            std::to_string(buffer.size()) + ")");
     }
 }
 
@@ -178,13 +181,16 @@ bool RadiusPacket::replaceAVP(const RadiusAVP &oldAVP,
 
 void RadiusPacket::validate() {
     unsigned short len = getLength();
-    if (len < MIN_LENGTH){
-        throw InvalidPacket("The length field value ("+std::to_string(len)+")" 
-               "is too small");
+    if (len < MIN_LENGTH) {
+        throw InvalidPacket("The length field value (" + std::to_string(len) +
+                            ")"
+                            "is too small");
     }
     if (len != buffer.size()) {
-        throw InvalidPacket("The length field value ("+std::to_string(len)+")"
-                " is not equal to packet size("+std::to_string(buffer.size())+")" );
+        throw InvalidPacket("The length field value (" + std::to_string(len) +
+                            ")"
+                            " is not equal to packet size(" +
+                            std::to_string(buffer.size()) + ")");
     }
     if (getLength() == MIN_LENGTH) {
         return;
@@ -194,17 +200,21 @@ void RadiusPacket::validate() {
 
     while (it != buffer.end()) {
         if (it + 1 == buffer.end()) {
-            throw InvalidPacket("Unrecognized byte at the position: "
-                    + std::to_string((buffer.begin()-it)));
+            throw InvalidPacket("Unrecognized byte at the position: " +
+                                std::to_string((buffer.begin() - it)));
         }
         byte size = *(it + 1);
         if (it + size > buffer.end()) {
-        throw InvalidPacket("The packet is too short. Should be: "+ std::to_string((it+size-buffer.begin()))+
-            " Is: "+std::to_string(buffer.size())+ ". According to AVP size at "+std::to_string((it+1-buffer.begin()))); 
+            throw InvalidPacket("The packet is too short. Should be: " +
+                                std::to_string((it + size - buffer.begin())) +
+                                " Is: " + std::to_string(buffer.size()) +
+                                ". According to AVP size at " +
+                                std::to_string((it + 1 - buffer.begin())));
         }
         if (size <= RadiusAVP::MIN_SIZE) {
-            throw InvalidPacket("The AVP size value is incorrect (<"+
-                    std::to_string(RadiusAVP::MIN_SIZE)+") at "+std::to_string((it+1-buffer.begin())));
+            throw InvalidPacket("The AVP size value is incorrect (<" +
+                                std::to_string(RadiusAVP::MIN_SIZE) + ") at " +
+                                std::to_string((it + 1 - buffer.begin())));
         }
         it = it + size;
     }
@@ -247,14 +257,14 @@ std::ostream &operator<<(std::ostream &o, const RadiusPacket &packet) {
              packet.codeStr() + ')' << NL;
     o << "1 ID = " + std::to_string(packet.getIdentifier()) << NL;
     o << "2 Length = " + std::to_string(packet.getLength()) << NL;
-    o << "16 Authenticator"<<NL;
+    o << "16 Authenticator" << NL;
     std::vector<std::unique_ptr<RadiusAVP>> avps = packet.getAVPList();
-    o << "Attributes:"<<NL;
+    o << "Attributes:" << NL;
     if (avps.size() == 0) {
-        o << ind1 << "None"<<NL;
+        o << ind1 << "None" << NL;
     }
     for (const auto &avpPtr : avps) {
-        o << ind1<<*avpPtr<<NL;
+        o << ind1 << *avpPtr << NL;
     }
 
     return o;

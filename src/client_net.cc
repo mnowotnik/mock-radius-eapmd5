@@ -52,10 +52,9 @@ void sendPack(packets::Packet sen_pack) {
         exit(EXIT_FAILURE);
     }
     // sockaddr_in dest_addr =sen_pack.addr;
-    std::vector<char> buf(sen_pack.bytes.begin(),
-                          sen_pack.bytes.end());
-    if (sendto(s, &buf[0],buf.size() , 0, (struct sockaddr *)&dest_addr, slen) ==
-        SOCKET_ERROR) {
+    std::vector<char> buf(sen_pack.bytes.begin(), sen_pack.bytes.end());
+    if (sendto(s, &buf[0], buf.size(), 0, (struct sockaddr *)&dest_addr,
+               slen) == SOCKET_ERROR) {
         printf("sendto() failed with error code : %d", WSAGetLastError());
         exit(EXIT_FAILURE);
     }

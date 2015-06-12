@@ -14,10 +14,10 @@ std::string byte2hex(const byte &byte) {
 const int HEX_ROW_WIDTH = 10;
 }
 
-std::string packet2LogBytes(const std::vector<byte>&packet) {
+std::string packet2LogBytes(const std::vector<byte> &packet) {
     std::stringstream log;
     for (int i = 0; i < packet.size(); i++) {
-        if(i%HEX_ROW_WIDTH==0 && i>0){
+        if (i % HEX_ROW_WIDTH == 0 && i > 0) {
             log << NL;
         }
         log << byte2hex(packet[i]);

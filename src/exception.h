@@ -12,6 +12,5 @@ class Exception : public std::exception {
 
 class FileNotFound : public Exception {
   public:
-    explicit FileNotFound(const std::string &message)
-        : Exception(message) {}
+    explicit FileNotFound(const std::string &message) : Exception(message) {}
 };
