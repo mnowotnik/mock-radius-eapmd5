@@ -5,6 +5,8 @@ using std::vector;
 using radius::packets::Packet;
 using radius::packets::RadiusPacket;
 using radius::packets::EapPacket;
+using radius::packets::EapIdentity;
+using radius::packets::EapData;
 
 namespace radius {
 
@@ -43,8 +45,20 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
         }
 
         EapPacket eapPacket(extractEapPacket(radiusPacket));
-
         logger -> info() << "encapsulated EAP packet:" << nl << eapPacket;
+
+        std::unique_ptr<EapData> eapDataPtr(eapPacket.getData());
+        byte eapDataT = eapDataPtr->getType();
+
+        if(eapDataT == EapData::IDENTITY){
+            EapIdentity * eapIden = static_cast<EapIdentity*>(eapDataPtr.get());
+            std::string userName = eapIden->getIdentity();
+            const auto passPtr = userPassMap.find(userName);
+            if(passPtr == userPassMap.end()){
+                return addPendingPackets(packetsToSend);
+            }
+
+        }
     } catch (const packets::InvalidPacket &e) {
         logger -> error() << "Packet invalid. Reason :" << e.what();
         return addPendingPackets(packetsToSend);

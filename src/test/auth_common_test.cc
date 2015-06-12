@@ -12,7 +12,7 @@ using packets::MessageAuthenticator;
 using packets::RadiusAVP;
 
 namespace {
-const std::vector<byte> RADIUS_BASE_BUF = {0x0B,       // code
+const std::vector<byte> RADIUS_BASE_BUF = {0x01,       // code
                                            0x01,       // identifier
                                            0x00, 0x14, // length
                                            0x00, 0x01, 0x02, 0x03, 0x04, 0x05,
@@ -50,6 +50,7 @@ TEST_CASE("Testing MessageAuthenticator checking",
 TEST_CASE("Testing ResponseAuthenticator checking", "[checkAuthenticator]") {
 
     RadiusPacket packet(RADIUS_BASE_BUF);
+    packet.setCode(RadiusPacket::ACCESS_CHALLENGE);
     std::array<byte, 16> authen = packet.getAuthenticator();
     std::array<byte, 16> md5 = md5Bin(packet.getBuffer());
     packet.setAuthenticator(md5);
