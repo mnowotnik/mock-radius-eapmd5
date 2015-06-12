@@ -30,10 +30,15 @@ TEST_CASE("Print RadiusPacket") {
     RadiusPacket packet(RADIUS_BASE_BUF);
     std::ostringstream stream;
     stream << packet;
+    // clang-format off
     REQUIRE(stream.str() ==
-            "1 Code = 1(Access-Request)" + NL + "1 ID = 1" + NL +
-                "2 Length = 20" + NL + "16 Authenticator" + NL + "Attributes:" +
-                NL + "    None" + NL);
+            "1 Code = 1(Access-Request)" + NL + 
+            "1 ID = 1" + NL +
+            "2 Length = 20" + NL + 
+            "16 Authenticator" + NL + 
+            "Attributes:" + NL + 
+            "    None" + NL);
+    // clang-format on
 }
 TEST_CASE("Print RadiusPacket with AVPs") {
     RadiusPacket packet(RADIUS_BASE_BUF);
@@ -44,11 +49,16 @@ TEST_CASE("Print RadiusPacket with AVPs") {
     packet.addAVP(static_cast<const RadiusAVP &>(em));
     std::ostringstream stream;
     stream << packet;
+    // clang-format off
     REQUIRE(stream.str() ==
-            "1 Code = 2(Access-Accept)" + NL + "1 ID = 1" + NL +
-                "2 Length = 42" + NL + "16 Authenticator" + NL + "Attributes:" +
-                NL + "    18 Message Authenticator" + NL + "    4 Eap-Message" +
-                NL);
+            "1 Code = 2(Access-Accept)" + NL + 
+            "1 ID = 1" + NL +
+            "2 Length = 42" + NL + 
+            "16 Authenticator" + NL + 
+            "Attributes:" + NL + 
+            "    18 Message Authenticator" + NL + 
+            "    4 Eap-Message" + NL);
+    // clang-format on
 }
 
 TEST_CASE("Print EapPacket") {
@@ -64,9 +74,14 @@ TEST_CASE("Print EapPacket") {
     std::ostringstream stream;
     stream << packet;
 
+    // clang-format off
     REQUIRE(stream.str() ==
-            "1 Type = 3(Success)" + NL + "1 ID = 1" + NL + "2 Length = 4" + NL +
-                "Type-data:" + NL + "    None" + NL);
+            "1 Type = 3(Success)" + NL + 
+            "1 ID = 1" + NL + 
+            "2 Length = 4" + NL +
+            "Type-data:" + NL + 
+            "    None" + NL);
+    // clang-format on
     packet.setType(EapPacket::REQUEST);
     packet.setData(eapId);
 
@@ -74,9 +89,14 @@ TEST_CASE("Print EapPacket") {
     stream.clear();
 
     stream << packet;
+    // clang-format off
     REQUIRE(stream.str() ==
-            "1 Type = 1(Request)" + NL + "1 ID = 1" + NL + "2 Length = 8" + NL +
-                "Type-data:" + NL + "    4 Identity: foo" + NL);
+            "1 Type = 1(Request)" + NL + 
+            "1 ID = 1" + NL + 
+            "2 Length = 8" + NL +
+            "Type-data:" + NL + 
+            "    4 Identity: foo" + NL);
+    // clang-format on
 }
 }
 }
