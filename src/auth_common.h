@@ -44,4 +44,6 @@ std::unique_ptr<packets::MessageAuthenticator> findMessageAuthenticator(const pa
 
 std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max);
 std::array<byte,16> generateRandom16();
+std::array<byte,16> calcChalVal(const packets::EapPacket &packet,const std::string &secret);
+packets::EapPacket makeIdentity(const std::string id);
 }
