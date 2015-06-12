@@ -101,18 +101,18 @@ std::ostream &operator<<(std::ostream &o, const EapPacket &packet) {
 
     const std::string ind1(4, ' ');
     o << "1 Type = " + std::to_string(packet.getType()) + '(' +
-             packet.typeStr() + ')' + '\n';
-    o << "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
-    o << "2 Length = " + std::to_string(packet.getLength()) + '\n';
-    o << "Type-data:\n";
+             packet.typeStr() + ')' + NL;
+    o << "1 ID = " + std::to_string(packet.getIdentifier()) + NL;
+    o << "2 Length = " + std::to_string(packet.getLength()) + NL;
+    o << "Type-data:"<< NL;
     o << ind1;
 
     if (packet.getType() == EapPacket::SUCCESS ||
         packet.getType() == EapPacket::FAILURE) {
-        o << "None\n";
+        o << "None" << NL;
     } else {
         o << *(packet.getData());
-        o << '\n';
+        o << NL;
     }
     return o;
 }
@@ -123,10 +123,12 @@ std::string EapPacket::typeStr() const {
         return "Request";
     case RESPONSE:
         return "Response";
-    case 3:
+    case SUCCESS:
         return "Success";
-    default:
+    case FAILURE:
         return "Failure";
+    default:
+        return "UNRECOGNIZED EAP TYPE";
     }
 }
 }

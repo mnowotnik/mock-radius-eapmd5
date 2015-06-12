@@ -1,6 +1,7 @@
 #pragma once
 #include "packets/common.h"
 #include "packets/eap_packet.h"
+#include "constants.h"
 #include <vector>
 #include <array>
 #include <string>

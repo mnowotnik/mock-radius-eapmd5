@@ -1,6 +1,7 @@
 #pragma once
 #include "packets/common.h"
 #include "typedefs.h"
+#include "constants.h"
 #include <string>
 #include <vector>
 

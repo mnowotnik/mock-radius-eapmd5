@@ -18,7 +18,7 @@ std::string packet2LogBytes(const std::vector<byte>&packet) {
     std::stringstream log;
     for (int i = 0; i < packet.size(); i++) {
         if(i%HEX_ROW_WIDTH==0 && i>0){
-            log << "\r\n";
+            log << NL;
         }
         log << byte2hex(packet[i]);
     }

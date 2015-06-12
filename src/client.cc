@@ -104,8 +104,6 @@ int main(int argc, char **argv) {
 
         //radius::packets::Packet newPack(temp, server_addr);
 		
-        // printf("send data:\n");
-        // printf("%d\n",newPack.bytes[0]);
         radius::startClient(ip.c_str(), port);
         // 1.access-request
 		using namespace radius;
@@ -137,10 +135,8 @@ int main(int argc, char **argv) {
         // 3.access-request z hashem tego jescze nie ma
        // radius::sendPack(newPack);
         // 4.success or failure
-        newPack = radius::receivePack();
+        /* newPack = radius::receivePack(); */
 		
-        printf("recieve data:\n");
-        printf("%d", newPack.bytes[0]);
         radius::stopClient();
 
     } catch (ArgException &e) {

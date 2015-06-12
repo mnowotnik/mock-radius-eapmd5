@@ -10,10 +10,6 @@ using radius::packets::EapData;
 
 namespace radius {
 
-    namespace{
-        const std::string nl ("\r\n");
-    }
-
 RadiusServer::RadiusServer(const map<string, string> &userPassMap,
                            const string &secret, const Logger &logger)
     : userPassMap(userPassMap), secret(secret), logger(logger) {}
@@ -25,10 +21,10 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
 
     try {
         RadiusPacket radiusPacket(packet.bytes);
-        logger -> info() << nl << radiusPacket;
+        logger -> info() << NL << radiusPacket;
 
         if(!isValid(radiusPacket)){
-            logger -> warn() << "Input packet has invaild structure. Requires only one Message Authenticator and "<<nl
+            logger -> warn() << "Input packet has invaild structure. Requires only one Message Authenticator and "<<NL
                 << "at least one EAP-Message";
             return addPendingPackets(packetsToSend);
         }
@@ -44,7 +40,7 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
         }
 
         EapPacket eapPacket(extractEapPacket(radiusPacket));
-        logger -> info() << "Encapsulated EAP packet:" << nl << eapPacket;
+        logger -> info() << "Encapsulated EAP packet:" << NL << eapPacket;
 
         std::unique_ptr<EapData> eapDataPtr(eapPacket.getData());
         byte eapDataT = eapDataPtr->getType();
@@ -60,7 +56,7 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
         }
     } catch (const packets::InvalidPacket &e) {
         logger -> error() << "Packet invalid. Reason :" << e.what();
-        logger -> error() << "Packet dump:"<<nl << packet2LogBytes(packet.bytes);
+        logger -> error() << "Packet dump:"<<NL << packet2LogBytes(packet.bytes);
         return addPendingPackets(packetsToSend);
     }
     return addPendingPackets(packetsToSend);

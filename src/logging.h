@@ -2,6 +2,7 @@
 #include "packets/eap_packet.h"
 #include "spdlog/spdlog.h"
 #include "typedefs.h"
+#include "constants.h"
 #include <sstream>
 #include <string>
 #include <sstream>

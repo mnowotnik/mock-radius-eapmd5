@@ -244,19 +244,17 @@ RadiusAVP *RadiusAVP::factoryFun(const std::vector<byte> &bytes) {
 std::ostream &operator<<(std::ostream &o, const RadiusPacket &packet) {
     std::string ind1(4, ' ');
     o << "1 Code = " + std::to_string(packet.getCode()) + '(' +
-             packet.codeStr() + ')' + '\n';
-    o << "1 ID = " + std::to_string(packet.getIdentifier()) + '\n';
-    o << "2 Length = " + std::to_string(packet.getLength()) + '\n';
-    o << "16 Authenticator\n";
+             packet.codeStr() + ')' << NL;
+    o << "1 ID = " + std::to_string(packet.getIdentifier()) << NL;
+    o << "2 Length = " + std::to_string(packet.getLength()) << NL;
+    o << "16 Authenticator"<<NL;
     std::vector<std::unique_ptr<RadiusAVP>> avps = packet.getAVPList();
-    o << "Attributes:\n";
+    o << "Attributes:"<<NL;
     if (avps.size() == 0) {
-        o << ind1 + "None\n";
+        o << ind1 << "None"<<NL;
     }
     for (const auto &avpPtr : avps) {
-        o << ind1;
-        o << *avpPtr;
-        o << '\n';
+        o << ind1<<*avpPtr<<NL;
     }
 
     return o;
