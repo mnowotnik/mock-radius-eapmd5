@@ -57,7 +57,9 @@ using namespace radius::packets;
         /*while (1) {
             radius::sendData(radius::receiveData());
         }*/
-		radServer.recvPacket(radius::receiveData());
+		Packet iPacket = radius::receiveData();
+		printf("%d", iPacket.bytes[0]);
+		radServer.recvPacket(iPacket);
 		
         radius::stopServer();
     } catch (CmdLineParseException &ce) {

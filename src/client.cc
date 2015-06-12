@@ -47,11 +47,17 @@ int main(int argc, char **argv) {
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("", "port", "Binded port", false, 8080, "number");
+        ValueArg<int> portArg("", "port", "Binded port", false, 0, "number");
         cmd.add(portArg);
 
-        ValueArg<string> ipArg("a", "address", "Binded IP address", false,
+        ValueArg<string> bindIpArg("b", "bind-address", "Binded IP address", false,
                                "127.0.0.1", "IP");
+			
+		cmd.add(bindIpArg);
+			
+		ValueArg<string> ipArg("a", "address", "Server IP address", false,
+                               "127.0.0.1", "IP");					   
+							   
         cmd.add(ipArg);
 
         ValueArg<string> hashArg(
@@ -87,7 +93,7 @@ int main(int argc, char **argv) {
         }
         pas = hashString(pas, hash);
 
-        radius::packets::Packet newPack(temp, server_addr);
+        //radius::packets::Packet newPack(temp, server_addr);
 		
         // printf("send data:\n");
         // printf("%d\n",newPack.bytes[0]);
@@ -111,6 +117,8 @@ int main(int argc, char **argv) {
 		arPacket.setAuthenticator(authTable);
 		arPacket.addAVP(static_cast <const RadiusAVP&>(eapMessage));
 		calcAndSetMsgAuth(arPacket,secret);
+		radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
+		
 		
         radius::sendPack(newPack);
         // 2.otrzymuj odpowiedz od Radius server
