@@ -93,6 +93,7 @@ int main(int argc, char **argv) {
         radius::sendPack(newPack);
         // 4.success or failure
         newPack = radius::receivePack();
+		
         printf("recieve data:\n");
         printf("%d", newPack.bytes[0]);
         radius::stopClient();

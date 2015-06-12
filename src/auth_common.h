@@ -5,6 +5,10 @@
 #include "packets/eap_packet.h"
 #include "crypto.h"
 #include "typedefs.h"
+#include <random>
+/* #include <climits> */
+#include <algorithm>
+#include <functional>
 
 namespace radius {
 
@@ -19,4 +23,5 @@ bool checkIntegrity(
 
 bool isRequest(const packets::RadiusPacket &packet);
 bool isValid(const packets::RadiusPacket &packet);
+std::vector<byte> generateRandomBytes(int min,int max);
 }

@@ -9,22 +9,7 @@ using radius::packets::EapPacket;
 namespace radius {
 
     namespace{
-        std::mt19937 seedGen(std::random_device{}());
-        typedef std::uniform_int_distribution<unsigned int> IntGenerator;
-        typedef std::independent_bits_engine<std::mt19937,4,unsigned int> UniBiIntGenerator;
 
-        IntGenerator genLen{5,25};
-        UniBiIntGenerator genBytes(seedGen);
-
-        std::vector<byte> generateRandomBytes(){
-            unsigned int len = genLen(seedGen);
-            std::vector<byte> randInts(len);
-            std::generate(randInts.begin(),randInts.end(),[&]{return genBytes();});
-
-            byte*castInts = static_cast<byte*>(&randInts[0]);
-            std::vector<byte> bytes(&castInts[0],&castInts[randInts.size()*4]);
-            return bytes;
-        }
         const std::string nl ("\n");
     }
 

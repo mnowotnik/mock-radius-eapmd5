@@ -7,6 +7,11 @@ using radius::packets::MessageAuthenticator;
 namespace {
 // array of 0s
 const std::array<byte, 16> nullAuth{};
+typedef std::uniform_int_distribution<unsigned int> IntGenerator;
+typedef std::independent_bits_engine<std::mt19937,4,unsigned int> UniBiIntGenerator;
+std::mt19937 seedGen(std::random_device{}());
+UniBiIntGenerator genBytes(seedGen);
+
 }
 
 namespace radius {
@@ -60,6 +65,22 @@ bool isRequest(const RadiusPacket &packet){
     }
     return false;
 }
+
+
+			
+
+
+		std::vector<byte> generateRandomBytes(unsigned int min,unsigned int max){
+				IntGenerator genLen{min,max};
+				unsigned int len = genLen(seedGen);
+				std::vector<byte> randInts(len);
+				std::generate(randInts.begin(),randInts.end(),[&]{return genBytes();});
+
+				byte*castInts = static_cast<byte*>(&randInts[0]);
+				std::vector<byte> bytes(&castInts[0],&castInts[randInts.size()*4]);
+				return bytes;
+			}
+    
 bool isValid(const RadiusPacket &packet){
     std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
     int messageAuthenticatorC = 0;
