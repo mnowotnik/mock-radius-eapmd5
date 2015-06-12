@@ -10,6 +10,9 @@ namespace radius {
 using packets::RadiusPacket;
 using packets::MessageAuthenticator;
 using packets::RadiusAVP;
+using packets::EapPacket;
+using packets::EapData;
+using packets::EapMd5Challenge;
 
 namespace {
 const std::vector<byte> RADIUS_BASE_BUF = {0x01,       // code
@@ -117,5 +120,20 @@ TEST_CASE("Testing min max", "[generateRandomBytes]") {
     REQUIRE(gen1.size()>=6*4);
 	REQUIRE(gen1.size()<=9*4);
 	}
+}
+
+TEST_CASE("Calculate challenge value","[calcChalVal]"){
+    std::vector<byte> buffer;
+    const byte ident = 1;
+    buffer.push_back(ident);
+    buffer.insert(buffer.end(),secret.begin(),secret.end());
+    buffer.insert(buffer.end(),EMPTY_MD5.begin(),EMPTY_MD5.end());
+
+    EapPacket packet;
+    packet.setIdentifier(ident);
+    EapMd5Challenge md5Chal;
+    md5Chal.setValue(std::vector<byte>(EMPTY_MD5.begin(),EMPTY_MD5.end()));
+    packet.setData(dynamic_cast<const EapData&>(md5Chal));
+    REQUIRE(md5Bin(buffer) == calcChalVal(packet,secret));
 }
 }

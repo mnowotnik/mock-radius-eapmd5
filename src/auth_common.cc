@@ -172,6 +172,7 @@ std::vector<byte> generateRandomBytes(unsigned int min,unsigned int max){
 		std::vector<byte> bytes(&castInts[0],&castInts[randInts.size()*4]);
 		return bytes;
 	}
+
 std::array<byte,16> generateRandom16(){
     std::array<byte,16> arr;
     std::vector<byte> vec = generateRandomBytes(4,4);
@@ -183,7 +184,7 @@ std::array<byte,16> calcChalVal(const packets::EapPacket &packet,const std::stri
     buffer.push_back(packet.getIdentifier());
     buffer.insert(buffer.end(),secret.begin(),secret.end());
     std::unique_ptr<EapData> eapData = packet.getData();
-    EapMd5Challenge * md5Chal = static_cast<EapMd5Challenge*>(eapData.get());
+    EapMd5Challenge * md5Chal = dynamic_cast<EapMd5Challenge*>(eapData.get());
     std::vector<byte> md5ChalVec = md5Chal->getValue();
     buffer.insert(buffer.end(),md5ChalVec.begin(),md5ChalVec.end());
     return md5Bin(buffer);
