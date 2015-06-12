@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
             false, "", "string");
         cmd.add(loginArg);
 
-        ValueArg<string> passArg("p", "password", "The password of a user",
+        ValueArg<string> passArg("", "password", "The password of a user",
                                  false, "", "string");
         cmd.add(passArg);
 
@@ -47,11 +47,11 @@ int main(int argc, char **argv) {
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("", "port", "Binded port", false, 0, "number");
+        ValueArg<int> portArg("p", "port", "Binded port", false, 0, "number");
         cmd.add(portArg);
 
-        ValueArg<string> bindIpArg("b", "bind-address", "Binded IP address", false,
-                               "127.0.0.1", "IP");
+        ValueArg<string> bindIpArg("b", "bind-ip", "Binded IP address", false,
+                               "0.0.0.0", "IP");
 			
 		cmd.add(bindIpArg);
 			
@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
 
         int port = portArg.getValue();
         string ip = ipArg.getValue();
+		string bindIp = ipArg.getValue();
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
         radius::initLogger(logpath, LOGGER_NAME);
@@ -86,7 +87,7 @@ int main(int argc, char **argv) {
         server_addr.sin_family = AF_INET;
         server_addr.sin_addr.s_addr = INADDR_ANY;
         server_addr.sin_port = htons(port);
-
+		
         if (inter) {
             login = radius::getUsername();
             pas = radius::getPassword("Enter password:\n");
@@ -116,7 +117,7 @@ int main(int argc, char **argv) {
 		std::array<radius::byte,16> authTable= generateRandom16();
 		arPacket.setAuthenticator(authTable);
 		arPacket.addAVP(static_cast <const RadiusAVP&>(eapMessage));
-		calcAndSetMsgAuth(arPacket,secret);
+		//calcAndSetMsgAuth(arPacket,secret);
 		radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
 		
 		
@@ -126,7 +127,7 @@ int main(int argc, char **argv) {
         // 3.access-request z hashem tego jescze nie ma
        // radius::sendPack(newPack);
         // 4.success or failure
-       // newPack = radius::receivePack();
+        newPack = radius::receivePack();
 		
         printf("recieve data:\n");
         printf("%d", newPack.bytes[0]);
