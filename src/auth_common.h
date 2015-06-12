@@ -13,10 +13,11 @@
 
 namespace radius {
 
-bool checkMessageAuthenticator(const packets::RadiusPacket &packet,
-                               const std::string &secret);
 bool checkAuthenticator(const packets::RadiusPacket &packet,
-                        const std::array<byte, 16> &authenticator);
+                               const std::array<byte, 16> &authenticator = std::array<byte, 16>{});
+bool checkMessageAuthenticator(const packets::RadiusPacket &packet,
+                               const std::string &secret,
+                               const std::array<byte, 16> &authenticator = std::array<byte, 16>{});
 
 bool checkIntegrity(
     const packets::RadiusPacket &packet, const std::string &secret,
@@ -24,5 +25,13 @@ bool checkIntegrity(
 
 bool isRequest(const packets::RadiusPacket &packet);
 bool isValid(const packets::RadiusPacket &packet);
+
+std::array<byte,16> calcAuthenticatorChecksum(const packets::RadiusPacket &packet,
+        const std::array<byte, 16> &authenticator);
+
+std::array<byte,16> calcMessageAuthenticatorChecksum(const packets::RadiusPacket &packet,
+        const std::string &secret,
+        const std::array<byte, 16> &authenticator);
+
 std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max);
 }
