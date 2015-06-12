@@ -39,9 +39,12 @@ int main(int argc, char **argv) {
                                  false, "", "string");
         cmd.add(passArg);
 
-        SwitchArg interSwitch("i", "interactive",
-                              "Run in the interactive mode", false);
-        cmd.add(interSwitch);
+/*         SwitchArg interSwitch("i", "interactive", */
+/*                               "Run in the interactive mode", false); */
+/*         cmd.add(interSwitch); */
+
+        SwitchArg verboseSwitch("v", "verbose","Run in the verbose mode",false);
+        cmd.add(verboseSwitch);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
                                    true, "", "string");
@@ -55,8 +58,8 @@ int main(int argc, char **argv) {
 			
 		cmd.add(bindIpArg);
 			
-		ValueArg<string> ipArg("a", "address", "Server IP address", false,
-                               "127.0.0.1", "IP");					   
+		ValueArg<string> ipArg("a", "address", "Server IP address", true,
+                               "", "IP");					   
 							   
         cmd.add(ipArg);
 
@@ -74,13 +77,18 @@ int main(int argc, char **argv) {
         string logpath = logpathArg.getValue();
         radius::initLogger(logpath, LOGGER_NAME);
 
+        bool verbose = verboseSwitch.getValue();
+        if(verbose){
+            spdlog::set_level(spdlog::level::trace);
+        }
+
         auto logger = spdlog::get(LOGGER_NAME);
 
         string hash = hashArg.getValue();
 
         string login = loginArg.getValue();
         string pas = passArg.getValue();
-        bool inter = interSwitch.getValue();
+        /* bool inter = interSwitch.getValue(); */
         // setup address structure //adres serwera
         struct sockaddr_in server_addr;
         memset((char *)&server_addr, 0, sizeof(server_addr));
@@ -88,10 +96,10 @@ int main(int argc, char **argv) {
         server_addr.sin_addr.s_addr = INADDR_ANY;
         server_addr.sin_port = htons(port);
 		
-        if (inter) {
-            login = radius::getUsername();
-            pas = radius::getPassword("Enter password:\n");
-        }
+        /* if (inter) { */
+        /*     login = radius::getUsername(); */
+        /*     pas = radius::getPassword("Enter password:\n"); */
+        /* } */
         pas = hashString(pas, hash);
 
         //radius::packets::Packet newPack(temp, server_addr);
@@ -103,7 +111,7 @@ int main(int argc, char **argv) {
 		using namespace radius;
 		using namespace radius::packets;	
 		EapPacket eapIdentity;
-		eapIdentity= makeIdentity(login);
+		eapIdentity = makeIdentity(login);
 		eapIdentity.setType(EapPacket::RESPONSE);
 		eapIdentity.setIdentifier(1);
 		
@@ -117,8 +125,10 @@ int main(int argc, char **argv) {
 		std::array<radius::byte,16> authTable= generateRandom16();
 		arPacket.setAuthenticator(authTable);
 		arPacket.addAVP(static_cast <const RadiusAVP&>(eapMessage));
-		//calcAndSetMsgAuth(arPacket,secret);
+		calcAndSetMsgAuth(arPacket,secret);
+
 		radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
+        logger->error() <<"\r\n"<<packet2LogBytes(newPack.bytes);
 		
 		
         radius::sendPack(newPack);

@@ -11,8 +11,7 @@ using radius::packets::EapData;
 namespace radius {
 
     namespace{
-
-        const std::string nl ("\n");
+        const std::string nl ("\r\n");
     }
 
 RadiusServer::RadiusServer(const map<string, string> &userPassMap,
@@ -20,22 +19,22 @@ RadiusServer::RadiusServer(const map<string, string> &userPassMap,
     : userPassMap(userPassMap), secret(secret), logger(logger) {}
 
 const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
-    logger -> info() << "Incoming RADIUS packet:";
+    logger -> info() << "Incoming RADIUS packet";
 
     vector<Packet> packetsToSend;
 
     try {
-        logger -> error() << nl << packet2LogBytes(packet.bytes);
         RadiusPacket radiusPacket(packet.bytes);
         logger -> info() << nl << radiusPacket;
 
         if(!isValid(radiusPacket)){
-            logger -> warn() << "Packet has invaild structure";
+            logger -> warn() << "Input packet has invaild structure. Requires only one Message Authenticator and "<<nl
+                << "at least one EAP-Message";
             return addPendingPackets(packetsToSend);
         }
 
         if(!isRequest(radiusPacket)){
-            logger -> warn() << "Packet has wrong type";
+            logger -> warn() << "Packet has wrong type. Is not an Access-Request";
             return addPendingPackets(packetsToSend);
         }
 
@@ -45,7 +44,7 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
         }
 
         EapPacket eapPacket(extractEapPacket(radiusPacket));
-        logger -> info() << "encapsulated EAP packet:" << nl << eapPacket;
+        logger -> info() << "Encapsulated EAP packet:" << nl << eapPacket;
 
         std::unique_ptr<EapData> eapDataPtr(eapPacket.getData());
         byte eapDataT = eapDataPtr->getType();
@@ -61,8 +60,10 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
         }
     } catch (const packets::InvalidPacket &e) {
         logger -> error() << "Packet invalid. Reason :" << e.what();
+        logger -> error() << "Packet dump:"<<nl << packet2LogBytes(packet.bytes);
         return addPendingPackets(packetsToSend);
     }
+    return addPendingPackets(packetsToSend);
 }
 const vector<Packet>
 RadiusServer::addPendingPackets(vector<Packet> packetsToSend) {

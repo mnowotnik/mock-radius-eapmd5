@@ -1,4 +1,5 @@
 #include "packets/eap_packet.h"
+#include <iostream>
 
 using std::vector;
 using std::string;
