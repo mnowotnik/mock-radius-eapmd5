@@ -2,6 +2,7 @@
 #include "server_loop.h"
 #include "tclap/CmdLine.h"
 #include "logging.h"
+#include "csv_reader.h"
 
 const std::string LOGGER_NAME = "server";
 
@@ -36,6 +37,8 @@ int main(int argc, char **argv) {
         cmd.add(ipArg);
 
         cmd.parse(argc, argv);
+using namespace radius;
+using namespace radius::packets;
 
         int port = portArg.getValue();
         string ip = ipArg.getValue();
@@ -49,10 +52,12 @@ int main(int argc, char **argv) {
 
         radius::startServer(ip.c_str(), port);
         // temporary server loop
-        while (1) {
+		RadiusServer radServer(readCsvFile(dbpath),secret,logger);
+        /*while (1) {
             radius::sendData(radius::receiveData());
-        }
-
+        }*/
+		radServer.recvPacket(radius::receiveData());
+		
         radius::stopServer();
     } catch (CmdLineParseException &ce) {
         cerr << "error: " << ce.error() << ce.argId() << endl;

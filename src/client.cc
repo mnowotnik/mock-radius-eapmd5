@@ -8,6 +8,10 @@
 #include "spdlog/spdlog.h"
 #include "logging.h"
 #include "auth_common.h"
+#include "packets/radius_packet.h"
+#include "packets/eap_packet.h"
+#include "packets/packet.h"
+
 
 using namespace std;
 const std::vector<byte> temp = {0xe0, 0xbd, 0x18, 0xdb, 0x4c, 0xc2, 0xf8, 0x5c,
@@ -89,13 +93,29 @@ int main(int argc, char **argv) {
         // printf("%d\n",newPack.bytes[0]);
         radius::startClient(ip.c_str(), port);
         // 1.access-request
+		using namespace radius;
+		using namespace radius::packets;	
+		EapPacket eapIdentity;
+		eapIdentity.setIdentity(login);
+		EapMessage eapMessage;
+		eapMessage.setValue(eapIdentity.getBuffer());
+		
+	
+		RadiusPacket arPacket;
+		arPacket.setIdentifier(1);
+		arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
+		std::array<byte,16> authTable= generateRandomBytes16();
+		arPacket.setAuthenticator(authTable);
+		arPacket.addAVP(static_cast <const RadiusAVP&>(eapMessage));
+		calcAndSetMsgAuth(arPacket,secret);
+		
         radius::sendPack(newPack);
         // 2.otrzymuj odpowiedz od Radius server
-        newPack = radius::receivePack();
-        // 3.access-request z hashem
-        radius::sendPack(newPack);
+       // newPack = radius::receivePack();
+        // 3.access-request z hashem tego jescze nie ma
+       // radius::sendPack(newPack);
         // 4.success or failure
-        newPack = radius::receivePack();
+       // newPack = radius::receivePack();
 		
         printf("recieve data:\n");
         printf("%d", newPack.bytes[0]);
@@ -129,3 +149,4 @@ std::string hashString(std::string input, std::string hash) {
     }
     return output;
 }
+
