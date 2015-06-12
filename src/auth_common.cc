@@ -172,7 +172,6 @@ std::vector<byte> generateRandomBytes(unsigned int min,unsigned int max){
 		std::vector<byte> bytes(&castInts[0],&castInts[randInts.size()*4]);
 		return bytes;
 	}
-
 std::array<byte,16> generateRandom16(){
     std::array<byte,16> arr;
     std::vector<byte> vec = generateRandomBytes(4,4);
