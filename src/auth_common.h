@@ -24,5 +24,5 @@ bool checkIntegrity(
 
 bool isRequest(const packets::RadiusPacket &packet);
 bool isValid(const packets::RadiusPacket &packet);
-std::vector<byte> generateRandomBytes(int min,int max);
+std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max);
 }

@@ -53,8 +53,8 @@ bool checkAuthenticator(const RadiusPacket &packet,
     }
     return true;
 }
-bool checkIntegrity(const RadiusPacket &packet, const std::string &secret,
-                    const std::array<byte, 16> &authenticator) {
+bool checkIntegrity(const packets::RadiusPacket &packet, const std::string &secret,
+    const std::array<byte, 16> &authenticator) {
 
     return checkAuthenticator(packet, authenticator) &&
            checkMessageAuthenticator(packet, secret);
