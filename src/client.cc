@@ -7,6 +7,8 @@
 #include "sha3.h"
 #include "spdlog/spdlog.h"
 #include "logging.h"
+#include "auth_common.h"
+
 using namespace std;
 const std::vector<byte> temp = {0xe0, 0xbd, 0x18, 0xdb, 0x4c, 0xc2, 0xf8, 0x5c,
                                 0xed, 0xef, 0x65, 0x4f, 0xcc, 0xc4, 0xa4, 0xd8};
@@ -82,6 +84,7 @@ int main(int argc, char **argv) {
         pas = hashString(pas, hash);
 
         radius::packets::Packet newPack(temp, server_addr);
+		
         // printf("send data:\n");
         // printf("%d\n",newPack.bytes[0]);
         radius::startClient(ip.c_str(), port);
