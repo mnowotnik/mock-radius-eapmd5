@@ -11,22 +11,22 @@ HASHLIB=$(ROOT)\lib\hash-library
 TCLAP=$(ROOT)\lib\tclap-1.2.1\include
 CATCH=$(ROOT)\lib\Catch\single_include
 SPDLOG=$(ROOT)\lib\spdlog\include
-CSV_PARSER=$(ROOT)\fast-cpp-csv-parser\include
+CSV_PARSER=$(ROOT)\lib\fast-cpp-csv-parser\include
 
 
 ### Object dependencies ###
 COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC)\logging.obj \
 			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj \
-			$(SRC)\packets\utils.obj
+			$(SRC)\packets\utils.obj $(SRC)\csv_reader.obj
 
 SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_loop.obj $(COMMON_OBJS)
 
 CLIENT_OBJS=$(SRC)\client.obj $(SRC)\client_net.obj $(SRC)\interactive.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj $(HASHLIB)\sha3.obj $(HASHLIB)\sha256.obj $(COMMON_OBJS)
 
 TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
-		   $(SRC)\test\server_loop_test.obj $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj \
+		   $(SRC)\test\server_loop_test.obj $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj $(SRC)\test\csv_test.obj \
 		   $(SRC)\test\crypto_test.obj \
-		   $(SRC)\radius_server.obj $(SRC)\server_loop.obj \
+		   $(SRC)\radius_server.obj $(SRC)\server_loop.obj  \
 		   $(COMMON_OBJS)
 
 
@@ -39,9 +39,9 @@ TESTS=all_tests.exe
 ### Include flags ###
 COMMON_INC=/I$(HASHLIB) /I$(TCLAP) /I$(SRC) /I$(SPDLOG)
 
-SERVER_INC=$(COMMON_INC) /I$(CSV_PARSER)
+SERVER_INC=$(COMMON_INC) 
 CLIENT_INC=$(COMMON_INC)
-TESTS_INC=/I$(HASHLIB) /I$(CATCH) /I$(SRC) /I$(SPDLOG)
+TESTS_INC=/I$(HASHLIB) /I$(CATCH) /I$(SRC) /I$(SPDLOG) 
 
 ### Other flags ###
 CFLAGS = /EHsc /MP
@@ -69,7 +69,7 @@ $(SRC)\client.obj: $(SRC)\client.cc
 	pushd $(SRC) & $(CC) $(CFLAGS) $(CLIENT_INC) -c $? \
 		& popd
 
-$(SRC)\all_tests.obj: $(SRC)\all_tests.cc
+$(SRC)\all_tests.obj: $(SRC)\all_tests.cc  
 	pushd $(SRC) & $(CC) $(CFLAGS) $(TESTS_INC) -c $? \
 		& popd
 

@@ -114,8 +114,8 @@ TEST_CASE("Testing min max", "[generateRandomBytes]") {
 	{
 	std::vector<byte> gen1 = generateRandomBytes((unsigned int)6,(unsigned int)9);
 	
-    REQUIRE(gen1.size()>5);
-	REQUIRE(gen1.size()<10);
+    REQUIRE(gen1.size()>=6*4);
+	REQUIRE(gen1.size()<=9*4);
 	}
 }
 }
