@@ -70,16 +70,7 @@ bool isRequest(const RadiusPacket &packet){
 			
 
 
-		std::vector<byte> generateRandomBytes(unsigned int min,unsigned int max){
-				IntGenerator genLen{min,max};
-				unsigned int len = genLen(seedGen);
-				std::vector<byte> randInts(len);
-				std::generate(randInts.begin(),randInts.end(),[&]{return genBytes();});
 
-				byte*castInts = static_cast<byte*>(&randInts[0]);
-				std::vector<byte> bytes(&castInts[0],&castInts[randInts.size()*4]);
-				return bytes;
-			}
     
 bool isValid(const RadiusPacket &packet){
     std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
@@ -97,4 +88,15 @@ bool isValid(const RadiusPacket &packet){
     return messageAuthenticatorC == 1 && eapMessageC > 0;
 }
 
+std::vector<byte> generateRandomBytes(unsigned int min,unsigned int max){
+		IntGenerator genLen{min,max};
+		unsigned int len = genLen(seedGen);
+		std::vector<byte> randInts(len);
+		std::generate(randInts.begin(),randInts.end(),[&]{return genBytes();});
+
+		byte*castInts = static_cast<byte*>(&randInts[0]);
+		std::vector<byte> bytes(&castInts[0],&castInts[randInts.size()*4]);
+		return bytes;
+	}
+			
 }

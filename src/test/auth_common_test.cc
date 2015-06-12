@@ -59,4 +59,26 @@ TEST_CASE("Testing ResponseAuthenticator checking", "[checkAuthenticator]") {
     authen[0] = 0xFF;
     REQUIRE_FALSE(checkAuthenticator(packet, authen));
 }
+TEST_CASE("Testing generate random bytes", "[generateRandomBytes]") {
+	int i;
+	for(i=0;i<15;i++)
+	{
+	std::vector<byte> gen1 = generateRandomBytes(5,5);
+	std::vector<byte> gen2 = generateRandomBytes(5,5);
+	REQUIRE(gen1.size()==5);
+	REQUIRE_FALSE(gen1==gen2);
+	
+	}
+}
+
+TEST_CASE("Testing min max", "[generateRandomBytes]") {
+	int i;
+	for(i=0;i<26;i++)
+	{
+	std::vector<byte> gen1 = generateRandomBytes(6,9);
+	
+    REQUIRE(gen1.size()>5);
+	REQUIRE(gen1.size()<10);
+	}
+}
 }
