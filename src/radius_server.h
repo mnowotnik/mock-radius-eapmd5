@@ -47,6 +47,7 @@ class RadiusServer {
         std::vector<byte> challenge;
     };
     std::unique_ptr<AuthData> persistChal;
+    std::unique_ptr<std::string> persistPass;
 
     std::map<AuthRequestId, AuthData, AuthRequestIdCompare> authProcMap;
 

@@ -64,6 +64,8 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
                 return addPendingPackets(packetsToSend);
             }
 
+            persistPass.reset(new std::string(passPtr->second));//TODO
+
             const std::string userPass = passPtr->second;
             EapPacket eapReq;
             eapReq.setType(EapPacket::REQUEST);
@@ -103,13 +105,13 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             std::copy(md5RespVec.begin(),md5RespVec.end(),md5RespArr.begin());
 
             EapMd5Challenge eapMd5Ref(*eapMd5Ptr);
-            std::array<byte,16> md5RespArrRef = calcChalVal(eapPacket.getIdentifier(),persistChal->challenge,secret);
+            std::array<byte,16> md5RespArrRef = calcChalVal(eapPacket.getIdentifier(),persistChal->challenge,*persistPass);
 
             EapPacket respEapPacket;
             RadiusPacket respPacket;
             if(md5RespArrRef == md5RespArr){
                 respEapPacket.setType(EapPacket::SUCCESS);
-                respPacket.setCode(RadiusPacket::ACCESS_REJECT);
+                respPacket.setCode(RadiusPacket::ACCESS_ACCEPT);
             }else{
                 respEapPacket.setType(EapPacket::FAILURE);
                 respPacket.setCode(RadiusPacket::ACCESS_REJECT);
