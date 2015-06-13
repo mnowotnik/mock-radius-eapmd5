@@ -172,9 +172,28 @@ int main(int argc, char **argv) {
 			logger->info() <<"[EapPacket:]\n"<< eapMd5Chal;
 
         radius::sendPack(responsePack); 
-        // 4.success or failure
-        //newPack = radius::receivePack(); 
+        // 4.success or failure 
+        newPack = radius::receivePack(); 
 
+		     newPack = radius::receivePack();
+		
+		
+		RadiusPacket sucArPacket(newPack.bytes);
+		logger->info() <<"Received Packet";
+		logger->info() <<"[Packet:]\n" <<packet2LogBytes(sucArPacket.getBuffer());
+		logger->info() <<"[RadiusPacket:]\n"<< sucArPacket;
+		EapPacket sucEapIdentity = extractEapPacket(recArPacket);
+		logger->info() <<"[EapPacket:]\n"<< sucEapIdentity;
+		if (newPack.bytes[0]==0x02)
+		{
+			logger->info() <<"ACCEPT";
+		}
+		else if (newPack.bytes[0]==0x03	)
+		{
+			logger->info() <<"REJECT";
+		}
+		
+		
         radius::stopClient();
 
     } catch (ArgException &e) {
