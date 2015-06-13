@@ -109,7 +109,7 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             RadiusPacket respPacket;
             if(md5RespArrRef == md5RespArr){
                 respEapPacket.setType(EapPacket::SUCCESS);
-                respPacket.setCode(RadiusPacket::ACCESS_ACCEPT);
+                respPacket.setCode(RadiusPacket::ACCESS_REJECT);
             }else{
                 respEapPacket.setType(EapPacket::FAILURE);
                 respPacket.setCode(RadiusPacket::ACCESS_REJECT);
@@ -124,7 +124,6 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             calcAndSetMsgAuth(respPacket,secret);
             calcAndSetAuth(respPacket);
             Packet packetToSend(respPacket.getBuffer(),packet.addr);
-            logger->info() << "SENDING"<<respPacket.getBuffer().size();
             packetsToSend.push_back(packetToSend);
         }
 
