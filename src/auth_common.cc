@@ -195,6 +195,14 @@ std::array<byte, 16> generateRandom16() {
     std::copy(vec.begin(), vec.end(), arr.begin());
     return arr;
 }
+std::array<byte, 16> calcChalVal(byte ident,std::vector<byte>chal,
+                                 const std::string &secret) {
+    std::vector<byte> buffer;
+    buffer.push_back(ident);
+    buffer.insert(buffer.end(), secret.begin(), secret.end());
+    buffer.insert(buffer.end(), chal.begin(), chal.end());
+    return md5Bin(buffer);
+}
 std::array<byte, 16> calcChalVal(const packets::EapPacket &packet,
                                  const std::string &secret) {
     std::vector<byte> buffer;
