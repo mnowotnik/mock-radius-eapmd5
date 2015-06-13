@@ -188,7 +188,7 @@ int main(int argc, char **argv) {
 		{
 			logger->info() <<"ACCEPT";
 		}
-		else
+		else if (newPack.bytes[0]==0x03	)
 		{
 			logger->info() <<"REJECT";
 		}
