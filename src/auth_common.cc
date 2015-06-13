@@ -215,6 +215,15 @@ EapPacket makeIdentity(const std::string id) {
     return packet;
 }
 
+EapPacket makeChallengeResp(const std::array<byte,16>chalResp) {
+    EapPacket packet;
+    EapMd5Challenge eapChal;
+    std::vector<byte>chalRespVec (chalResp.begin(),chalResp.end());
+    eapChal.setValue(chalRespVec);
+    packet.setData(static_cast<EapData &>(eapChal));
+    return packet;
+}
+
 
 
 
