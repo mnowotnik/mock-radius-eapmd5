@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
 			calcAndSetMsgAuth(arPacket, secret);
 
         radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
-		
+		logger->info() <<"Send Packet";
         logger->info() <<"[Packet:]\n" << packet2LogBytes(newPack.bytes);
 		logger->info() <<"[RadiusPacket:]\n"<< arPacket;
 		logger->info() <<"[EapPacket:]\n"<< eapIdentity;
@@ -136,38 +136,44 @@ int main(int argc, char **argv) {
         // 2.otrzymuj odpowiedz od Radius server
         newPack = radius::receivePack();
 		
-			RadiusPacket recArPacket(newPack.bytes);
-            logger->info() <<"[Packet:]\n" <<packet2LogBytes(recArPacket.getBuffer());
-				
+		
+		RadiusPacket recArPacket(newPack.bytes);
+		logger->info() <<"Received Packet";
+		logger->info() <<"[Packet:]\n" <<packet2LogBytes(recArPacket.getBuffer());
 		logger->info() <<"[RadiusPacket:]\n"<< recArPacket;
 		EapPacket recEapIdentity = extractEapPacket(recArPacket);
 		logger->info() <<"[EapPacket:]\n"<< recEapIdentity;
 			
+
+			std::array<radius::byte,16> chalArray =calcChalVal(recEapIdentity,secret);
+			
 		//make response
-		EapPacket eapIdentity2;
-		eapIdentity2.setType(EapPacket::RESPONSE);
-		eapIdentity2.setIdentifier(2);
+		EapPacket eapMd5Chal;
+		eapMd5Chal = makeChallengeResp(chalArray);
+		eapMd5Chal.setType(EapPacket::RESPONSE);
+		eapMd5Chal.setIdentifier(2);
 			
 			EapMessage eapMessage2;
-			eapMessage2.setValue(eapIdentity2.getBuffer());
+			eapMessage2.setValue(eapMd5Chal.getBuffer());
 			
 		RadiusPacket responsePacket;
 		responsePacket.setIdentifier(2);
 		responsePacket.setCode(RadiusPacket::ACCESS_REQUEST);
 		authTable = generateRandom16();
 		responsePacket.setAuthenticator(authTable);
-			
-			responsePacket.addAVP(static_cast<const RadiusAVP &>(eapMessage2));
+		responsePacket.addAVP(static_cast<const RadiusAVP &>(eapMessage2));
+		calcAndSetMsgAuth(responsePacket, secret);
 
-			
-
-				
-		        /* radius::packets::Packet responsePack(responsePacket.getBuffer() , server_addr); */
+		radius::packets::Packet responsePack(responsePacket.getBuffer() , server_addr); 
 		
+			logger->info() <<"Send Packet";
+			logger->info() <<"[Packet:]\n" << packet2LogBytes(responsePack.bytes);
+			logger->info() <<"[RadiusPacket:]\n"<< responsePacket;
+			logger->info() <<"[EapPacket:]\n"<< eapMd5Chal;
 
-        /* radius::sendPack(responsePack); */
+        radius::sendPack(responsePack); 
         // 4.success or failure
-        /* newPack = radius::receivePack(); */
+        //newPack = radius::receivePack(); 
 
         radius::stopClient();
 
