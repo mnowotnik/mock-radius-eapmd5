@@ -94,7 +94,7 @@ RadiusPacket::RadiusPacket(const vector<byte> &bytes) : buffer(bytes) {
     if (getLength() < bytes.size()) {
         buffer.resize(getLength());
     }
-    validate();
+    /* validate(); */ //TODO
 }
 void RadiusPacket::setLength(unsigned short length) {
     array<byte, 2> bytes = short2NetworkBytes(length);
