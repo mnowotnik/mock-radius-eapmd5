@@ -13,12 +13,14 @@ using radius::packets::Packet;
 
 void serverLoop(RadiusServer &radiusServer) {
 
-    /*while (1) {
-      radius::sendData(radius::receiveData());
-      }*/
-    Packet iPacket = radius::receiveData();
+    while (1) {
+        Packet iPacket = radius::receiveData();
+        std::vector<Packet>packets = radiusServer.recvPacket(iPacket);
+        for(int i=0;i<packets.size();i++){
+            radius::sendData(packets[i]);
+        }
+    }
 
-    radiusServer.recvPacket(iPacket);
 }
 
 BOOL WINAPI consoleHandler(DWORD signal) {
