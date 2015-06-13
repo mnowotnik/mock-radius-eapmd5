@@ -29,13 +29,14 @@ class RadiusServer {
         PendingPacket(const Packet &p) : packet(p) {}
     };
 
+
     struct AuthRequestId {
         std::string userName;
         sockaddr_in nasAddr;
         byte eapMsgId;
     };
     struct AuthRequestIdCompare {
-        bool operator()(const AuthRequestId &lhs, const AuthRequestId &rhs) {
+        bool operator()(const AuthRequestId &lhs, const AuthRequestId &rhs)const {
             return lhs.userName < rhs.userName &&
                    lhs.nasAddr.sin_addr.s_addr < rhs.nasAddr.sin_addr.s_addr &&
                    lhs.nasAddr.sin_port < lhs.nasAddr.sin_port &&
@@ -45,6 +46,7 @@ class RadiusServer {
     struct AuthData {
         std::vector<byte> challenge;
     };
+    std::unique_ptr<AuthData> persistChal;
 
     std::map<AuthRequestId, AuthData, AuthRequestIdCompare> authProcMap;
 

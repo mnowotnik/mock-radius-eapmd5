@@ -85,9 +85,19 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             calcAndSetAuth(sendPacket);
             Packet packetToSend(sendPacket.getBuffer(),packet.addr);
             packetsToSend.push_back(packetToSend);
+            /* persistChal.reset(new AuthData(challenge)); */
+            AuthRequestId authId;
+            authId.userName=userName;
+            authId.nasAddr=packet.addr;
+            authId.eapMsgId=eapReq.getIdentifier();
+            AuthData authData;
+            authData.challenge = challenge;
+            authProcMap.insert(std::make_pair(authId,authData));
+        } else if(eapDataT == EapData::MD5_CHALLENGE){
+            EapMd5Challenge *eapMd5Ptr = static_cast<EapMd5Challenge *>(eapDataPtr.get());
+            logger->info() <<"CHAL";
         }
 
-        /* if */
     } catch (const packets::InvalidPacket &e) {
         logger->error() << "Packet invalid. Reason :" << e.what();
         logger->error() << "Packet dump:" << NL
