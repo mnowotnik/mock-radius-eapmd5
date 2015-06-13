@@ -109,30 +109,35 @@ int main(int argc, char **argv) {
         // 1.access-request
         using namespace radius;
         using namespace radius::packets;
-        EapPacket eapIdentity;
-        eapIdentity = makeIdentity(login);
-        eapIdentity.setType(EapPacket::RESPONSE);
-        eapIdentity.setIdentifier(1);
+			EapPacket eapIdentity;
+			eapIdentity = makeIdentity(login);
+			eapIdentity.setType(EapPacket::RESPONSE);
+			eapIdentity.setIdentifier(1);
 
-        EapMessage eapMessage;
-        eapMessage.setValue(eapIdentity.getBuffer());
+			EapMessage eapMessage;
+			eapMessage.setValue(eapIdentity.getBuffer());
 
-        RadiusPacket arPacket;
-        arPacket.setIdentifier(1);
-        arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
-        std::array<radius::byte, 16> authTable = generateRandom16();
-        arPacket.setAuthenticator(authTable);
-        arPacket.addAVP(static_cast<const RadiusAVP &>(eapMessage));
-        calcAndSetMsgAuth(arPacket, secret);
+			RadiusPacket arPacket;
+			arPacket.setIdentifier(1);
+			arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
+			std::array<radius::byte, 16> authTable = generateRandom16();
+			arPacket.setAuthenticator(authTable);
+			arPacket.addAVP(static_cast<const RadiusAVP &>(eapMessage));
+			calcAndSetMsgAuth(arPacket, secret);
 
         radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
         logger->error() << "\r\n" << packet2LogBytes(newPack.bytes);
 
         radius::sendPack(newPack);
         // 2.otrzymuj odpowiedz od Radius server
-        // newPack = radius::receivePack();
-        // 3.access-request z hashem tego jescze nie ma
-        // radius::sendPack(newPack);
+        newPack = radius::receivePack();
+		        logger->error() << "\r\n" << packet2LogBytes(newPack.bytes);
+        // 3.access-"response authenticator"
+		RadiusPacket responsePacket(newPack.bytes);
+		calcAndSetMsgAuth(arPacket, secret);
+		radius::packets::Packet responsePack(responsePacket.getBuffer(), server_addr);
+        logger->error() << "\r\n" << packet2LogBytes(responsePack.bytes);
+        radius::sendPack(responsePack);
         // 4.success or failure
         /* newPack = radius::receivePack(); */
 
