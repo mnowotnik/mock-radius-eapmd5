@@ -11,6 +11,7 @@
 #include "packets/radius_packet.h"
 #include "packets/eap_packet.h"
 #include "packets/packet.h"
+#include "packets/utils.h"
 
 using namespace std;
 const std::vector<byte> temp = {0xe0, 0xbd, 0x18, 0xdb, 0x4c, 0xc2, 0xf8, 0x5c,
@@ -31,11 +32,11 @@ int main(int argc, char **argv) {
 
         ValueArg<string> loginArg(
             "u", "username", "The name of a user that wishes to authenticate",
-            false, "", "string");
+            false, "Basia", "string");
         cmd.add(loginArg);
 
         ValueArg<string> passArg("", "password", "The password of a user",
-                                 false, "", "string");
+                                 false, "password", "string");
         cmd.add(passArg);
 
         /*         SwitchArg interSwitch("i", "interactive", */
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
 
         ValueArg<string> hashArg(
             "", "hash", "Type of hashing function (crc32 md5 sha1 sha256 sha3)",
-            false, "", "string");
+            false, "sha256", "string");
         cmd.add(hashArg);
 
         cmd.parse(argc, argv);
@@ -126,17 +127,44 @@ int main(int argc, char **argv) {
 			calcAndSetMsgAuth(arPacket, secret);
 
         radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
-        logger->error() << "\r\n" << packet2LogBytes(newPack.bytes);
-
+		
+        logger->info() <<"[Packet:]\n" << packet2LogBytes(newPack.bytes);
+		logger->info() <<"[RadiusPacket:]\n"<< arPacket;
+		logger->info() <<"[EapPacket:]\n"<< eapIdentity;
+			
         radius::sendPack(newPack);
         // 2.otrzymuj odpowiedz od Radius server
         newPack = radius::receivePack();
-		        logger->error() << "\r\n" << packet2LogBytes(newPack.bytes);
-        // 3.access-"response authenticator"
-		RadiusPacket responsePacket(newPack.bytes);
-		calcAndSetMsgAuth(arPacket, secret);
-		radius::packets::Packet responsePack(responsePacket.getBuffer(), server_addr);
-        logger->error() << "\r\n" << packet2LogBytes(responsePack.bytes);
+		
+			logger->info() <<"[Packet:]\n" <<packet2LogBytes(newPack.bytes);
+			RadiusPacket recArPacket(newPack.bytes);
+				
+		logger->info() <<"[RadiusPacket:]\n"<< recArPacket;
+		EapPacket recEapIdentity = extractEapPacket(recArPacket);
+		logger->info() <<"[EapPacket:]\n"<< recEapIdentity;
+			
+		//make response
+		EapPacket eapIdentity2;
+		eapIdentity2.setType(EapPacket::RESPONSE);
+		eapIdentity2.setIdentifier(2);
+			
+			EapMessage eapMessage2;
+			eapMessage2.setValue(eapIdentity2.getBuffer());
+			
+		RadiusPacket responsePacket;
+		responsePacket.setIdentifier(2);
+		responsePacket.setCode(RadiusPacket::ACCESS_REQUEST);
+		authTable = generateRandom16();
+		responsePacket.setAuthenticator(authTable);
+			
+			responsePacket.addAVP(static_cast<const RadiusAVP &>(eapMessage2));
+
+			
+
+				
+		        radius::packets::Packet responsePack(responsePacket.getBuffer() , server_addr);
+		
+
         radius::sendPack(responsePack);
         // 4.success or failure
         /* newPack = radius::receivePack(); */

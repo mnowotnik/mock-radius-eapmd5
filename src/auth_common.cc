@@ -72,9 +72,7 @@ void calcAndSetMsgAuth(packets::RadiusPacket &packet, const std::string &secret,
     packet.setAuthenticator(authenticator);
     std::unique_ptr<MessageAuthenticator> maPtr =
         findMessageAuthenticator(packet);
-    if (maPtr.get() == nullptr) {
-        maPtr.reset(new MessageAuthenticator());
-        packet.addAVP(static_cast<const MessageAuthenticator &>(*maPtr));
+    if (maPtr.get() == nullptr) {        packet.addAVP(static_cast<const MessageAuthenticator &>(*maPtr));
     }
 
     MessageAuthenticator nMa;
@@ -214,4 +212,8 @@ EapPacket makeIdentity(const std::string id) {
     packet.setData(static_cast<EapData &>(identity));
     return packet;
 }
+
+
+
+
 }
