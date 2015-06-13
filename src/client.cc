@@ -136,8 +136,8 @@ int main(int argc, char **argv) {
         // 2.otrzymuj odpowiedz od Radius server
         newPack = radius::receivePack();
 		
-			logger->info() <<"[Packet:]\n" <<packet2LogBytes(newPack.bytes);
 			RadiusPacket recArPacket(newPack.bytes);
+            logger->info() <<"[Packet:]\n" <<packet2LogBytes(recArPacket.getBuffer());
 				
 		logger->info() <<"[RadiusPacket:]\n"<< recArPacket;
 		EapPacket recEapIdentity = extractEapPacket(recArPacket);
@@ -162,10 +162,10 @@ int main(int argc, char **argv) {
 			
 
 				
-		        radius::packets::Packet responsePack(responsePacket.getBuffer() , server_addr);
+		        /* radius::packets::Packet responsePack(responsePacket.getBuffer() , server_addr); */
 		
 
-        radius::sendPack(responsePack);
+        /* radius::sendPack(responsePack); */
         // 4.success or failure
         /* newPack = radius::receivePack(); */
 

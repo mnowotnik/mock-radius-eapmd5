@@ -86,6 +86,8 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             Packet packetToSend(sendPacket.getBuffer(),packet.addr);
             packetsToSend.push_back(packetToSend);
         }
+
+        /* if */
     } catch (const packets::InvalidPacket &e) {
         logger->error() << "Packet invalid. Reason :" << e.what();
         logger->error() << "Packet dump:" << NL
