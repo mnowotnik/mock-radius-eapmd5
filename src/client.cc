@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
 		logger->info() <<"[EapPacket:]\n"<< recEapIdentity;
 			
 
-			std::array<radius::byte,16> chalArray =calcChalVal(recEapIdentity,secret);
+			std::array<radius::byte,16> chalArray =calcChalVal(recEapIdentity,pas);
 			
 		//make response
 		EapPacket eapMd5Chal;
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
 		
 		RadiusPacket sucArPacket(newPack.bytes);
 		logger->info() <<"Received Packet";
-		logger->info() <<"[Packet:]\n" <<packet2LogBytes(sucArPacket.getBuffer());
+		logger->info() <<"[Packet:]\n" << packet2LogBytes(sucArPacket.getBuffer());
 		logger->info() <<"[RadiusPacket:]\n"<< sucArPacket;
 		EapPacket sucEapIdentity = extractEapPacket(recArPacket);
 		logger->info() <<"[EapPacket:]\n"<< sucEapIdentity;
