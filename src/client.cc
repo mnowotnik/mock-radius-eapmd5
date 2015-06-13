@@ -174,8 +174,6 @@ int main(int argc, char **argv) {
         radius::sendPack(responsePack); 
         // 4.success or failure 
         newPack = radius::receivePack(); 
-
-		     newPack = radius::receivePack();
 		
 		
 		RadiusPacket sucArPacket(newPack.bytes);
@@ -190,7 +188,7 @@ int main(int argc, char **argv) {
 		}
 		else if (newPack.bytes[0]==0x03	)
 		{
-			logger->info() <<"REJECT";
+			logger->error() <<"REJECT";
 		}
 		
 		
