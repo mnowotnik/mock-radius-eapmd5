@@ -124,8 +124,8 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             calcAndSetMsgAuth(respPacket,secret);
             calcAndSetAuth(respPacket);
             Packet packetToSend(respPacket.getBuffer(),packet.addr);
+            logger->info() << "SENDING"<<respPacket.getBuffer().size();
             packetsToSend.push_back(packetToSend);
-
         }
 
     } catch (const packets::InvalidPacket &e) {
