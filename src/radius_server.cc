@@ -73,7 +73,7 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
             eapReq.setIdentifier(eapPacket.getIdentifier() + 1);
 
             std::vector<byte> challenge =
-                generateRandomBytes(MIN_CHAL_VAL / 4, MAX_CHAL_VAL / 4);
+                generateRandomBytes(MIN_CHAL_VAL, MAX_CHAL_VAL);
             EapMd5Challenge md5Chal;
             md5Chal.setValue(challenge);
             eapReq.setData(dynamic_cast<const EapData &>(md5Chal));
