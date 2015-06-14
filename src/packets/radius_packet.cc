@@ -66,16 +66,14 @@ string NasIdentifier::getIdentifier() {
 
 void MessageAuthenticator::validate() {
     if (buffer.size() != LENGTH) {
-        throw InvalidPacket("The Message Authenticator length is incorrect"
-                            "(" +
-                            std::to_string(buffer.size()) + ")");
+        throw InvalidPacket("The Message Authenticator length is incorrect" +
+                            NL + "(" + std::to_string(buffer.size()) + ")");
     }
 }
 
 void EapMessage::validate() {
     if (buffer.size() < MIN_LENGTH) {
-        throw InvalidPacket("An EAP-Message length is too small"
-                            "(" +
+        throw InvalidPacket("An EAP-Message length is too small" + NL + "(" +
                             std::to_string(buffer.size()) + ")");
     }
 }
@@ -84,9 +82,8 @@ void NasIdentifier::validate() {}
 
 void NasIpAddr::validate() {
     if (buffer.size() != LENGTH) {
-        throw InvalidPacket("The NAS-IP-Address length is incorrect"
-                            "(" +
-                            std::to_string(buffer.size()) + ")");
+        throw InvalidPacket("The NAS-IP-Address length is incorrect" + NL +
+                            "(" + std::to_string(buffer.size()) + ")");
     }
 }
 
@@ -94,7 +91,7 @@ RadiusPacket::RadiusPacket(const vector<byte> &bytes) : buffer(bytes) {
     if (getLength() < bytes.size()) {
         buffer.resize(getLength());
     }
-    /* validate(); */ //TODO
+    validate();
 }
 void RadiusPacket::setLength(unsigned short length) {
     array<byte, 2> bytes = short2NetworkBytes(length);
@@ -108,8 +105,8 @@ short RadiusPacket::getLength() const {
     return l;
 }
 
-void
-RadiusPacket::setAuthenticator(const array<byte, RadiusPacket::AUTH_LEN> &arr) {
+void RadiusPacket::setAuthenticator(
+    const array<byte, RadiusPacket::AUTH_LEN> &arr) {
     for (int i = 0; i < AUTH_LEN; i++) {
         buffer[i + 4] = arr[i];
     }
@@ -219,8 +216,15 @@ void RadiusPacket::validate() {
         it = it + size;
     }
 
+    int i = 1;
     for (const auto &avpPtr : getAVPList()) {
-        avpPtr->validate();
+        try {
+            avpPtr->validate();
+        } catch (const InvalidPacket &e) {
+            throw InvalidPacket("AVP No." + std::to_string(i) + " : " +
+                                e.what());
+        }
+        i++;
     }
 }
 
@@ -246,7 +250,11 @@ RadiusAVP *RadiusAVP::factoryFun(const std::vector<byte> &bytes) {
         avp = new NasIdentifier(bytes);
         break;
     default:
-        throw InvalidPacket("Unsupported type : " + (int)type);
+        if (type > MAX_TYPE_ID) {
+            throw InvalidPacket("AVP unsupported type : " +
+                                std::to_string((int)type));
+        }
+        avp = new RadiusAVPDefault(bytes);
     }
     return avp;
 }

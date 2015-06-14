@@ -111,106 +111,105 @@ int main(int argc, char **argv) {
         using namespace radius;
         using namespace radius::packets;
 
-        std::vector<radius::byte>buffer = {0x01, 0x01, 0x00, 0x81, 0xcd, 0x57, 0x59, 0x14,
-            0x7f, 0x74, 0xd4, 0x85, 0xb4, 0x93, 0xdd, 0xd7,
-            0x81, 0x96, 0x4b, 0x88, 0x01, 0x09, 0x73, 0x74,
-            0x65, 0x66, 0x61, 0x6e, 0x31, 0x06, 0x06, 0x00,
-            0x00, 0x00, 0x02, 0x0c, 0x06, 0x00, 0x00, 0x05,
-            0xdc, 0x1e, 0x13, 0x30, 0x30, 0x2d, 0x32, 0x34,
-            0x2d, 0x43, 0x33, 0x2d, 0x31, 0x41, 0x2d, 0x41,
-            0x32, 0x2d, 0x30, 0x33, 0x1f, 0x13, 0x31, 0x30,
-            0x2d, 0x31, 0x46, 0x2d, 0x37, 0x34, 0x2d, 0x46,
-            0x38, 0x2d, 0x45, 0x45, 0x2d, 0x32, 0x37, 0x4f,
-            0x0e, 0x02, 0x02, 0x00, 0x0c, 0x01, 0x73, 0x74,
-            0x65, 0x66, 0x61, 0x6e, 0x31, 0x50, 0x12, 0x3a,
-            0xca, 0x54, 0x12, 0xa9, 0xec, 0xc6, 0xb3, 0x5c,
-            0xae, 0xac, 0x58, 0x11, 0xed, 0x69, 0x27, 0x3d,
-            0x06, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x06, 0x00,
-            0x00, 0xc3, 0x51, 0x04, 0x06, 0xc0, 0xa8, 0x0a,
-            0x01 };
-            Packet newPack(buffer,server_addr);
-			/* EapPacket eapIdentity; */
-			/* eapIdentity = makeIdentity(login); */
-			/* eapIdentity.setType(EapPacket::RESPONSE); */
-			/* eapIdentity.setIdentifier(1); */
+        std::vector<radius::byte> buffer = {
+            0x01, 0x01, 0x00, 0x81, 0xcd, 0x57, 0x59, 0x14, 0x7f, 0x74, 0xd4,
+            0x85, 0xb4, 0x93, 0xdd, 0xd7, 0x81, 0x96, 0x4b, 0x88, 0x01, 0x09,
+            0x73, 0x74, 0x65, 0x66, 0x61, 0x6e, 0x31, 0x06, 0x06, 0x00, 0x00,
+            0x00, 0x02, 0x0c, 0x06, 0x00, 0x00, 0x05, 0xdc, 0x1e, 0x13, 0x30,
+            0x30, 0x2d, 0x32, 0x34, 0x2d, 0x43, 0x33, 0x2d, 0x31, 0x41, 0x2d,
+            0x41, 0x32, 0x2d, 0x30, 0x33, 0x1f, 0x13, 0x31, 0x30, 0x2d, 0x31,
+            0x46, 0x2d, 0x37, 0x34, 0x2d, 0x46, 0x38, 0x2d, 0x45, 0x45, 0x2d,
+            0x32, 0x37, 0x4f, 0x0e, 0x02, 0x02, 0x00, 0x0c, 0x01, 0x73, 0x74,
+            0x65, 0x66, 0x61, 0x6e, 0x31, 0x50, 0x12, 0x3a, 0xca, 0x54, 0x12,
+            0xa9, 0xec, 0xc6, 0xb3, 0x5c, 0xae, 0xac, 0x58, 0x11, 0xed, 0x69,
+            0x27, 0x3d, 0x06, 0x00, 0x00, 0x00, 0x0f, 0x05, 0x06, 0x00, 0x00,
+            0xc3, 0x51, 0x04, 0x06, 0xc0, 0xa8, 0x0a, 0x01};
+        Packet newPack(buffer, server_addr);
+        /* EapPacket eapIdentity; */
+        /* eapIdentity = makeIdentity(login); */
+        /* eapIdentity.setType(EapPacket::RESPONSE); */
+        /* eapIdentity.setIdentifier(1); */
 
-			/* EapMessage eapMessage; */
-			/* eapMessage.setValue(eapIdentity.getBuffer()); */
+        /* EapMessage eapMessage; */
+        /* eapMessage.setValue(eapIdentity.getBuffer()); */
 
-			/* RadiusPacket arPacket; */
-			/* arPacket.setIdentifier(1); */
-			/* arPacket.setCode(RadiusPacket::ACCESS_REQUEST); */
-			/* std::array<radius::byte, 16> authTable = generateRandom16(); */
-			/* arPacket.setAuthenticator(authTable); */
-			/* arPacket.addAVP(static_cast<const RadiusAVP &>(eapMessage)); */
-			/* calcAndSetMsgAuth(arPacket, secret); */
+        /* RadiusPacket arPacket; */
+        /* arPacket.setIdentifier(1); */
+        /* arPacket.setCode(RadiusPacket::ACCESS_REQUEST); */
+        /* std::array<radius::byte, 16> authTable = generateRandom16(); */
+        /* arPacket.setAuthenticator(authTable); */
+        /* arPacket.addAVP(static_cast<const RadiusAVP &>(eapMessage)); */
+        /* calcAndSetMsgAuth(arPacket, secret); */
 
-        /* radius::packets::Packet newPack(arPacket.getBuffer(), server_addr); */
-		/* logger->info() <<"Send Packet"; */
+        /* radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
+         */
+        /* logger->info() <<"Send Packet"; */
         /* logger->info() <<"[Packet:]\n" << packet2LogBytes(newPack.bytes); */
-		/* logger->info() <<"[RadiusPacket:]\n"<< arPacket; */
-		/* logger->info() <<"[EapPacket:]\n"<< eapIdentity; */
-			
+        /* logger->info() <<"[RadiusPacket:]\n"<< arPacket; */
+        /* logger->info() <<"[EapPacket:]\n"<< eapIdentity; */
+
         radius::sendPack(newPack);
         // 2.otrzymuj odpowiedz od Radius server
         /* newPack = radius::receivePack(); */
-		
-		
-		/* RadiusPacket recArPacket(newPack.bytes); */
-		/* logger->info() <<"Received Packet"; */
-		/* logger->info() <<"[Packet:]\n" <<packet2LogBytes(recArPacket.getBuffer()); */
-		/* logger->info() <<"[RadiusPacket:]\n"<< recArPacket; */
-		/* EapPacket recEapIdentity = extractEapPacket(recArPacket); */
-		/* logger->info() <<"[EapPacket:]\n"<< recEapIdentity; */
-			
 
-			/* std::array<radius::byte,16> chalArray =calcChalVal(recEapIdentity,pas); */
-			
-		/* //make response */
-		/* EapPacket eapMd5Chal; */
-		/* eapMd5Chal = makeChallengeResp(chalArray); */
-		/* eapMd5Chal.setType(EapPacket::RESPONSE); */
-		/* eapMd5Chal.setIdentifier(2); */
-			
-			/* EapMessage eapMessage2; */
-			/* eapMessage2.setValue(eapMd5Chal.getBuffer()); */
-			
-		/* RadiusPacket responsePacket; */
-		/* responsePacket.setIdentifier(2); */
-		/* responsePacket.setCode(RadiusPacket::ACCESS_REQUEST); */
-		/* authTable = generateRandom16(); */
-		/* responsePacket.setAuthenticator(authTable); */
-		/* responsePacket.addAVP(static_cast<const RadiusAVP &>(eapMessage2)); */
-		/* calcAndSetMsgAuth(responsePacket, secret); */
+        /* RadiusPacket recArPacket(newPack.bytes); */
+        /* logger->info() <<"Received Packet"; */
+        /* logger->info() <<"[Packet:]\n"
+         * <<packet2LogBytes(recArPacket.getBuffer()); */
+        /* logger->info() <<"[RadiusPacket:]\n"<< recArPacket; */
+        /* EapPacket recEapIdentity = extractEapPacket(recArPacket); */
+        /* logger->info() <<"[EapPacket:]\n"<< recEapIdentity; */
 
-		/* radius::packets::Packet responsePack(responsePacket.getBuffer() , server_addr); */ 
-		
-			/* logger->info() <<"Send Packet"; */
-			/* logger->info() <<"[Packet:]\n" << packet2LogBytes(responsePack.bytes); */
-			/* logger->info() <<"[RadiusPacket:]\n"<< responsePacket; */
-			/* logger->info() <<"[EapPacket:]\n"<< eapMd5Chal; */
+        /* std::array<radius::byte,16> chalArray
+         * =calcChalVal(recEapIdentity,pas); */
 
-        /* radius::sendPack(responsePack); */ 
-        /* // 4.success or failure */ 
-        /* newPack = radius::receivePack(); */ 
-		
-		
-		/* RadiusPacket sucArPacket(newPack.bytes); */
-		/* logger->info() <<"Received Packet"; */
-		/* logger->info() <<"[Packet:]\n" << packet2LogBytes(sucArPacket.getBuffer()); */
-		/* logger->info() <<"[RadiusPacket:]\n"<< sucArPacket; */
-		/* EapPacket sucEapIdentity = extractEapPacket(recArPacket); */
-		/* logger->info() <<"[EapPacket:]\n"<< sucEapIdentity; */
-		/* if (newPack.bytes[0]==0x02) */
-		/* { */
-			/* logger->info() <<"ACCEPT"; */
-		/* } */
-		/* else if (newPack.bytes[0]==0x03	) */
-		/* { */
-			/* logger->error() <<"REJECT"; */
-		/* } */
-		
-		
+        /* //make response */
+        /* EapPacket eapMd5Chal; */
+        /* eapMd5Chal = makeChallengeResp(chalArray); */
+        /* eapMd5Chal.setType(EapPacket::RESPONSE); */
+        /* eapMd5Chal.setIdentifier(2); */
+
+        /* EapMessage eapMessage2; */
+        /* eapMessage2.setValue(eapMd5Chal.getBuffer()); */
+
+        /* RadiusPacket responsePacket; */
+        /* responsePacket.setIdentifier(2); */
+        /* responsePacket.setCode(RadiusPacket::ACCESS_REQUEST); */
+        /* authTable = generateRandom16(); */
+        /* responsePacket.setAuthenticator(authTable); */
+        /* responsePacket.addAVP(static_cast<const RadiusAVP &>(eapMessage2));
+         */
+        /* calcAndSetMsgAuth(responsePacket, secret); */
+
+        /* radius::packets::Packet responsePack(responsePacket.getBuffer() ,
+         * server_addr); */
+
+        /* logger->info() <<"Send Packet"; */
+        /* logger->info() <<"[Packet:]\n" <<
+         * packet2LogBytes(responsePack.bytes); */
+        /* logger->info() <<"[RadiusPacket:]\n"<< responsePacket; */
+        /* logger->info() <<"[EapPacket:]\n"<< eapMd5Chal; */
+
+        /* radius::sendPack(responsePack); */
+        /* // 4.success or failure */
+        /* newPack = radius::receivePack(); */
+
+        /* RadiusPacket sucArPacket(newPack.bytes); */
+        /* logger->info() <<"Received Packet"; */
+        /* logger->info() <<"[Packet:]\n" <<
+         * packet2LogBytes(sucArPacket.getBuffer()); */
+        /* logger->info() <<"[RadiusPacket:]\n"<< sucArPacket; */
+        /* EapPacket sucEapIdentity = extractEapPacket(recArPacket); */
+        /* logger->info() <<"[EapPacket:]\n"<< sucEapIdentity; */
+        /* if (newPack.bytes[0]==0x02) */
+        /* { */
+        /* logger->info() <<"ACCEPT"; */
+        /* } */
+        /* else if (newPack.bytes[0]==0x03	) */
+        /* { */
+        /* logger->error() <<"REJECT"; */
+        /* } */
+
         radius::stopClient();
 
     } catch (ArgException &e) {

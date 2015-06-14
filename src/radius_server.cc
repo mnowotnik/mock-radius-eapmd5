@@ -13,10 +13,10 @@ using radius::packets::EapMessage;
 
 namespace radius {
 
-    namespace{
-        const int MIN_CHAL_VAL=12;
-        const int MAX_CHAL_VAL=24;
-    }
+namespace {
+const int MIN_CHAL_VAL = 12;
+const int MAX_CHAL_VAL = 24;
+}
 
 RadiusServer::RadiusServer(const map<string, string> &userPassMap,
                            const string &secret, const Logger &logger)
@@ -32,19 +32,20 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
         logger->info() << NL << radiusPacket;
 
         if (!isValid(radiusPacket)) {
-            logger->warn() << "Input packet has invaild structure. Requires "
-                              "only one Message Authenticator and " << NL
-                           << "at least one EAP-Message";
+            logger->trace() << "Input packet has invaild structure. Requires "
+                               "only one Message Authenticator and " << NL
+                            << "at least one EAP-Message";
             return addPendingPackets(packetsToSend);
         }
 
         if (!isRequest(radiusPacket)) {
-            logger->warn() << "Packet has wrong type. Is not an Access-Request";
+            logger->trace()
+                << "Packet has wrong type. Is not an Access-Request";
             return addPendingPackets(packetsToSend);
         }
 
         if (!checkIntegrity(radiusPacket, secret)) {
-            logger->warn()
+            logger->trace()
                 << "Message Authenticator checksum does not match the packet";
             return addPendingPackets(packetsToSend);
         }
@@ -64,55 +65,59 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
                 return addPendingPackets(packetsToSend);
             }
 
-            persistPass.reset(new std::string(passPtr->second));//TODO
+            persistPass.reset(new std::string(passPtr->second)); // TODO
 
             const std::string userPass = passPtr->second;
             EapPacket eapReq;
             eapReq.setType(EapPacket::REQUEST);
-            eapReq.setIdentifier(eapPacket.getIdentifier()+1);
+            eapReq.setIdentifier(eapPacket.getIdentifier() + 1);
 
-            std::vector<byte>challenge = generateRandomBytes(MIN_CHAL_VAL/4,MAX_CHAL_VAL/4);
+            std::vector<byte> challenge =
+                generateRandomBytes(MIN_CHAL_VAL / 4, MAX_CHAL_VAL / 4);
             EapMd5Challenge md5Chal;
             md5Chal.setValue(challenge);
-            eapReq.setData(dynamic_cast<const EapData&>(md5Chal));
+            eapReq.setData(dynamic_cast<const EapData &>(md5Chal));
             EapMessage eapM;
             eapM.setValue(eapReq.getBuffer());
 
             RadiusPacket sendPacket;
             sendPacket.setCode(RadiusPacket::ACCESS_CHALLENGE);
-            sendPacket.setIdentifier(radiusPacket.getIdentifier()+1);
-            sendPacket.addAVP(dynamic_cast<const RadiusAVP&>(eapM));
+            sendPacket.setIdentifier(radiusPacket.getIdentifier() + 1);
+            sendPacket.addAVP(dynamic_cast<const RadiusAVP &>(eapM));
             sendPacket.setAuthenticator(radiusPacket.getAuthenticator());
-            calcAndSetMsgAuth(sendPacket,secret);
+            calcAndSetMsgAuth(sendPacket, secret);
             calcAndSetAuth(sendPacket);
-            Packet packetToSend(sendPacket.getBuffer(),packet.addr);
+            Packet packetToSend(sendPacket.getBuffer(), packet.addr);
             packetsToSend.push_back(packetToSend);
 
             AuthRequestId authId;
-            authId.userName=userName;
-            authId.nasAddr=packet.addr;
-            authId.eapMsgId=eapReq.getIdentifier();
+            authId.userName = userName;
+            authId.nasAddr = packet.addr;
+            authId.eapMsgId = eapReq.getIdentifier();
             AuthData authData;
             authData.challenge = challenge;
-            authProcMap.insert(std::make_pair(authId,authData));
+            authProcMap.insert(std::make_pair(authId, authData));
 
             persistChal.reset(new AuthData(authData));
-        } else if(eapDataT == EapData::MD5_CHALLENGE){
-            //TODO temporary
-            EapMd5Challenge *eapMd5Ptr = static_cast<EapMd5Challenge *>(eapDataPtr.get());
-            std::vector<byte>md5RespVec = eapMd5Ptr->getValue();
-            std::array<byte,16> md5RespArr;
-            std::copy(md5RespVec.begin(),md5RespVec.end(),md5RespArr.begin());
+        } else if (eapDataT == EapData::MD5_CHALLENGE) {
+            // TODO temporary
+            EapMd5Challenge *eapMd5Ptr =
+                static_cast<EapMd5Challenge *>(eapDataPtr.get());
+            std::vector<byte> md5RespVec = eapMd5Ptr->getValue();
+            std::array<byte, 16> md5RespArr;
+            std::copy(md5RespVec.begin(), md5RespVec.end(), md5RespArr.begin());
 
             EapMd5Challenge eapMd5Ref(*eapMd5Ptr);
-            std::array<byte,16> md5RespArrRef = calcChalVal(eapPacket.getIdentifier(),persistChal->challenge,*persistPass);
+            std::array<byte, 16> md5RespArrRef =
+                calcChalVal(eapPacket.getIdentifier(), persistChal->challenge,
+                            *persistPass);
 
             EapPacket respEapPacket;
             RadiusPacket respPacket;
-            if(md5RespArrRef == md5RespArr){
+            if (md5RespArrRef == md5RespArr) {
                 respEapPacket.setType(EapPacket::SUCCESS);
                 respPacket.setCode(RadiusPacket::ACCESS_ACCEPT);
-            }else{
+            } else {
                 respEapPacket.setType(EapPacket::FAILURE);
                 respPacket.setCode(RadiusPacket::ACCESS_REJECT);
             }
@@ -121,17 +126,17 @@ const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
 
             EapMessage eapM;
             eapM.setValue(respEapPacket.getBuffer());
-            respPacket.addAVP(dynamic_cast<const RadiusAVP&>(eapM));
+            respPacket.addAVP(dynamic_cast<const RadiusAVP &>(eapM));
             respPacket.setAuthenticator(radiusPacket.getAuthenticator());
-            calcAndSetMsgAuth(respPacket,secret);
+            calcAndSetMsgAuth(respPacket, secret);
             calcAndSetAuth(respPacket);
-            Packet packetToSend(respPacket.getBuffer(),packet.addr);
+            Packet packetToSend(respPacket.getBuffer(), packet.addr);
             packetsToSend.push_back(packetToSend);
         }
 
     } catch (const packets::InvalidPacket &e) {
-        logger->error() << "Packet invalid. Reason :" << e.what();
-        logger->error() << "Packet dump:" << NL
+        logger->trace() << "Packet invalid. Reason : " << NL << e.what();
+        logger->trace() << "Packet dump: " << NL
                         << packet2LogBytes(packet.bytes);
         return addPendingPackets(packetsToSend);
     }

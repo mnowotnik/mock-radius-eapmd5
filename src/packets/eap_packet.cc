@@ -28,8 +28,8 @@ EapData *EapData::factoryFun(const std::vector<byte> &bytes) {
         ed = new EapNak(bytes);
         break;
     default:
-        throw InvalidPacket("EapData::factoryFun. Unsupported type : " +
-                            (int)type);
+        throw InvalidPacket("EAP packet Type-Data unsupported type : " +
+                            std::to_string((int)type));
     }
     return ed;
 }

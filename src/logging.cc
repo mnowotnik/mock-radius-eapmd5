@@ -38,6 +38,7 @@ void initLogger(const std::string &logPath, const std::string &logName) {
         auto combined_logger =
             std::make_shared<spdlog::logger>(logName, begin(sinks), end(sinks));
         spdlog::register_logger(combined_logger);
+        spdlog::set_pattern("[%R] [%l] %v");
     } catch (const spdlog::spdlog_ex &ex) {
         std::cout << "initLogger failed: " << ex.what() << std::endl;
     }

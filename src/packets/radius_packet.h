@@ -23,8 +23,10 @@ class RadiusAVP {
 
   public:
     // types
-    static const byte MESSAGE_AUTHENTICATOR = 80, EAP_MESSAGE = 79,
+    static const byte USER_NAME = 1, USER_PASSWORD = 2, CHAP_PASSWORD = 3,
+                      MESSAGE_AUTHENTICATOR = 80, EAP_MESSAGE = 79,
                       NAS_IP_ADDRESS = 4, NAS_IDENTIFIER = 32;
+    static const byte MAX_TYPE_ID = 63;
     static const byte MIN_SIZE = 2;
     static const byte VAL_OFFSET = MIN_SIZE;
 
@@ -62,6 +64,29 @@ class RadiusAVP {
         b.print(o);
         return o;
     }
+};
+
+/**
+ * type  : Any (<=63)
+ * length : >=2
+ * value : Any
+ */
+class RadiusAVPDefault : public RadiusAVP {
+
+  protected:
+    void validate() {
+        if (getLength() < MIN_SIZE) {
+            throw InvalidPacket("AVP length field value incorrect (<2)");
+        }
+    }
+
+  public:
+    RadiusAVPDefault(const std::vector<byte> &bytes) : RadiusAVP(bytes) {}
+    RadiusAVPDefault() {
+        buffer.resize(MIN_SIZE);
+        setLength(buffer.size());
+    }
+    void print(std::ostream &o) const { o << "Generic AVP"; }
 };
 
 /**

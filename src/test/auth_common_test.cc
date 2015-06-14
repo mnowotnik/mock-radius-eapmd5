@@ -102,14 +102,14 @@ TEST_CASE("Testing MessageAuthenticator generation(with init)",
 }
 TEST_CASE("Testing generate random bytes", "[generateRandomBytes]") {
     int i;
-    for (i = 0; i < 15; i++) {
-        std::vector<byte> gen1 =
-            generateRandomBytes((unsigned int)5, (unsigned int)5);
-        std::vector<byte> gen2 =
-            generateRandomBytes((unsigned int)5, (unsigned int)5);
-        REQUIRE(gen1.size() == 20);
-        REQUIRE_FALSE(gen1 == gen2);
-    }
+    std::vector<byte> gen =
+        generateRandomBytes((unsigned int)5, (unsigned int)5);
+    REQUIRE(gen.size() == 5);
+    std::vector<byte> gen1 =
+        generateRandomBytes((unsigned int)5, (unsigned int)5);
+    std::vector<byte> gen2 =
+        generateRandomBytes((unsigned int)5, (unsigned int)5);
+    REQUIRE_FALSE(gen1 == gen2);
 }
 
 TEST_CASE("Testing min max", "[generateRandomBytes]") {
@@ -118,8 +118,8 @@ TEST_CASE("Testing min max", "[generateRandomBytes]") {
         std::vector<byte> gen1 =
             generateRandomBytes((unsigned int)6, (unsigned int)9);
 
-        REQUIRE(gen1.size() >= 6 * 4);
-        REQUIRE(gen1.size() <= 9 * 4);
+        REQUIRE(gen1.size() >= 6);
+        REQUIRE(gen1.size() <= 9);
     }
 }
 

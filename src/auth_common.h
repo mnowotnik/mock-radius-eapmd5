@@ -55,8 +55,8 @@ std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max);
 std::array<byte, 16> generateRandom16();
 std::array<byte, 16> calcChalVal(const packets::EapPacket &packet,
                                  const std::string &secret);
-std::array<byte, 16> calcChalVal(byte ident,std::vector<byte>chal,
+std::array<byte, 16> calcChalVal(byte ident, std::vector<byte> chal,
                                  const std::string &secret);
 packets::EapPacket makeIdentity(const std::string id);
-packets::EapPacket makeChallengeResp(const std::array<byte,16>chalResp);
+packets::EapPacket makeChallengeResp(const std::array<byte, 16> chalResp);
 }

@@ -29,11 +29,11 @@ bool checkMessageAuthenticator(const RadiusPacket &packet,
     MessageAuthenticator *ma;
     std::for_each(avpList.begin(), avpList.end(),
                   [&](const std::unique_ptr<RadiusAVP> &avp) {
-        if (avp->getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
-            RadiusAVP *ap = const_cast<RadiusAVP *>(avp.get());
-            ma = static_cast<MessageAuthenticator *>(ap);
-        }
-    });
+                      if (avp->getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
+                          RadiusAVP *ap = const_cast<RadiusAVP *>(avp.get());
+                          ma = static_cast<MessageAuthenticator *>(ap);
+                      }
+                  });
 
     if (packet.getCode() == RadiusPacket::ACCESS_REQUEST) {
         return calcMessageAuthenticatorChecksum(
@@ -72,7 +72,7 @@ void calcAndSetMsgAuth(packets::RadiusPacket &packet, const std::string &secret,
     packet.setAuthenticator(authenticator);
     std::unique_ptr<MessageAuthenticator> maPtr =
         findMessageAuthenticator(packet);
-    if (maPtr.get() == nullptr) {        
+    if (maPtr.get() == nullptr) {
         maPtr.reset(new MessageAuthenticator());
         packet.addAVP(static_cast<const MessageAuthenticator &>(*maPtr));
     }
@@ -136,11 +136,11 @@ findMessageAuthenticator(const packets::RadiusPacket &packet) {
     MessageAuthenticator *ma = nullptr;
     std::for_each(avpList.begin(), avpList.end(),
                   [&](const std::unique_ptr<RadiusAVP> &avp) {
-        if (avp->getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
-            RadiusAVP *ap = const_cast<RadiusAVP *>(avp.get());
-            ma = static_cast<MessageAuthenticator *>(ap);
-        }
-    });
+                      if (avp->getType() == RadiusAVP::MESSAGE_AUTHENTICATOR) {
+                          RadiusAVP *ap = const_cast<RadiusAVP *>(avp.get());
+                          ma = static_cast<MessageAuthenticator *>(ap);
+                      }
+                  });
     if (ma == nullptr) {
         return std::unique_ptr<MessageAuthenticator>(nullptr);
     }
@@ -181,11 +181,11 @@ bool isValid(const RadiusPacket &packet) {
 std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max) {
     IntGenerator genLen{min, max};
     unsigned int len = genLen(seedGen);
-    std::vector<byte> randInts(len);
+    std::vector<byte> randInts((int)std::ceil((double)len / 4));
     std::generate(randInts.begin(), randInts.end(), [&] { return genBytes(); });
 
     byte *castInts = static_cast<byte *>(&randInts[0]);
-    std::vector<byte> bytes(&castInts[0], &castInts[randInts.size() * 4]);
+    std::vector<byte> bytes(&castInts[0], &castInts[len]);
     return bytes;
 }
 
@@ -195,7 +195,7 @@ std::array<byte, 16> generateRandom16() {
     std::copy(vec.begin(), vec.end(), arr.begin());
     return arr;
 }
-std::array<byte, 16> calcChalVal(byte ident,std::vector<byte>chal,
+std::array<byte, 16> calcChalVal(byte ident, std::vector<byte> chal,
                                  const std::string &secret) {
     std::vector<byte> buffer;
     buffer.push_back(ident);
@@ -223,16 +223,12 @@ EapPacket makeIdentity(const std::string id) {
     return packet;
 }
 
-EapPacket makeChallengeResp(const std::array<byte,16>chalResp) {
+EapPacket makeChallengeResp(const std::array<byte, 16> chalResp) {
     EapPacket packet;
     EapMd5Challenge eapChal;
-    std::vector<byte>chalRespVec (chalResp.begin(),chalResp.end());
+    std::vector<byte> chalRespVec(chalResp.begin(), chalResp.end());
     eapChal.setValue(chalRespVec);
     packet.setData(static_cast<EapData &>(eapChal));
     return packet;
 }
-
-
-
-
 }
