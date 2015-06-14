@@ -45,8 +45,8 @@ TEST_CASE("Print RadiusPacket with AVPs") {
     packet.setCode(RadiusPacket::ACCESS_ACCEPT);
     MessageAuthenticator ma;
     EapMessage em;
-    packet.addAVP(static_cast<const RadiusAVP &>(ma));
-    packet.addAVP(static_cast<const RadiusAVP &>(em));
+    packet.addAVP(dynamic_cast<const RadiusAVP &>(ma));
+    packet.addAVP(dynamic_cast<const RadiusAVP &>(em));
     std::ostringstream stream;
     stream << packet;
     // clang-format off
@@ -56,8 +56,8 @@ TEST_CASE("Print RadiusPacket with AVPs") {
             "2 Length = 42" + NL + 
             "16 Authenticator" + NL + 
             "Attributes:" + NL + 
-            "    18 Message Authenticator" + NL + 
-            "    4 Eap-Message" + NL);
+            "    18 Message-Authenticator" + NL + 
+            "    4 EAP-Message" + NL);
     // clang-format on
 }
 

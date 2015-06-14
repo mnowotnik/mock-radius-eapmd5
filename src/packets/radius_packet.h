@@ -2,6 +2,7 @@
 #include "packets/common.h"
 #include "packets/eap_packet.h"
 #include "constants.h"
+#include <map>
 #include <vector>
 #include <array>
 #include <string>
@@ -10,6 +11,89 @@
 
 namespace radius {
 namespace packets {
+
+const std::map<byte, std::string> RADIUS_ATTRIBUTE_TYPES = {
+    {1, "User-Name"},
+    {2, "User-Password"},
+    {3, "CHAP-Password"},
+    {4, "NAS-IP-Address"},
+    {5, "NAS-Port"},
+    {6, "Service-Type"},
+    {7, "Framed-Protocol"},
+    {8, "Framed-IP-Address"},
+    {9, "Framed-IP-Netmask"},
+    {10, "Framed-Routing"},
+    {11, "Filter-Id"},
+    {12, "Framed-MTU"},
+    {13, "Framed-Compression"},
+    {14, "Login-IP-Host"},
+    {15, "Login-Service"},
+    {16, "Login-TCP-Port"},
+    {17, "(unassigned)"},
+    {18, "Reply-Message"},
+    {19, "Callback-Number"},
+    {20, "Callback-Id"},
+    {21, "(unassigned)"},
+    {22, "Framed-Route"},
+    {23, "Framed-IPX-Network"},
+    {24, "State"},
+    {25, "Class"},
+    {26, "Vendor-Specific"},
+    {27, "Session-Timeout"},
+    {28, "Idle-Timeout"},
+    {29, "Termination-Action"},
+    {30, "Called-Station-Id"},
+    {31, "Calling-Station-Id"},
+    {32, "NAS-Identifier"},
+    {33, "Proxy-State"},
+    {34, "Login-LAT-Service"},
+    {35, "Login-LAT-Node"},
+    {36, "Login-LAT-Group"},
+    {37, "Framed-AppleTalk-Link"},
+    {38, "Framed-AppleTalk-Network"},
+    {39, "Framed-AppleTalk-Zone"},
+    {40, "Accounting"},
+    {41, "Accounting"},
+    {42, "Accounting"},
+    {43, "Accounting"},
+    {44, "Accounting"},
+    {45, "Accounting"},
+    {46, "Accounting"},
+    {47, "Accounting"},
+    {48, "Accounting"},
+    {49, "Accounting"},
+    {50, "Accounting"},
+    {51, "Accounting"},
+    {52, "Acct-Input-Gigawords"},
+    {53, "Acct-Output-Gigawords"},
+    {54, "Unused"},
+    {55, "Event-Timestamp"},
+    {56, "Unused"},
+    {57, "Unused"},
+    {58, "Unused"},
+    {59, "Unused"},
+    {60, "CHAP-Challenge"},
+    {61, "NAS-Port-Type"},
+    {62, "Port-Limit"},
+    {63, "Login-LAT-Port"},
+    {70, "ARAP-Password"},
+    {71, "ARAP-Features"},
+    {72, "ARAP-Zone-Access"},
+    {73, "ARAP-Security"},
+    {74, "ARAP-Security-Data"},
+    {75, "Password-Retry"},
+    {76, "Prompt"},
+    {77, "Connect-Info"},
+    {78, "Configuration-Token"},
+    {79, "EAP-Message"},
+    {80, "Message-Authenticator"},
+    /* 81-83   (refer to [6]) */
+    {84, "ARAP-Challenge-Response"},
+    {85, "Acct-Interim-Interval"},
+    /* 86      (refer to [7]) */
+    {87, "NAS-Port-Id"},
+    {88, "Framed-Pool"},
+    {89, "Unused"}};
 
 class RadiusPacket;
 
@@ -26,7 +110,7 @@ class RadiusAVP {
     static const byte USER_NAME = 1, USER_PASSWORD = 2, CHAP_PASSWORD = 3,
                       MESSAGE_AUTHENTICATOR = 80, EAP_MESSAGE = 79,
                       NAS_IP_ADDRESS = 4, NAS_IDENTIFIER = 32;
-    static const byte MAX_TYPE_ID = 63;
+    static const byte MAX_TYPE_ID = 91;
     static const byte MIN_SIZE = 2;
     static const byte VAL_OFFSET = MIN_SIZE;
 
@@ -56,7 +140,15 @@ class RadiusAVP {
 
     std::vector<byte> getBuffer() const { return buffer; }
 
-    virtual void print(std::ostream &o) const = 0;
+    virtual void RadiusAVP::print(std::ostream &o) const {
+        const auto &typeIt = RADIUS_ATTRIBUTE_TYPES.find((const byte)getType());
+        if (typeIt == RADIUS_ATTRIBUTE_TYPES.end()) {
+            o << "Unrecognized Attribute type";
+        } else {
+            o << typeIt->second;
+        }
+    }
+
     static RadiusAVP *factoryFun(const std::vector<byte> &bytes);
 
     friend std::ostream &operator<<(std::ostream &o, const RadiusAVP &b) {
@@ -86,7 +178,6 @@ class RadiusAVPDefault : public RadiusAVP {
         buffer.resize(MIN_SIZE);
         setLength(buffer.size());
     }
-    void print(std::ostream &o) const { o << "Generic AVP"; }
 };
 
 /**
@@ -115,7 +206,6 @@ class EapMessage : public RadiusAVP {
         setType(RadiusAVP::EAP_MESSAGE);
         setLength(buffer.size());
     }
-    void print(std::ostream &o) const { o << "Eap-Message"; }
 };
 
 /**
@@ -135,7 +225,6 @@ class MessageAuthenticator : public RadiusAVP {
 
     void setMd5(const std::array<byte, 16> &md5);
     std::array<byte, 16> getMd5();
-    void print(std::ostream &o) const { o << "Message Authenticator"; }
 };
 
 /**
@@ -159,7 +248,6 @@ class NasIpAddr : public RadiusAVP {
     void setIp(const std::string &ipStr);
 
     in_addr getIp();
-    void print(std::ostream &o) const { o << "NAS-IP-Address"; }
 };
 
 /**
@@ -180,7 +268,6 @@ class NasIdentifier : public RadiusAVP {
     void setIdentifier(const std::string &id);
 
     std::string getIdentifier();
-    void print(std::ostream &o) const { o << "NAS Identifier"; }
 };
 
 /**

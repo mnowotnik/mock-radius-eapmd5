@@ -17,11 +17,12 @@ CSV_PARSER=$(ROOT)\lib\fast-cpp-csv-parser\include
 ### Object dependencies ###
 COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC)\logging.obj \
 			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj \
-			$(SRC)\packets\utils.obj $(SRC)\csv_reader.obj
+			$(SRC)\packets\utils.obj $(SRC)\csv_reader.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj \
+			$(HASHLIB)\sha3.obj $(HASHLIB)\sha256.obj
 
 SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_net.obj $(SRC)\radius_server.obj $(COMMON_OBJS)
 
-CLIENT_OBJS=$(SRC)\client.obj $(SRC)\client_net.obj $(SRC)\interactive.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj $(HASHLIB)\sha3.obj $(HASHLIB)\sha256.obj $(COMMON_OBJS)
+CLIENT_OBJS=$(SRC)\client.obj $(SRC)\client_net.obj $(SRC)\interactive.obj  $(COMMON_OBJS)
 
 TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
 		   $(SRC)\test\server_net_test.obj $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj $(SRC)\test\csv_test.obj \

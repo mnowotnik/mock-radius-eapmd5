@@ -1,21 +1,18 @@
 #include "client_net.h"
 #include "interactive.h"
-#include "crc32.h"
-#include "md5.h"
-#include "sha1.h"
-#include "sha256.h"
-#include "sha3.h"
 #include "spdlog/spdlog.h"
 #include "logging.h"
 #include "auth_common.h"
+#include "crypto.h"
 #include "packets/radius_packet.h"
 #include "packets/eap_packet.h"
 #include "packets/packet.h"
 #include "packets/utils.h"
 
 using namespace std;
-const std::vector<byte> temp = {0xe0, 0xbd, 0x18, 0xdb, 0x4c, 0xc2, 0xf8, 0x5c,
-                                0xed, 0xef, 0x65, 0x4f, 0xcc, 0xc4, 0xa4, 0xd8};
+
+const std::map<std::string, radius::HashAlg> HASHES_MAP = {
+    {"sha256", radius::SHA256}, {"sha3", radius::SHA3}, {"md5", radius::MD5}};
 
 const std::string LOGGER_NAME = "client";
 std::string hashString(std::string input, std::string hash);
@@ -66,8 +63,9 @@ int main(int argc, char **argv) {
         cmd.add(ipArg);
 
         ValueArg<string> hashArg(
-            "", "hash", "Type of hashing function (crc32 md5 sha1 sha256 sha3)",
-            false, "sha256", "string");
+            "", "hash", "Type of password hashing function (md5 sha256 sha3)."
+                        "Defaults to plain text.",
+            false, "", "string");
         cmd.add(hashArg);
 
         cmd.parse(argc, argv);
@@ -87,6 +85,10 @@ int main(int argc, char **argv) {
         auto logger = spdlog::get(LOGGER_NAME);
 
         string hash = hashArg.getValue();
+        if (hash != "" && HASHES_MAP.find(hash) == HASHES_MAP.end()) {
+            std::cout << "Unrecognized hash: " << hash << std::endl;
+            return 1;
+        }
 
         string login = loginArg.getValue();
         string pas = passArg.getValue();
@@ -103,8 +105,6 @@ int main(int argc, char **argv) {
         /*     pas = radius::getPassword("Enter password:\n"); */
         /* } */
         pas = hashString(pas, hash);
-
-        // radius::packets::Packet newPack(temp, server_addr);
 
         radius::startClient(ip.c_str(), port);
         // 1.access-request
@@ -218,25 +218,9 @@ int main(int argc, char **argv) {
 }
 
 std::string hashString(std::string input, std::string hash) {
-    std::string output;
-
-    if (hash == "sha256") {
-        SHA256 sha256;
-        output = sha256(input);
-    } else if (hash == "sha1") {
-        SHA1 sha1;
-        output = sha1(input);
-    } else if (hash == "sha3") {
-        SHA3 sha3;
-        output = sha3(input);
-    } else if (hash == "md5") {
-        MD5 md5;
-        output = md5(input);
-    } else if (hash == "crc32") {
-        CRC32 crc32;
-        output = crc32(input);
-    } else {
-        output = input;
+    const auto &it = HASHES_MAP.find(hash);
+    if (it == HASHES_MAP.end()) {
+        return input;
     }
-    return output;
+    return radius::hashStr(input, it->second);
 }

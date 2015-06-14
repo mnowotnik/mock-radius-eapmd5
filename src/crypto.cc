@@ -2,7 +2,7 @@
 namespace radius {
 
 std::array<byte, 16> md5Bin(const std::vector<byte> &data) {
-    MD5 md5;
+    ::MD5 md5;
     md5(&data[0], data.size());
     byte hashBuf[16];
     md5.getHash((unsigned char *)&hashBuf);
@@ -15,8 +15,8 @@ std::array<byte, 16> md5Bin(const std::vector<byte> &data) {
 std::array<byte, 16> md5HmacBin(const std::vector<byte> &data,
                                 const std::string &secret) {
     std::string hmac_str =
-        hmac<MD5>((void *)&data[0], (size_t)data.size(), (void *)&secret[0],
-                  (size_t)secret.length());
+        hmac<::MD5>((void *)&data[0], (size_t)data.size(), (void *)&secret[0],
+                    (size_t)secret.length());
     std::vector<byte> hmac_bytes;
 
     byte b;
@@ -30,5 +30,23 @@ std::array<byte, 16> md5HmacBin(const std::vector<byte> &data,
     std::array<byte, 16> hmac_arr;
     std::copy(hmac_bytes.begin(), hmac_bytes.end(), hmac_arr.begin());
     return hmac_arr;
+}
+std::string hashStr(const std::string &str, HashAlg alg) {
+    switch (alg) {
+    case SHA256: {
+        ::SHA256 sha256;
+        return sha256(str);
+    }
+    case MD5: {
+        ::MD5 md5;
+        return md5(str);
+    }
+    case SHA3: {
+        ::SHA3 sha3;
+        return sha3(str);
+    }
+    }
+
+    return str;
 }
 }

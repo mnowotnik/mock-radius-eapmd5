@@ -3,7 +3,6 @@
 #include "catch.hpp"
 #include <map>
 #include <string>
-
 #include "logging.h"
 using std::map;
 using std::string;
