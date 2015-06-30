@@ -1,4 +1,6 @@
-#pragma once
+#ifndef RADIUS_SERVER_H_GSDHRZVP
+#define RADIUS_SERVER_H_GSDHRZVP
+
 #include <string>
 #include <map>
 #include <vector>
@@ -54,10 +56,10 @@ class RadiusServer {
     // list of pending EAP-Requests
     std::vector<PendingPacket> pendingPackets;
 
-    Logger logger;
-
     const UserPassMap userPassMap;
     const std::string secret;
+
+    Logger logger;
 
     void updatePending();
     const std::vector<Packet>
@@ -74,3 +76,4 @@ class RadiusServer {
     const std::vector<Packet> recvPacket(const Packet &packet);
 };
 }
+#endif /* end of include guard: RADIUS_SERVER_H_GSDHRZVP */

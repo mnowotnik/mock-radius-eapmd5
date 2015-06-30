@@ -1,9 +1,12 @@
-#pragma once
+#ifndef EAP_PACKET_H_RHKMT4UG
+#define EAP_PACKET_H_RHKMT4UG
+
 #include "packets/common.h"
 #include "typedefs.h"
 #include "constants.h"
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace radius {
 namespace packets {
@@ -149,3 +152,6 @@ class EapPacket {
 };
 }
 }
+
+
+#endif /* end of include guard: EAP_PACKET_H_RHKMT4UG */

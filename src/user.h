@@ -1,6 +1,8 @@
+#ifndef USER_H_ANZMS7CW
+#define USER_H_ANZMS7CW
+
 #include <iostream>
 #include <string>
-#pragma once
 /**
 Class for encapsulating user parameters
  */
@@ -19,3 +21,6 @@ class User {
      */
     std::string getUsername();
 }
+
+
+#endif /* end of include guard: USER_H_ANZMS7CW */

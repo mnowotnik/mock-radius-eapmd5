@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CRYPTO_H_UTAHSOL9
+#define CRYPTO_H_UTAHSOL9
+
 #include <iostream>
 #include "crc32.h"
 #include "md5.h"
@@ -23,3 +25,4 @@ std::array<byte, 16> md5HmacBin(const std::vector<byte> &data,
 
 std::string hashStr(const std::string &str, HashAlg alg);
 }
+#endif /* end of include guard: CRYPTO_H_UTAHSOL9 */

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef AUTH_COMMON_H_PAJ4YV1L
+#define AUTH_COMMON_H_PAJ4YV1L
+
 #include <string>
 #include <vector>
 #include <array>
@@ -60,3 +62,6 @@ std::array<byte, 16> calcChalVal(byte ident, std::vector<byte> chal,
 packets::EapPacket makeIdentity(const std::string id);
 packets::EapPacket makeChallengeResp(const std::array<byte, 16> chalResp);
 }
+
+
+#endif /* end of include guard: AUTH_COMMON_H_PAJ4YV1L */

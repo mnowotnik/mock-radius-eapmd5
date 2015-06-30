@@ -4,7 +4,6 @@
 #include "logging.h"
 #include "csv_reader.h"
 #include "radius_server.h"
-#include <windows.h>
 
 const std::string LOGGER_NAME = "server";
 
@@ -16,7 +15,7 @@ void serverLoop(RadiusServer &radiusServer) {
     while (1) {
         Packet iPacket = radius::receiveData();
         std::vector<Packet> packets = radiusServer.recvPacket(iPacket);
-        for (int i = 0; i < packets.size(); i++) {
+        for (std::vector<Packet>::size_type i = 0; i < packets.size(); i++) {
             radius::sendData(packets[i]);
         }
     }

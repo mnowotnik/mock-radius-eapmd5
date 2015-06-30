@@ -32,6 +32,7 @@
 #  define WIN32_LEAN_AND_MEAN
 # endif
 # include <Windows.h>
+# include <share.h>
 #elif __linux__
 #include <sys/syscall.h> //Use gettid() syscall under linux to get thread id
 #include <unistd.h>

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PACKET_H_IEFLGARB
+#define PACKET_H_IEFLGARB
+
 #include "packets/common.h"
 #include <vector>
 
@@ -14,3 +16,6 @@ struct Packet {
 };
 }
 }
+
+
+#endif /* end of include guard: PACKET_H_IEFLGARB */

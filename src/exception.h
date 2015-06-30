@@ -1,4 +1,6 @@
-#pragma once
+#ifndef EXCEPTION_H_JBQ1O8DV
+#define EXCEPTION_H_JBQ1O8DV
+
 #include <exception>
 
 class Exception : public std::exception {
@@ -14,3 +16,6 @@ class FileNotFound : public Exception {
   public:
     explicit FileNotFound(const std::string &message) : Exception(message) {}
 };
+
+
+#endif /* end of include guard: EXCEPTION_H_JBQ1O8DV */

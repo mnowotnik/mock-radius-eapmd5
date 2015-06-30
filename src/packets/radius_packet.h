@@ -1,4 +1,6 @@
-#pragma once
+#ifndef RADIUS_PACKET_H_QMEYJOSQ
+#define RADIUS_PACKET_H_QMEYJOSQ
+
 #include "packets/common.h"
 #include "packets/eap_packet.h"
 #include "constants.h"
@@ -140,7 +142,7 @@ class RadiusAVP {
 
     std::vector<byte> getBuffer() const { return buffer; }
 
-    virtual void RadiusAVP::print(std::ostream &o) const {
+    virtual void print(std::ostream &o) const {
         const auto &typeIt = RADIUS_ATTRIBUTE_TYPES.find((const byte)getType());
         if (typeIt == RADIUS_ATTRIBUTE_TYPES.end()) {
             o << "Unrecognized Attribute type";
@@ -324,3 +326,6 @@ class RadiusPacket {
 };
 }
 }
+
+
+#endif /* end of include guard: RADIUS_PACKET_H_QMEYJOSQ */

@@ -1,51 +1,49 @@
-#Type 'nmake test' for testing
-#or simply 'nmake' to build all targets
+#Type 'make test' for testing
+#or simply 'make' to build all targets
 
-### Source dirs ###
-ROOT=$(MAKEDIR)
-SRC=$(ROOT)\src
+CC=/mingw64/bin/g++
+ROOT=$(CURDIR)
+SRC=$(ROOT)/src
+
 
 ###  3rd party libraries ###
-HASHLIB=$(ROOT)\lib\hash-library
+HASHLIB=$(ROOT)/lib/hash-library
 #header-only libraries:
-TCLAP=$(ROOT)\lib\tclap-1.2.1\include
-CATCH=$(ROOT)\lib\Catch\single_include
-SPDLOG=$(ROOT)\lib\spdlog\include
-CSV_PARSER=$(ROOT)\lib\fast-cpp-csv-parser\include
+TCLAP=$(ROOT)/lib/tclap-1.2.1/include
+CATCH=$(ROOT)/lib/Catch/single_include
+SPDLOG=$(ROOT)/lib/spdlog/include
+CSV_PARSER=$(ROOT)/lib/fast-cpp-csv-parser/include
 
 
 ### Object dependencies ###
-COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC)\logging.obj \
-			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj \
-			$(SRC)\packets\utils.obj $(SRC)\csv_reader.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj \
-			$(HASHLIB)\sha3.obj $(HASHLIB)\sha256.obj
+COMMON_OBJS=$(SRC)/packets/radius_packet.o $(SRC)/packets/eap_packet.o $(SRC)/logging.o \
+			$(HASHLIB)/md5.o $(SRC)/packets/common.o $(SRC)/auth_common.o $(SRC)/crypto.o \
+			$(SRC)/packets/utils.o $(SRC)/csv_reader.o $(HASHLIB)/crc32.o $(HASHLIB)/sha1.o \
+			$(HASHLIB)/sha3.o $(HASHLIB)/sha256.o
 
-SERVER_OBJS=$(SRC)\server.obj $(SRC)\server_net.obj $(SRC)\radius_server.obj $(COMMON_OBJS)
+SERVER_OBJS=$(SRC)/server.o $(SRC)/server_net.o $(SRC)/radius_server.o $(COMMON_OBJS)
 
-CLIENT_OBJS=$(SRC)\client.obj $(SRC)\client_net.obj $(SRC)\interactive.obj  $(COMMON_OBJS)
+CLIENT_OBJS=$(SRC)/client.o $(SRC)/client_net.o $(SRC)/interactive.o  $(COMMON_OBJS)
 
-TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
-		   $(SRC)\test\server_net_test.obj $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj $(SRC)\test\csv_test.obj \
-		   $(SRC)\test\crypto_test.obj \
-		   $(SRC)\radius_server.obj $(SRC)\server_net.obj  \
+TESTS_OBJS=$(SRC)/all_tests.o $(SRC)/test/radius_server_test.o $(SRC)/test/logging_test.o \
+		   $(SRC)/test/server_net_test.o $(SRC)/test/packet_test.o $(SRC)/test/auth_common_test.o $(SRC)/test/csv_test.o \
+		   $(SRC)/test/crypto_test.o  $(SRC)/radius_server.o $(SRC)/server_net.o  \
 		   $(COMMON_OBJS)
 
-
-
 ### Targets ###
-SERVER=server.exe
-CLIENT=client.exe
-TESTS=all_tests.exe
+SERVER=server
+CLIENT=client
+TESTS=all_tests
 
 ### Include flags ###
-COMMON_INC=/I$(HASHLIB) /I$(TCLAP) /I$(SRC) /I$(SPDLOG)
+COMMON_INC=-I$(HASHLIB) -I$(TCLAP) -I$(SRC) -I$(SPDLOG)
 
 SERVER_INC=$(COMMON_INC) 
 CLIENT_INC=$(COMMON_INC)
-TESTS_INC=/I$(HASHLIB) /I$(CATCH) /I$(SRC) /I$(SPDLOG) 
+TESTS_INC=-I$(HASHLIB) -I$(CATCH) -I$(SRC) -I$(SPDLOG) 
 
 ### Other flags ###
-CFLAGS = /EHsc /MP
+CFLAGS = -Wall -std=c++11 -lws2_32 -D_WIN32_WINNT=0x600
 
 
 all: $(SERVER) $(CLIENT) $(TESTS)
@@ -54,42 +52,41 @@ test: $(TESTS)
 	$(TESTS)
 
 $(SERVER): $(SERVER_OBJS)
-	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
+	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
 
 $(CLIENT): $(CLIENT_OBJS)
-	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
+	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
 
 $(TESTS): $(TESTS_OBJS)
-	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
+	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
 
-$(SRC)\server.obj: $(SRC)\server.cc
-	pushd $(SRC) & $(CC) $(CFLAGS) $(SERVER_INC) -c $? \
-		& popd
-
-$(SRC)\client.obj: $(SRC)\client.cc
-	pushd $(SRC) & $(CC) $(CFLAGS) $(CLIENT_INC) -c $? \
-		& popd
-
-$(SRC)\all_tests.obj: $(SRC)\all_tests.cc  
-	pushd $(SRC) & $(CC) $(CFLAGS) $(TESTS_INC) -c $? \
-		& popd
+all_tests.o: src/all_tests.cc  
+	pushd src && $(CC) $(CFLAGS) $(TESTS_INC) -c all_tests.cc \
+		&& popd
 
 clean:
-	del *.obj *.exe $(SRC)\*.obj $(SRC)\packets\*.obj \
-		$(HASHLIB)\*.obj $(SRC)\test\*.obj
+	rm src/*.o src/packets/*.o \
+		$(HASHLIB)/*.o src/test/*.o 
 
 
 
-### Rules ###
-{$(HASHLIB)}.cpp{$(HASHLIB)}.obj::
-	pushd $(HASHLIB) & $(CC) $(CFLAGS) /I$(HASHLIB) -c $< & popd
+# ### Rules ###
+# {$(HASHLIB)}.cpp{$(HASHLIB)}.o::
+# 	pushd $(HASHLIB) & $(CC) $(CFLAGS) /I$(HASHLIB) -c $< & popd
+#
+$(HASHLIB)/%.o: $(HASHLIB)/%.cpp
+	pushd $(HASHLIB) && $(CC) $(CFLAGS) -I(HASHLIB) -c $? && popd
 
-{$(SRC)}.cc{$(SRC)}.obj:
-	pushd $(SRC) & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
 
-{$(SRC)\packets}.cc{$(SRC)\packets}.obj:
-	pushd $(SRC)\packets & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
+%.o : %.cc
+	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
-{$(SRC)\test}.cc{$(SRC)\test}.obj:
-	pushd $(SRC)\test & $(CC) $(CFLAGS) $(TESTS_INC) -c $< & popd
+# server.o : server.cc
+# 	$(CC) $(CFLAGS) $(COMMON_INC) $< -o $@
+
+# {packets}.cc{packets}.o:
+# 	pushd packets & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
+
+# {test}.cc{test}.o:
+# 	pushd test & $(CC) $(CFLAGS) $(TESTS_INC) -c $< & popd
 
