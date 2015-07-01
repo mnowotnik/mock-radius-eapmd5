@@ -224,13 +224,14 @@ TEST_CASE("EapPacket integrity", "[EapPacket]") {
     packet.setIdentifier(1);
     packet.setType(EapPacket::REQUEST);
 
-    REQUIRE(packet.getType() == EapPacket::REQUEST);
+    byte code = EapPacket::REQUEST;
+    REQUIRE(packet.getType() == code);
     REQUIRE(packet.getLength() == 8);
     REQUIRE(packet.getBuffer().size() == 8);
     REQUIRE(buffer == packet.getBuffer());
 
     EapPacket desPacket(buffer);
-    REQUIRE(desPacket.getType() == EapPacket::REQUEST);
+    REQUIRE(desPacket.getType() == code);
     REQUIRE(desPacket.getLength() == 8);
     REQUIRE(desPacket.getBuffer().size() == 8);
     REQUIRE(buffer == desPacket.getBuffer());

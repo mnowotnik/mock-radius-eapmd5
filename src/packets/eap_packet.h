@@ -127,6 +127,7 @@ class EapPacket {
 
   public:
     static const byte REQUEST = 1, RESPONSE = 2, SUCCESS = 3, FAILURE = 4;
+    static const int blah=10;
 
     EapPacket() : buffer(MIN_LENGTH) { setLength(MIN_LENGTH); }
     EapPacket(const std::vector<byte> &bytes) : buffer(bytes) {
@@ -150,6 +151,7 @@ class EapPacket {
     friend std::ostream &operator<<(std::ostream &o, const EapPacket &e);
     std::string typeStr() const;
 };
+
 }
 }
 

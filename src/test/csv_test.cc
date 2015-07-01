@@ -15,7 +15,7 @@ std::map<std::string, std::string> csvData = {
 }
 TEST_CASE("Simple read file test", "[readCsvFile]") {
     std::map<std::string, std::string> csvRead =
-        readCsvFile(".\\src\\test\\csv.csv");
+        readCsvFile("src/test/csv.csv");
     REQUIRE(csvRead.find("Basia") != csvRead.end());
     REQUIRE(csvData["Basia"] == csvRead["Basia"]);
 }

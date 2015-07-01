@@ -51,7 +51,7 @@ CFLAGS= -Wall -std=c++11
 all: $(SERVER) $(CLIENT) $(TESTS)
 
 test: $(TESTS)
-	$(TESTS)
+	./$(TESTS)
 
 $(SERVER): $(SERVER_OBJS)
 	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
@@ -62,7 +62,7 @@ $(CLIENT): $(CLIENT_OBJS)
 $(TESTS): $(TESTS_OBJS)
 	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
 
-all_tests.o: src/all_tests.cc  
+$(SRC)/all_tests.o: src/all_tests.cc  
 	pushd src && $(CC) $(CFLAGS) $(TESTS_INC) -c all_tests.cc \
 		&& popd
 
@@ -82,6 +82,9 @@ $(HASHLIB)/%.o: $(HASHLIB)/%.cpp
 $(SRC)/server_net.o : $(SRC)/linux/server_net.cc 
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
+
+$(SRC)/test/%.o : $(SRC)/test/%.cc
+	$(CC) $(CFLAGS) $(TESTS_INC) -c $< -o $@
 
 %.o : %.cc
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
