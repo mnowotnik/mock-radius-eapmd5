@@ -21,14 +21,6 @@ void serverLoop(RadiusServer &radiusServer) {
     }
 }
 
-BOOL WINAPI consoleHandler(DWORD signal) {
-
-    if (signal == CTRL_C_EVENT)
-        radius::stopServer();
-
-    return TRUE;
-}
-
 int main(int argc, char **argv) {
     using namespace TCLAP;
     using namespace std;
@@ -85,12 +77,6 @@ int main(int argc, char **argv) {
         radius::startServer(ip.c_str(), port);
         radius::RadiusServer radiusServer(radius::readCsvFile(dbpath), secret,
                                           logger);
-
-        if (!SetConsoleCtrlHandler(consoleHandler, TRUE)) {
-            logger->error() << "Could not set control handler!";
-            radius::stopServer();
-            return 1;
-        }
 
         logger->info() << "Started server";
         serverLoop(radiusServer);

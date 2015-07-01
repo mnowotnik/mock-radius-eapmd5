@@ -34,3 +34,7 @@ vcvarsall.bat
 .syntastic
 /comline.bat
 /tags
+
+/server
+/client
+/all_tests

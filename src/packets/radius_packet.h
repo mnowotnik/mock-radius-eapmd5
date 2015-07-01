@@ -8,6 +8,7 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <cstring>
 #include <algorithm>
 #include <memory>
 #include <iostream>

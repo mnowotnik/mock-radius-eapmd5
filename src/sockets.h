@@ -10,10 +10,12 @@
 #endif
 
 #include <WS2tcpip.h>
+
 #else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h> 
+#include <arpa/inet.h>
 #endif
 
 #endif /* end of include guard: SOCKETS_H_U0SPYFVF */

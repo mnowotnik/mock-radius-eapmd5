@@ -36,7 +36,7 @@ void NasIpAddr::setIp(const string &ipStr) {
     array<byte, 4> ip;
     in_addr addr;
     inet_pton(AF_INET, ipStr.c_str(), &addr);
-    memcpy((void *)&ip[0], &addr, sizeof(in_addr));
+    std::memcpy((void *)&ip[0], &addr, sizeof(in_addr));
     setIp(ip);
 }
 
@@ -44,7 +44,7 @@ in_addr NasIpAddr::getIp() {
     byte *addrPtr = &buffer[RadiusAVP::VAL_OFFSET];
     struct in_addr addr;
     /* inet_ntop(AF_INET,&addr,ipStr.c_str(),ipStr.length()); */
-    memcpy((void *)&addr, addrPtr, sizeof(in_addr));
+    std::memcpy((void *)&addr, addrPtr, sizeof(in_addr));
     return addr;
 }
 

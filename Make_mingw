@@ -1,8 +1,7 @@
-SHELL := /bin/bash
 #Type 'make test' for testing
 #or simply 'make' to build all targets
 
-CC=g++
+CC=/mingw64/bin/g++
 ROOT=$(CURDIR)
 SRC=$(ROOT)/src
 
@@ -37,15 +36,14 @@ CLIENT=client
 TESTS=all_tests
 
 ### Include flags ###
-COMMON_INC=-I$(HASHLIB) -I$(TCLAP) -I$(SRC) -I$(SPDLOG) -I$(SRC)/linux
+COMMON_INC=-I$(HASHLIB) -I$(TCLAP) -I$(SRC) -I$(SPDLOG)
 
 SERVER_INC=$(COMMON_INC) 
 CLIENT_INC=$(COMMON_INC)
 TESTS_INC=-I$(HASHLIB) -I$(CATCH) -I$(SRC) -I$(SPDLOG) 
 
 ### Other flags ###
-CFLAGS= -Wall -std=c++11
-# -D_WIN32_WINNT=0x600
+CFLAGS = -Wall -std=c++11 -lws2_32 -D_WIN32_WINNT=0x600
 
 
 all: $(SERVER) $(CLIENT) $(TESTS)
@@ -78,9 +76,6 @@ clean:
 #
 $(HASHLIB)/%.o: $(HASHLIB)/%.cpp
 	pushd $(HASHLIB) && $(CC) $(CFLAGS) -I$(HASHLIB) -c $? && popd
-
-$(SRC)/server_net.o : $(SRC)/linux/server_net.cc 
-	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
 
 %.o : %.cc

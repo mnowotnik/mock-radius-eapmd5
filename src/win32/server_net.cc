@@ -7,15 +7,22 @@ using std::vector;
 namespace radius {
 namespace {
 
+BOOL WINAPI consoleHandler(DWORD signal) {
+
+    if (signal == CTRL_C_EVENT)
+        radius::stopServer();
+
+    return TRUE;
+}
+
 const int BUFLEN = 1000;
-int PORT = 32000;
 SOCKET s;
 bool isRunning;
 const unsigned int INT_ERR_CODE = 10004;
 }
 void startServer(const char *addr, const int port = 0) {
     PORT = port;
-    // printf("port:%d\n",PORT);
+
     if (isRunning) {
         printf("Server is running");
         return;
@@ -57,6 +64,11 @@ void startServer(const char *addr, const int port = 0) {
     }
     isRunning = true;
     // puts("Bind done");
+    if (!SetConsoleCtrlHandler(consoleHandler, TRUE)) {
+        logger->error() << "Could not set control handler!";
+        radius::stopServer();
+        return 1;
+    }
 }
 
 void stopServer() {

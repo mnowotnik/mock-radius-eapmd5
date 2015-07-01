@@ -8,6 +8,9 @@ using radius::packets::EapIdentity;
 using radius::packets::EapMd5Challenge;
 using radius::packets::MessageAuthenticator;
 
+
+namespace radius {
+
 namespace {
 // array of 0s
 const std::array<byte, 16> nullAuth{};
@@ -19,8 +22,6 @@ UniBiIntGenerator genBytes(seedGen);
 
 const std::array<byte, 16> EMPTY_MD5{};
 }
-
-namespace radius {
 
 bool checkMessageAuthenticator(const RadiusPacket &packet,
                                const std::string &secret,
@@ -120,7 +121,6 @@ calcMessageAuthenticatorChecksum(const packets::RadiusPacket &packet,
 
     std::unique_ptr<MessageAuthenticator> maPtr =
         findMessageAuthenticator(packet);
-    std::array<byte, 16> md5 = maPtr->getMd5();
 
     MessageAuthenticator emptyMa;
     emptyMa.setMd5(nullAuth);
