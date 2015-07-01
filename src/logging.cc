@@ -16,7 +16,7 @@ const int HEX_ROW_WIDTH = 10;
 
 std::string packet2LogBytes(const std::vector<byte> &packet) {
     std::stringstream log;
-    for (int i = 0; i < packet.size(); i++) {
+    for (unsigned int i = 0; i < packet.size(); i++) {
         if (i % HEX_ROW_WIDTH == 0 && i > 0) {
             log << NL;
         }

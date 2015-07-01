@@ -7,7 +7,7 @@
 #include "crc32.h"
 
 // big endian architectures need #define __BYTE_ORDER __BIG_ENDIAN
-#ifndef _MSC_VER
+#ifndef _WIN32
 #include <endian.h>
 #endif
 

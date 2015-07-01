@@ -8,6 +8,7 @@
 #include <vector>
 #include <array>
 #include <string>
+#include <algorithm>
 #include <memory>
 #include <iostream>
 
@@ -198,7 +199,7 @@ class RadiusAVPDefault : public RadiusAVP {
  */
 class EapMessage : public RadiusAVP {
   protected:
-    const int MIN_LENGTH = 4;
+    const unsigned int MIN_LENGTH = 4;
     void validate();
 
   public:
@@ -302,7 +303,7 @@ class RadiusPacket {
     byte getIdentifier() const { return buffer[1]; }
 
     void setLength(unsigned short length);
-    short getLength() const;
+    unsigned short getLength() const;
 
     void setAuthenticator(const std::array<byte, AUTH_LEN> &arr);
     std::array<byte, 16> getAuthenticator() const;

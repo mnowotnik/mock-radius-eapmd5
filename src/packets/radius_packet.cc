@@ -1,5 +1,4 @@
 #include "packets/radius_packet.h"
-#include <iostream>
 using std::array;
 using std::string;
 using std::vector;
@@ -99,7 +98,7 @@ void RadiusPacket::setLength(unsigned short length) {
     buffer[3] = bytes[1];
 }
 
-short RadiusPacket::getLength() const {
+unsigned short RadiusPacket::getLength() const {
     unsigned short l =
         networkBytes2Short(array<byte, 2>({{buffer[2], buffer[3]}}));
     return l;

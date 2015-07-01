@@ -22,8 +22,8 @@ class EapData {
     friend EapPacket;
 
   protected:
-    static const int MIN_LENGTH = 1;
-    static const int DATA_OFFSET = MIN_LENGTH;
+    static const unsigned int MIN_LENGTH = 1;
+    static const unsigned int DATA_OFFSET = MIN_LENGTH;
     std::vector<byte> buffer;
 
   public:
@@ -122,8 +122,8 @@ class EapPacket {
 
     friend EapMessage;
     std::vector<byte> buffer;
-    static const int MIN_LENGTH = 4;
-    static const int DATA_OFFSET = MIN_LENGTH;
+    static const unsigned int MIN_LENGTH = 4;
+    static const unsigned int DATA_OFFSET = MIN_LENGTH;
 
   public:
     static const byte REQUEST = 1, RESPONSE = 2, SUCCESS = 3, FAILURE = 4;

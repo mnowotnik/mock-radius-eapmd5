@@ -75,7 +75,7 @@ clean:
 # 	pushd $(HASHLIB) & $(CC) $(CFLAGS) /I$(HASHLIB) -c $< & popd
 #
 $(HASHLIB)/%.o: $(HASHLIB)/%.cpp
-	pushd $(HASHLIB) && $(CC) $(CFLAGS) -I(HASHLIB) -c $? && popd
+	pushd $(HASHLIB) && $(CC) $(CFLAGS) -I$(HASHLIB) -c $? && popd
 
 
 %.o : %.cc
