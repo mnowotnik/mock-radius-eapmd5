@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
         /* logger->info() <<"[RadiusPacket:]\n"<< arPacket; */
         /* logger->info() <<"[EapPacket:]\n"<< eapIdentity; */
 
-        radius::sendPack(newPack);
+        radius::sendPacket(newPack);
         // 2.otrzymuj odpowiedz od Radius server
         /* newPack = radius::receivePack(); */
 

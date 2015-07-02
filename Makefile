@@ -20,11 +20,11 @@ CSV_PARSER=$(ROOT)/lib/fast-cpp-csv-parser/include
 COMMON_OBJS=$(SRC)/packets/radius_packet.o $(SRC)/packets/eap_packet.o $(SRC)/logging.o \
 			$(HASHLIB)/md5.o $(SRC)/packets/common.o $(SRC)/auth_common.o $(SRC)/crypto.o \
 			$(SRC)/packets/utils.o $(SRC)/csv_reader.o $(HASHLIB)/crc32.o $(HASHLIB)/sha1.o \
-			$(HASHLIB)/sha3.o $(HASHLIB)/sha256.o
+			$(HASHLIB)/sha3.o $(HASHLIB)/sha256.o $(SRC)/sockets.o $(SRC)/utils_net.o
 
 SERVER_OBJS=$(SRC)/server.o $(SRC)/server_net.o $(SRC)/radius_server.o $(COMMON_OBJS)
 
-CLIENT_OBJS=$(SRC)/client.o $(SRC)/client_net.o $(SRC)/interactive.o  $(COMMON_OBJS)
+CLIENT_OBJS=$(SRC)/client.o $(SRC)/client_net.o $(COMMON_OBJS)
 
 TESTS_OBJS=$(SRC)/all_tests.o $(SRC)/test/radius_server_test.o $(SRC)/test/logging_test.o \
 		   $(SRC)/test/server_net_test.o $(SRC)/test/packet_test.o $(SRC)/test/auth_common_test.o $(SRC)/test/csv_test.o \
@@ -45,7 +45,6 @@ TESTS_INC=-I$(HASHLIB) -I$(CATCH) -I$(SRC) -I$(SPDLOG)
 
 ### Other flags ###
 CFLAGS= -Wall -std=c++11
-# -D_WIN32_WINNT=0x600
 
 
 all: $(SERVER) $(CLIENT) $(TESTS)
@@ -79,9 +78,11 @@ clean:
 $(HASHLIB)/%.o: $(HASHLIB)/%.cpp
 	pushd $(HASHLIB) && $(CC) $(CFLAGS) -I$(HASHLIB) -c $? && popd
 
-$(SRC)/server_net.o : $(SRC)/linux/server_net.cc 
-	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
+# $(SRC)/server_net.o : $(SRC)/linux/server_net.cc 
+# 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
+$(SRC)/%.o : $(SRC)/linux/%.cc
+	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
 $(SRC)/test/%.o : $(SRC)/test/%.cc
 	$(CC) $(CFLAGS) $(TESTS_INC) -c $< -o $@

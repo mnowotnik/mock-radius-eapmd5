@@ -16,6 +16,11 @@
 #include <netinet/in.h>
 #include <netinet/ip.h> 
 #include <arpa/inet.h>
+#include <unistd.h>
 #endif
+
+#include <iostream>
+int createSocket();
+void bindSocket(int sock,const sockaddr_in &addr);
 
 #endif /* end of include guard: SOCKETS_H_U0SPYFVF */

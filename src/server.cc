@@ -13,7 +13,7 @@ using radius::packets::Packet;
 void serverLoop(RadiusServer &radiusServer) {
 
     while (1) {
-        Packet iPacket = radius::receiveData();
+        Packet iPacket = radius::recvData();
         std::vector<Packet> packets = radiusServer.recvPacket(iPacket);
         for (std::vector<Packet>::size_type i = 0; i < packets.size(); i++) {
             radius::sendData(packets[i]);
