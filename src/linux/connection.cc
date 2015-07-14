@@ -1,5 +1,4 @@
-#include "server_net.h"
-using std::vector;
+#include "connection.h"
 
 namespace radius {
 namespace {
@@ -8,10 +7,10 @@ const int BUFLEN = 1000;
 int s;
 bool isRunning;
 }
-void startServer(const char *addr, const int port = 0) {
+void initBind(const char *addr, const int port = 0) {
 
     if (isRunning) {
-        printf("Server is running");
+        std::cerr<<"initBind() ran twice";
         return;
     }
     struct sockaddr_in server;
@@ -23,21 +22,20 @@ void startServer(const char *addr, const int port = 0) {
     isRunning = true;
 }
 
-void stopServer() {
+void unbind() {
     close(s);
     isRunning = false;
 }
 
-packets::Packet recvData() {
+packets::Packet recvPacket() {
     if (!isRunning) {
-        printf("Server is not running");
+        std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
     socklen_t slen;
     int recv_len;
-    vector<byte> buf(BUFLEN, '\0');
+    std::vector<byte> buf(BUFLEN, '\0');
     struct sockaddr_in src_addr;
-    slen = sizeof(src_addr);
 
     if ((recv_len = recvfrom(s, &buf[0], BUFLEN, 0,(struct sockaddr *)&src_addr, &slen)) == -1) {
         if (errno == EINTR) {
@@ -45,25 +43,25 @@ packets::Packet recvData() {
         } else {
             printf("recvfrom() failed with errno code : %d", errno);
         }
-        stopServer();
+        unbind();
         exit(EXIT_FAILURE);
     }
     return packets::Packet(buf, src_addr);
 }
-void sendData(packets::Packet sen_pack) {
+void sendPacket(packets::Packet sen_pack) {
     if (!isRunning) {
-        printf("Server is not running");
+        std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
     int slen, recv_len;
     sockaddr_in dest_addr = sen_pack.addr;
     slen = sizeof(dest_addr);
-    vector<byte> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
+    std::vector<byte> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
     recv_len = BUFLEN * sizeof(byte);
 
     if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr *)&dest_addr, slen) ==
         -1) {
-        printf("sendto() failed with errno code : %d", errno);
+        std::cerr<<"sendto() failed with errno code : "<<errno<<std::endl;
         exit(EXIT_FAILURE);
     }
 }

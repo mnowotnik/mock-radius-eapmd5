@@ -22,7 +22,7 @@ RadiusServer::RadiusServer(const map<string, string> &userPassMap,
                            const string &secret, const Logger &logger)
     : userPassMap(userPassMap), secret(secret), logger(logger) {}
 
-const vector<Packet> RadiusServer::recvPacket(const Packet &packet) {
+    const vector<Packet> RadiusServer::processPacket(const Packet &packet) {
     logger->info() << "Incoming RADIUS packet";
 
     vector<Packet> packetsToSend;

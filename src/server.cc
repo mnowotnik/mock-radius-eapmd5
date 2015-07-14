@@ -1,5 +1,5 @@
 #include <iostream>
-#include "server_net.h"
+#include "connection.h"
 #include "tclap/CmdLine.h"
 #include "logging.h"
 #include "csv_reader.h"
@@ -13,10 +13,10 @@ using radius::packets::Packet;
 void serverLoop(RadiusServer &radiusServer) {
 
     while (1) {
-        Packet iPacket = radius::recvData();
-        std::vector<Packet> packets = radiusServer.recvPacket(iPacket);
+        Packet iPacket = radius::recvPacket();
+        std::vector<Packet> packets = radiusServer.processPacket(iPacket);
         for (std::vector<Packet>::size_type i = 0; i < packets.size(); i++) {
-            radius::sendData(packets[i]);
+            radius::sendPacket(packets[i]);
         }
     }
 }
@@ -74,7 +74,7 @@ int main(int argc, char **argv) {
 
         string dbpath = dbArg.getValue();
 
-        radius::startServer(ip.c_str(), port);
+        radius::initBind(ip.c_str(), port);
         radius::RadiusServer radiusServer(radius::readCsvFile(dbpath), secret,
                                           logger);
 

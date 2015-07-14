@@ -1,8 +1,4 @@
-#include <iostream>
-#include "server_net.h"
-#include <vector>
-#include "packets/packet.h"
-using std::vector;
+#include "connection.h"
 
 namespace radius {
 namespace {
@@ -10,7 +6,7 @@ namespace {
 BOOL WINAPI consoleHandler(DWORD signal) {
 
     if (signal == CTRL_C_EVENT)
-        radius::stopServer();
+        unbind();
 
     return TRUE;
 }
@@ -20,11 +16,11 @@ SOCKET s;
 bool isRunning;
 const unsigned int INT_ERR_CODE = 10004;
 } //namespace
-void startServer(const char *addr, const int port = 0) {
+void initBind(const char *addr, const int port = 0) {
     PORT = port;
 
     if (isRunning) {
-        printf("Server is running");
+        std::cerr<<"initBind() ran twice";
         return;
     }
     struct sockaddr_in server;
@@ -32,8 +28,7 @@ void startServer(const char *addr, const int port = 0) {
     WSADATA wsa;
 
     if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
-        printf("Failed. Error Code : %d", WSAGetLastError());
-
+        std::cerr<<"Failed. Error Code : "<<WSAGetLastError()<<std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -43,26 +38,26 @@ void startServer(const char *addr, const int port = 0) {
 
     isRunning = true;
     if (!SetConsoleCtrlHandler(consoleHandler, TRUE)) {
-        logger->error() << "Could not set control handler!";
-        radius::stopServer();
-        return 1;
+        std::cerr<< "Could not set control handler!";
+        unbind();
+        exit(EXIT_FAILURE);
     }
 }
 
-void stopServer() {
+void unbind() {
     closesocket(s);
     WSACleanup();
     isRunning = false;
 }
 
-packets::Packet recvData() {
+packets::Packet recvPacket() {
     if (!isRunning) {
-        printf("Server is not running");
+        std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
 
     int slen, recv_len;
-    vector<char> buf(BUFLEN, '\0');
+    std::vector<char> buf(BUFLEN, '\0');
     struct sockaddr_in dest_addr;
     slen = sizeof(dest_addr);
 
@@ -73,26 +68,26 @@ packets::Packet recvData() {
         if (err == INT_ERR_CODE) {
             std::cout << "Stopping server..";
         } else {
-            printf("recvfrom() failed with error code : %d", err);
+            std::cerr<<"recvfrom() failed with error code : "<<err<<std::endl;
         }
-        stopServer();
+        unbind();
         exit(EXIT_FAILURE);
     }
     return packets::Packet(buf, dest_addr);
 }
 void sendData(packets::Packet sen_pack) {
     if (!isRunning) {
-        printf("Server is not running");
+        std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
     int slen, recv_len;
     sockaddr_in dest_addr = sen_pack.addr;
     slen = sizeof(dest_addr);
-    vector<char> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
+    std::vector<char> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
     recv_len = BUFLEN * sizeof(byte);
     if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr *)&dest_addr, slen) ==
         SOCKET_ERROR) {
-        printf("sendto() failed with error code : %d", WSAGetLastError());
+        std::cerr<<"sendto() failed with error code : "<<WSAGetLastError()<<std::endl;
         exit(EXIT_FAILURE);
     }
 }

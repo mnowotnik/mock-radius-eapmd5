@@ -73,7 +73,7 @@ class RadiusServer {
     RadiusServer(const UserPassMap &userPassMap, const std::string &secret,
                  const Logger &logger);
 
-    const std::vector<Packet> recvPacket(const Packet &packet);
+    const std::vector<Packet> processPacket(const Packet &packet);
 };
 }
 #endif /* end of include guard: RADIUS_SERVER_H_GSDHRZVP */

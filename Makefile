@@ -22,14 +22,13 @@ COMMON_OBJS=$(SRC)/packets/radius_packet.o $(SRC)/packets/eap_packet.o $(SRC)/lo
 			$(SRC)/packets/utils.o $(SRC)/csv_reader.o $(HASHLIB)/crc32.o $(HASHLIB)/sha1.o \
 			$(HASHLIB)/sha3.o $(HASHLIB)/sha256.o $(SRC)/sockets.o $(SRC)/utils_net.o
 
-SERVER_OBJS=$(SRC)/server.o $(SRC)/server_net.o $(SRC)/radius_server.o $(COMMON_OBJS)
+SERVER_OBJS=$(SRC)/server.o $(SRC)/connection.o $(SRC)/radius_server.o $(COMMON_OBJS)
 
-CLIENT_OBJS=$(SRC)/client.o $(SRC)/client_net.o $(COMMON_OBJS)
+CLIENT_OBJS=$(SRC)/client.o $(SRC)/connection.o $(COMMON_OBJS)
 
 TESTS_OBJS=$(SRC)/all_tests.o $(SRC)/test/radius_server_test.o $(SRC)/test/logging_test.o \
-		   $(SRC)/test/server_net_test.o $(SRC)/test/packet_test.o $(SRC)/test/auth_common_test.o $(SRC)/test/csv_test.o \
-		   $(SRC)/test/crypto_test.o  $(SRC)/radius_server.o $(SRC)/server_net.o  \
-		   $(COMMON_OBJS)
+		   $(SRC)/test/packet_test.o $(SRC)/test/auth_common_test.o $(SRC)/test/csv_test.o \
+		   $(SRC)/test/crypto_test.o  $(SRC)/radius_server.o $(COMMON_OBJS)
 
 ### Targets ###
 SERVER=server
@@ -65,21 +64,8 @@ $(SRC)/all_tests.o: src/all_tests.cc
 	pushd src && $(CC) $(CFLAGS) $(TESTS_INC) -c all_tests.cc \
 		&& popd
 
-clean:
-	rm src/*.o src/packets/*.o \
-		$(HASHLIB)/*.o src/test/*.o 
-
-
-
-# ### Rules ###
-# {$(HASHLIB)}.cpp{$(HASHLIB)}.o::
-# 	pushd $(HASHLIB) & $(CC) $(CFLAGS) /I$(HASHLIB) -c $< & popd
-#
 $(HASHLIB)/%.o: $(HASHLIB)/%.cpp
 	pushd $(HASHLIB) && $(CC) $(CFLAGS) -I$(HASHLIB) -c $? && popd
-
-# $(SRC)/server_net.o : $(SRC)/linux/server_net.cc 
-# 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
 $(SRC)/%.o : $(SRC)/linux/%.cc
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
@@ -90,12 +76,7 @@ $(SRC)/test/%.o : $(SRC)/test/%.cc
 %.o : %.cc
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
-# server.o : server.cc
-# 	$(CC) $(CFLAGS) $(COMMON_INC) $< -o $@
-
-# {packets}.cc{packets}.o:
-# 	pushd packets & $(CC) $(CFLAGS) $(COMMON_INC) -c $< & popd
-
-# {test}.cc{test}.o:
-# 	pushd test & $(CC) $(CFLAGS) $(TESTS_INC) -c $< & popd
+clean:
+	rm src/*.o src/packets/*.o \
+		$(HASHLIB)/*.o src/test/*.o 
 
