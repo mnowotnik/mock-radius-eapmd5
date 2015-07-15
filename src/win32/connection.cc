@@ -56,12 +56,12 @@ packets::Packet recvPacket() {
         exit(EXIT_FAILURE);
     }
 
-    int slen, recv_len;
-    std::vector<char> buf(BUFLEN, '\0');
+    int slen= sizeof(sockaddr_in);
+    std::vector<byte> buf(BUFLEN, '\0');
     struct sockaddr_in dest_addr;
-    slen = sizeof(dest_addr);
+    int recv_len;
 
-    if ((recv_len = recvfrom(s, &buf[0], BUFLEN, 0,
+    if ((recv_len = recvfrom(s, &buf[0], buf.size(), 0,
                              (struct sockaddr *)&dest_addr, &slen)) ==
         SOCKET_ERROR) {
         unsigned int err = WSAGetLastError();
@@ -80,12 +80,9 @@ void sendData(packets::Packet sen_pack) {
         std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
-    int slen, recv_len;
     sockaddr_in dest_addr = sen_pack.addr;
-    slen = sizeof(dest_addr);
-    std::vector<char> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
-    recv_len = BUFLEN * sizeof(byte);
-    if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr *)&dest_addr, slen) ==
+    std::vector<byte> buf(sen_pack.bytes.begin(), sen_pack.bytes.end());
+    if (sendto(s, &buf[0], buf.size(), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) ==
         SOCKET_ERROR) {
         std::cerr<<"sendto() failed with error code : "<<WSAGetLastError()<<std::endl;
         exit(EXIT_FAILURE);

@@ -33,8 +33,8 @@ int main(int argc, char **argv) {
             true, "", "string");
         cmd.add(loginArg);
 
-        ValueArg<string> passArg("", "password", "The password of a user",
-                                 false, "password", "string");
+        ValueArg<string> passArg("d", "password", "The password of a user",
+                                 true, "password", "string");
         cmd.add(passArg);
 
         SwitchArg verboseSwitch("v", "verbose", "Run in the verbose mode",
@@ -45,10 +45,10 @@ int main(int argc, char **argv) {
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<ushort> bindPortArg("p", "port", "Binded port", false, 0, "number");
+        ValueArg<ushort> bindPortArg("", "bind-port", "Binded port", false, 0, "number");
         cmd.add(bindPortArg);
 
-        ValueArg<string> bindIpArg("b", "bind-ip", "Binded IP address", false,
+        ValueArg<string> bindIpArg("", "bind-ip", "Binded IP address", false,
                                    "0.0.0.0", "IP");
         cmd.add(bindIpArg);
 
@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
         cmd.add(ipArg);
 
         ValueArg<string> hashArg(
-            "h", "hash", "Type of password hashing function (md5 sha256 sha3 plain)."
+            "", "hash", "Type of password hashing function (md5 sha256 sha3 plain)."
                         "Default: plain text.",
             false, "plain", "string");
         cmd.add(hashArg);
@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
         auto logger = spdlog::get(LOGGER_NAME);
 
         string hash = hashArg.getValue();
-        if (hash != "" && HASHES_MAP.find(hash) == HASHES_MAP.end()) {
+        if (hash != "plain" && HASHES_MAP.find(hash) == HASHES_MAP.end()) {
             logger->error()  << "Unrecognized hash: " << hash;
             return 1;
         }
@@ -195,6 +195,9 @@ int main(int argc, char **argv) {
 }
 
 std::string hashString(std::string input, std::string hash) {
+    if(hash=="plain"){
+        return input;
+    }
     const auto &it = HASHES_MAP.find(hash);
     if (it == HASHES_MAP.end()) {
         return input;

@@ -32,16 +32,16 @@ packets::Packet recvPacket() {
         std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
-    socklen_t slen;
+    socklen_t slen = sizeof(sockaddr_in);
     int recv_len;
     std::vector<byte> buf(BUFLEN, '\0');
     struct sockaddr_in src_addr;
 
-    if ((recv_len = recvfrom(s, &buf[0], BUFLEN, 0,(struct sockaddr *)&src_addr, &slen)) == -1) {
+    if ((recv_len = recvfrom(s, &buf[0], buf.size(), 0,(struct sockaddr *)&src_addr, &slen)) == -1) {
         if (errno == EINTR) {
-            std::cout << "Stopping server..";
+            std::cout << "Stopping server.."<<std::endl;
         } else {
-            printf("recvfrom() failed with errno code : %d", errno);
+            std::cerr<<"recvfrom() failed with errno code : "<< errno<<std::endl;
         }
         unbind();
         exit(EXIT_FAILURE);
@@ -53,13 +53,10 @@ void sendPacket(packets::Packet sen_pack) {
         std::cerr<<"You have to call initBind() first"<<std::endl;
         exit(EXIT_FAILURE);
     }
-    int slen, recv_len;
     sockaddr_in dest_addr = sen_pack.addr;
-    slen = sizeof(dest_addr);
-    std::vector<byte> buf(&(sen_pack.bytes[0]), &(sen_pack.bytes[BUFLEN]));
-    recv_len = BUFLEN * sizeof(byte);
+    std::vector<byte> buf(sen_pack.bytes.begin(), sen_pack.bytes.end());
 
-    if (sendto(s, &buf[0], recv_len, 0, (struct sockaddr *)&dest_addr, slen) ==
+    if (sendto(s, &buf[0], buf.size(), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr)) ==
         -1) {
         std::cerr<<"sendto() failed with errno code : "<<errno<<std::endl;
         exit(EXIT_FAILURE);
