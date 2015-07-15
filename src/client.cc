@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
 
         ValueArg<string> loginArg(
             "u", "username", "The name of a user that wishes to authenticate",
-            false, "Basia", "string");
+            true, "", "string");
         cmd.add(loginArg);
 
         ValueArg<string> passArg("", "password", "The password of a user",
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<ushort> bindPortArg("p", "port", "Binded port", true, 0, "number");
+        ValueArg<ushort> bindPortArg("p", "port", "Binded port", false, 0, "number");
         cmd.add(bindPortArg);
 
         ValueArg<string> bindIpArg("b", "bind-ip", "Binded IP address", false,
@@ -60,9 +60,9 @@ int main(int argc, char **argv) {
         cmd.add(ipArg);
 
         ValueArg<string> hashArg(
-            "", "hash", "Type of password hashing function (md5 sha256 sha3)."
-                        "Defaults to plain text.",
-            false, "", "string");
+            "h", "hash", "Type of password hashing function (md5 sha256 sha3 plain)."
+                        "Default: plain text.",
+            false, "plain", "string");
         cmd.add(hashArg);
 
         cmd.parse(argc, argv);
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
         string hash = hashArg.getValue();
         if (hash != "" && HASHES_MAP.find(hash) == HASHES_MAP.end()) {
-            std::cerr << "Unrecognized hash: " << hash << std::endl;
+            logger->error()  << "Unrecognized hash: " << hash;
             return 1;
         }
 

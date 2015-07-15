@@ -1,8 +1,8 @@
-#include "csv_reader.h"
+#include "users.h"
 
 namespace radius {
 
-std::map<std::string, std::string> readCsvFile(const std::string &fileName) {
+std::map<std::string, std::string> readUsersDb(const std::string &fileName) {
 
     // std::cout<<"Mamo jestem w komputerze"<<std::endl;
     std::string user, password, line;

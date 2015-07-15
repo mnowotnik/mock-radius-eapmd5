@@ -11,13 +11,12 @@ HASHLIB=$(ROOT)\lib\hash-library
 TCLAP=$(ROOT)\lib\tclap-1.2.1\include
 CATCH=$(ROOT)\lib\Catch\single_include
 SPDLOG=$(ROOT)\lib\spdlog\include
-CSV_PARSER=$(ROOT)\lib\fast-cpp-csv-parser\include
 
 
 ### Object dependencies ###
 COMMON_OBJS=$(SRC)\packets\radius_packet.obj $(SRC)\packets\eap_packet.obj $(SRC)\logging.obj \
 			$(HASHLIB)\md5.obj $(SRC)\packets\common.obj $(SRC)\auth_common.obj $(SRC)\crypto.obj \
-			$(SRC)\packets\utils.obj $(SRC)\csv_reader.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj \
+			$(SRC)\packets\utils.obj $(SRC)\users.obj $(HASHLIB)\crc32.obj $(HASHLIB)\sha1.obj \
 			$(HASHLIB)\sha3.obj $(HASHLIB)\sha256.obj $(SRC)/sockets.o $(SRC)/utils_net.o
 
 SERVER_OBJS=$(SRC)\server.obj $(SRC)\connection.obj $(SRC)\radius_server.obj $(COMMON_OBJS)
@@ -25,7 +24,7 @@ SERVER_OBJS=$(SRC)\server.obj $(SRC)\connection.obj $(SRC)\radius_server.obj $(C
 CLIENT_OBJS=$(SRC)\client.obj $(SRC)\connection.obj $(COMMON_OBJS)
 
 TESTS_OBJS=$(SRC)\all_tests.obj $(SRC)\test\radius_server_test.obj $(SRC)\test\logging_test.obj \
-		   $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj $(SRC)\test\csv_test.obj \
+		   $(SRC)\test\packet_test.obj $(SRC)\test\auth_common_test.obj $(SRC)\test\users_test.obj \
 		   $(SRC)\test\crypto_test.obj $(SRC)\radius_server.obj $(COMMON_OBJS)
 
 

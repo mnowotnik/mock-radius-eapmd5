@@ -3,6 +3,8 @@
 
 #include <exception>
 
+namespace radius{
+
 class Exception : public std::exception {
   public:
     explicit Exception(const std::string &message) : msg_(message) {}
@@ -16,6 +18,7 @@ class FileNotFound : public Exception {
   public:
     explicit FileNotFound(const std::string &message) : Exception(message) {}
 };
+}
 
 
 #endif /* end of include guard: EXCEPTION_H_JBQ1O8DV */

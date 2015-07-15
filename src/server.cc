@@ -2,7 +2,8 @@
 #include "connection.h"
 #include "tclap/CmdLine.h"
 #include "logging.h"
-#include "csv_reader.h"
+#include "users.h"
+#include "exception.h"
 #include "radius_server.h"
 
 const std::string LOGGER_NAME = "server";
@@ -13,8 +14,8 @@ using radius::packets::Packet;
 void serverLoop(RadiusServer &radiusServer) {
 
     while (1) {
-        Packet iPacket = radius::recvPacket();
-        std::vector<Packet> packets = radiusServer.processPacket(iPacket);
+        Packet packet = radius::recvPacket(); //TODO add timeout
+        std::vector<Packet> packets = radiusServer.processPacket(packet);
         for (std::vector<Packet>::size_type i = 0; i < packets.size(); i++) {
             radius::sendPacket(packets[i]);
         }
@@ -24,27 +25,28 @@ void serverLoop(RadiusServer &radiusServer) {
 int main(int argc, char **argv) {
     using namespace TCLAP;
     using namespace std;
+    typedef unsigned short ushort;
     try {
 
         CmdLine cmd("RADIUS Server with EAP-MD5", ' ');
 
         ValueArg<string> logpathArg(
             "l", "log", "The path where the log file shall be written. "
-                        "Default: server.log",
+                        "Default: ./server.log",
             false, "server.log", "path\\to\\log.log");
         cmd.add(logpathArg);
 
         ValueArg<string> dbArg(
             "d", "database", "The path to the plain text file with user data. "
-                             "Default: users.txt",
-            false, ".\\users.txt", "path\\to\\db.csv");
+                             "Default: ./users.txt",
+            false, "users.txt", "path\\to\\users.txt");
         cmd.add(dbArg);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
                                    true, "", "string");
         cmd.add(secretArg);
 
-        ValueArg<int> portArg("p", "port", "Binded port", true, -1, "number");
+        ValueArg<ushort> portArg("p", "port", "Binded port", true, 0, "number");
         cmd.add(portArg);
 
         ValueArg<string> ipArg("a", "address", "Binded IP address", true, "",
@@ -58,7 +60,7 @@ int main(int argc, char **argv) {
 
         cmd.parse(argc, argv);
 
-        int port = portArg.getValue();
+        ushort port = portArg.getValue();
         string ip = ipArg.getValue();
         string secret = secretArg.getValue();
         string logpath = logpathArg.getValue();
@@ -75,13 +77,19 @@ int main(int argc, char **argv) {
         string dbpath = dbArg.getValue();
 
         radius::initBind(ip.c_str(), port);
-        radius::RadiusServer radiusServer(radius::readCsvFile(dbpath), secret,
-                                          logger);
 
-        logger->info() << "Started server";
-        serverLoop(radiusServer);
+        try{
+            radius::RadiusServer radiusServer(radius::readUsersDb(dbpath), secret,
+                    logger);
+            logger->info() << "Started server";
+            serverLoop(radiusServer);
+        }catch(radius::FileNotFound &e){
+            logger->error() << "error: "<<e.what();
+            return 1;
+        }
+
 
     } catch (CmdLineParseException &ce) {
-        cerr << "error: " << ce.error() << ce.argId() << endl;
+        std::cerr << "error: " << ce.error() << ce.argId() << endl;
     }
 }
