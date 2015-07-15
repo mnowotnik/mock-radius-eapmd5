@@ -1,0 +1,7 @@
+branches:
+        only:
+            master
+language: cpp
+script: 
+    - make
+    - make test
