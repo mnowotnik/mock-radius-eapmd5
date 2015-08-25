@@ -36,6 +36,7 @@ class RadiusServer {
         sockaddr_in nasAddr;
         byte eapMsgId;
     };
+
     struct AuthRequestIdCompare {
         bool operator()(const AuthRequestId &lhs,
                         const AuthRequestId &rhs) const {
@@ -45,6 +46,7 @@ class RadiusServer {
                    lhs.eapMsgId < lhs.eapMsgId;
         }
     };
+
     struct AuthData {
         std::vector<byte> challenge;
     };
@@ -58,8 +60,8 @@ class RadiusServer {
 
     const UserPassMap userPassMap;
     const std::string secret;
-
     Logger logger;
+
 
     void updatePending();
     const std::vector<Packet>

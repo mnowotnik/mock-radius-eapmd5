@@ -14,3 +14,8 @@ Serwer RADIUS z protokołem EAP-MD5. Zawiera klienta symulującego NAS do testó
 * W terminalu przejdź do głównego katalogu z Makefile
 * Uruchom 
     nmake
+
+# Authors #
+
+- Michał Nowotnik <m.nowot@gmail.com>
+- Michał Szulc

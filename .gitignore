@@ -5,6 +5,7 @@
 *.obj
 *.o
 *.so
+*.pyc
  
 *.7z
 *.dmg
@@ -38,3 +39,4 @@ vcvarsall.bat
 /server
 /client
 /all_tests
+/.ycm_extra_conf.py

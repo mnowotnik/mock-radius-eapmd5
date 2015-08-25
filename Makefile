@@ -8,11 +8,11 @@ SRC=$(ROOT)/src
 
 
 ###  3rd party libraries ###
-HASHLIB=$(ROOT)/lib/hash-library
-#header-only libraries:
-TCLAP=$(ROOT)/lib/tclap-1.2.1/include
-CATCH=$(ROOT)/lib/Catch/single_include
-SPDLOG=$(ROOT)/lib/spdlog/include
+HASHLIB=$(ROOT)/3rdParty/hash-library
+#header-only 3rdPartyraries:
+TCLAP=$(ROOT)/3rdParty/tclap-1.2.1/include
+CATCH=$(ROOT)/3rdParty/Catch/single_include
+SPDLOG=$(ROOT)/3rdParty/spdlog/include
 
 
 ### Object dependencies ###
@@ -76,6 +76,6 @@ $(SRC)/test/%.o : $(SRC)/test/%.cc
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
 clean:
-	rm src/*.o src/packets/*.o \
+	rm -f src/*.o src/packets/*.o \
 		$(HASHLIB)/*.o src/test/*.o 
 
