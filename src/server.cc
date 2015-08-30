@@ -33,13 +33,13 @@ int main(int argc, char **argv) {
         ValueArg<string> logpathArg(
             "l", "log", "The path where the log file shall be written. "
                         "Default: ./server.log",
-            false, "server.log", "path\\to\\log.log");
+            false, "server.log", "path/to/log.log");
         cmd.add(logpathArg);
 
         ValueArg<string> dbArg(
             "d", "database", "The path to the plain text file with user data. "
                              "Default: ./users.txt",
-            false, "users.txt", "path\\to\\users.txt");
+            false, "users.txt", "path/to/users.txt");
         cmd.add(dbArg);
 
         ValueArg<string> secretArg("s", "secret", "The secret shared with NAS",
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 
         try{
             radius::RadiusServer radiusServer(radius::readUsersDb(dbpath), secret,
-                    logger);
+                    logger,radius::AuthMode::EAP_MD5);
             logger->info() << "Started server";
             serverLoop(radiusServer);
         }catch(radius::FileNotFound &e){
