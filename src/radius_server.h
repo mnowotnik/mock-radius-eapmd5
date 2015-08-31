@@ -20,9 +20,7 @@
 
 namespace radius {
 
-enum AuthMode { 
-    EAP_MD5
-};
+enum AuthMode { EAP_MD5 };
 
 class RadiusServer {
 
@@ -43,6 +41,9 @@ class RadiusServer {
         std::string userName;
         sockaddr_in nasAddr;
         byte msgId;
+
+        AuthRequestId(const std::string &u, const sockaddr_in &addr, byte i)
+            : userName(u), nasAddr(addr), msgId(i) {}
     };
 
     struct AuthRequestIdCompare {
@@ -57,6 +58,7 @@ class RadiusServer {
 
     struct AuthData {
         std::vector<byte> challenge;
+        AuthData(const std::vector<byte> &v) : challenge(v) {}
     };
     std::unique_ptr<AuthData> persistChal;
     std::unique_ptr<std::string> persistPass;
@@ -70,15 +72,21 @@ class RadiusServer {
     const std::string secret;
     Logger logger;
 
-
     void updatePending();
     const std::vector<packets::Packet>
     addPendingPackets(std::vector<packets::Packet> packetsTosend);
     AuthMode authMode;
 
-    RadiusPacketPtr recvEapMd5Id(radius::packets::RadiusPacket &radiusPacket,
-            radius::packets::EapIdentity&eapIden,
-            const sockaddr_in & inAddr);
+    RadiusPacketPtr recvEapId(packets::RadiusPacket &radiusPacket,
+                              packets::EapIdentity &eapIden,
+                              const sockaddr_in &inAddr);
+    RadiusPacketPtr recvEapMd5Chal(packets::RadiusPacket &radiusPacket,
+            packets::EapMd5Challenge &eapMd5, 
+            byte eapId);
+    void persistChallenge(const std::string &userName,
+                          const sockaddr_in &inAddr, byte msgId,
+                          std::vector<byte> &challenge);
+
   public:
     /**
      * @param userPassMap user credentials login x password
@@ -87,7 +95,8 @@ class RadiusServer {
     RadiusServer(const UserPassMap &userPassMap, const std::string &secret,
                  const Logger &logger, AuthMode authMode);
 
-    const std::vector<packets::Packet> processPacket(const packets::Packet &packet);
+    const std::vector<packets::Packet>
+    processPacket(const packets::Packet &packet);
 };
 }
 #endif /* end of include guard: RADIUS_SERVER_H_GSDHRZVP */

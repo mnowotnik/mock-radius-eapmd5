@@ -76,6 +76,6 @@ $(SRC)/test/%.o : $(SRC)/test/%.cc
 	$(CC) $(CFLAGS) $(COMMON_INC) -c $< -o $@
 
 clean:
-	rm -f src/*.o src/packets/*.o \
+	rm -f $(SERVER) $(CLIENT) $(TESTS) src/*.o src/packets/*.o \
 		$(HASHLIB)/*.o src/test/*.o 
 
