@@ -1,4 +1,4 @@
-# README #
+# Mock RADIUS(EAP-MD5) #
 
 A mock RADIUS server using the EAP MD5 authentication protocol.
 
