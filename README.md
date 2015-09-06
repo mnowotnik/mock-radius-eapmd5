@@ -20,6 +20,6 @@ make
 ~~~~
 ## Testing
 
-Run the building command from before for _test_ target e.g.,
+Run the build command from before for _test_ target e.g.,
 
     make test
