@@ -212,6 +212,23 @@ class EapMessage : public RadiusAVP {
     }
 };
 
+class UserName : public RadiusAVP {
+    public:
+        UserName(const std::vector<byte> &bytes) : RadiusAVP(bytes){}
+        UserName() {
+            setType(RadiusAVP::USER_NAME);
+            setLength(buffer.size());
+        }
+        std::string getString(){
+            int offset = RadiusAVP::VAL_OFFSET;
+            return std::string((const char *)&buffer[offset], buffer.size() - offset);
+        }
+        void setString(const std::string &u) {
+            setValue( std::vector<byte>(u.begin(), u.end()));
+        }
+        void validate(){}
+};
+
 /**
  * type : 80
  * length : 16

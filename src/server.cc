@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
         cmd.add(ipArg);
 
-        SwitchArg verboseSwitch("v", "verbose", "Run in the verbose mode",
+        MultiSwitchArg verboseSwitch("v", "verbose", "Run in the verbose mode",
                                 false);
         cmd.add(verboseSwitch);
 
@@ -66,9 +66,11 @@ int main(int argc, char **argv) {
         string logpath = logpathArg.getValue();
         radius::initLogger(logpath, LOGGER_NAME);
 
-        bool verbose = verboseSwitch.getValue();
+        int verbose = verboseSwitch.getValue();
 
-        if (verbose) {
+        if (verbose==1) {
+            spdlog::set_level(spdlog::level::debug);
+        }else if(verbose==2){
             spdlog::set_level(spdlog::level::trace);
         }
 

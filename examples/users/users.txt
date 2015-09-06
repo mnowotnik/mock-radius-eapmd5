@@ -1,3 +1,2 @@
-user,password
 Mike,password
 Kate,password

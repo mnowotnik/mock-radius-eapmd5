@@ -3,6 +3,7 @@
 using radius::packets::RadiusPacket;
 using radius::packets::RadiusAVP;
 using radius::packets::EapData;
+using radius::packets::UserName;
 using radius::packets::EapPacket;
 using radius::packets::EapIdentity;
 using radius::packets::EapMd5Challenge;
@@ -14,6 +15,7 @@ namespace radius {
 namespace {
 // array of 0s
 const std::array<byte, 16> nullAuth{};
+const std::string EMPTY_STR = "";
 typedef std::uniform_int_distribution<unsigned int> IntGenerator;
 typedef std::independent_bits_engine<std::mt19937, 4, unsigned int>
     UniBiIntGenerator;
@@ -166,16 +168,39 @@ bool isValid(const RadiusPacket &packet) {
     std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
     int messageAuthenticatorC = 0;
     int eapMessageC = 0;
+    int userNameC = 0;
     for (const auto &avpPtr : avpList) {
         byte type = avpPtr->getType();
-        if (type == RadiusAVP::MESSAGE_AUTHENTICATOR) {
-            messageAuthenticatorC++;
-        } else if (type == RadiusAVP::EAP_MESSAGE) {
-            eapMessageC++;
+        switch(type){
+            case RadiusAVP::MESSAGE_AUTHENTICATOR:
+                messageAuthenticatorC++;
+                break;
+            case RadiusAVP::EAP_MESSAGE:
+                eapMessageC++;
+                break;
+            case RadiusAVP::USER_NAME:
+                userNameC++;
+                break;
         }
     }
 
-    return messageAuthenticatorC == 1 && eapMessageC > 0;
+    return messageAuthenticatorC == 1 && eapMessageC > 0 && userNameC==1;
+}
+
+std::string getUserName(const RadiusPacket &packet){
+    std::vector<std::unique_ptr<RadiusAVP>> avpList = packet.getAVPList();
+    UserName*un=nullptr;
+    std::for_each(avpList.begin(), avpList.end(),
+                  [&](const std::unique_ptr<RadiusAVP> &avp) {
+                      if (avp->getType() == RadiusAVP::USER_NAME) {
+                          RadiusAVP *ap = const_cast<RadiusAVP *>(avp.get());
+                          un = static_cast<UserName *>(ap);
+                      }
+                  });
+    if(un==nullptr){
+        return EMPTY_STR;
+    }
+    return un->getString();
 }
 
 std::vector<byte> generateRandomBytes(unsigned int min, unsigned int max) {
@@ -205,14 +230,9 @@ std::array<byte, 16> calcChalVal(byte ident, std::vector<byte> chal,
 }
 std::array<byte, 16> calcChalVal(const packets::EapPacket &packet,
                                  const std::string &secret) {
-    std::vector<byte> buffer;
-    buffer.push_back(packet.getIdentifier());
-    buffer.insert(buffer.end(), secret.begin(), secret.end());
     std::unique_ptr<EapData> eapData = packet.getData();
     EapMd5Challenge *md5Chal = dynamic_cast<EapMd5Challenge *>(eapData.get());
-    std::vector<byte> md5ChalVec = md5Chal->getValue();
-    buffer.insert(buffer.end(), md5ChalVec.begin(), md5ChalVec.end());
-    return md5Bin(buffer);
+    return calcChalVal(packet.getIdentifier(),md5Chal->getValue(),secret);
 }
 
 EapPacket makeIdentity(const std::string id) {

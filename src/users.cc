@@ -4,7 +4,6 @@ namespace radius {
 
 std::map<std::string, std::string> readUsersDb(const std::string &fileName) {
 
-    // std::cout<<"Mamo jestem w komputerze"<<std::endl;
     std::string user, password, line;
     std::ifstream fileStream;
     fileStream.open(fileName);

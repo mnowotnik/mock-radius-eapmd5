@@ -29,6 +29,8 @@ bool checkIntegrity(
 bool isRequest(const packets::RadiusPacket &packet);
 bool isValid(const packets::RadiusPacket &packet);
 
+std::string getUserName(const packets::RadiusPacket &packet);
+
 std::array<byte, 16>
 calcAuthenticatorChecksum(const packets::RadiusPacket &packet,
                           const std::array<byte, 16> &authenticator);

@@ -58,10 +58,9 @@ class RadiusServer {
 
     struct AuthData {
         std::vector<byte> challenge;
+        AuthData(){}
         AuthData(const std::vector<byte> &v) : challenge(v) {}
     };
-    std::unique_ptr<AuthData> persistChal;
-    std::unique_ptr<std::string> persistPass;
 
     std::map<AuthRequestId, AuthData, AuthRequestIdCompare> authProcMap;
 
@@ -79,10 +78,12 @@ class RadiusServer {
 
     RadiusPacketPtr recvEapId(packets::RadiusPacket &radiusPacket,
                               packets::EapIdentity &eapIden,
-                              const sockaddr_in &inAddr);
+                              const sockaddr_in &inAddr,
+                              byte eapId);
+    
     RadiusPacketPtr recvEapMd5Chal(packets::RadiusPacket &radiusPacket,
             packets::EapMd5Challenge &eapMd5, 
-            byte eapId);
+            std::array<byte,16> &refHash);
     void persistChallenge(const std::string &userName,
                           const sockaddr_in &inAddr, byte msgId,
                           std::vector<byte> &challenge);

@@ -60,15 +60,15 @@ $(TESTS): $(TESTS_OBJS)
 	pushd $(SRC) & $(CC) $(CFLAGS) /Fe..\$@ $** & popd
 
 $(SRC)\server.obj: $(SRC)\server.cc
-	pushd $(SRC) & $(CC) $(CFLAGS) $(SERVER_INC) -c $? \
+	pushd $(SRC) & $(CC) $(CFLAGS) $(SERVER_INC) -c $^ \
 		& popd
 
 $(SRC)\client.obj: $(SRC)\client.cc
-	pushd $(SRC) & $(CC) $(CFLAGS) $(CLIENT_INC) -c $? \
+	pushd $(SRC) & $(CC) $(CFLAGS) $(CLIENT_INC) -c $^ \
 		& popd
 
 $(SRC)\all_tests.obj: $(SRC)\all_tests.cc  
-	pushd $(SRC) & $(CC) $(CFLAGS) $(TESTS_INC) -c $? \
+	pushd $(SRC) & $(CC) $(CFLAGS) $(TESTS_INC) -c $^ \
 		& popd
 
 clean:

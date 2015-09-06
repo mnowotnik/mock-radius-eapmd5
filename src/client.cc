@@ -113,12 +113,16 @@ int main(int argc, char **argv) {
         EapMessage eapMessage;
         eapMessage.setValue(eapIdentity.getBuffer());
 
+        UserName userName;
+        userName.setString(login);
+
         RadiusPacket arPacket;
         arPacket.setIdentifier(1);
         arPacket.setCode(RadiusPacket::ACCESS_REQUEST);
         std::array<radius::byte, 16> authTable = generateRandom16();
         arPacket.setAuthenticator(authTable);
         arPacket.addAVP(static_cast<const RadiusAVP &>(eapMessage));
+        arPacket.addAVP(static_cast<const UserName &>(userName));
         calcAndSetMsgAuth(arPacket, secret);
 
         radius::packets::Packet newPack(arPacket.getBuffer(), server_addr);
@@ -129,37 +133,38 @@ int main(int argc, char **argv) {
         logger->info() <<"[EapPacket:]\n"<< eapIdentity;
 
         radius::sendPacket(newPack);
-        // 2.otrzymuj odpowiedz od Radius server
+
         newPack = radius::recvPacket();
 
         RadiusPacket recArPacket(newPack.bytes);
         logger->info() <<"Received Packet";
         logger->info() <<"[Packet:]\n" <<packet2LogBytes(recArPacket.getBuffer());
         logger->info() <<"[RadiusPacket:]\n"<< recArPacket;
-        EapPacket recEapIdentity = extractEapPacket(recArPacket);
-        logger->info() <<"[EapPacket:]\n"<< recEapIdentity;
+        EapPacket eapp = extractEapPacket(recArPacket);
+        logger->info() <<"[EapPacket:]\n"<< eapp;
 
-        std::array<radius::byte,16> chalArray=calcChalVal(recEapIdentity,pass);
+        std::array<radius::byte,16> chalArray=calcChalVal(eapp,pass);
 
         /* //make response */
         EapPacket eapMd5Chal;
         eapMd5Chal = makeChallengeResp(chalArray);
         eapMd5Chal.setType(EapPacket::RESPONSE);
-        eapMd5Chal.setIdentifier(2);
+        eapMd5Chal.setIdentifier(eapp.getIdentifier());
 
         EapMessage eapMessage2;
         eapMessage2.setValue(eapMd5Chal.getBuffer());
 
         RadiusPacket responsePacket;
-        responsePacket.setIdentifier(2);
+        responsePacket.setIdentifier(recArPacket.getIdentifier()+1);
         responsePacket.setCode(RadiusPacket::ACCESS_REQUEST);
         authTable = generateRandom16();
         responsePacket.setAuthenticator(authTable);
         responsePacket.addAVP(static_cast<const RadiusAVP &>(eapMessage2));
+        responsePacket.addAVP(static_cast<const UserName &>(userName));
         calcAndSetMsgAuth(responsePacket, secret);
 
-         radius::packets::Packet responsePack(responsePacket.getBuffer() ,
-         server_addr);
+        radius::packets::Packet responsePack(responsePacket.getBuffer() ,
+                server_addr);
 
         logger->info() <<"Send Packet";
         logger->info() <<"[Packet:]\n" <<

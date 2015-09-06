@@ -51,13 +51,13 @@ test: $(TESTS)
 	./$(TESTS)
 
 $(SERVER): $(SERVER_OBJS)
-	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
+	pushd src && $(CC) $(CFLAGS) $^ -o../$@ && popd
 
 $(CLIENT): $(CLIENT_OBJS)
-	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
+	pushd src && $(CC) $(CFLAGS) $^ -o../$@ && popd
 
 $(TESTS): $(TESTS_OBJS)
-	pushd src && $(CC) $(CFLAGS) $? -o../$@ && popd
+	pushd src && $(CC) $(CFLAGS) $^ -o../$@ && popd
 
 $(SRC)/all_tests.o: src/all_tests.cc  
 	pushd src && $(CC) $(CFLAGS) $(TESTS_INC) -c all_tests.cc \
