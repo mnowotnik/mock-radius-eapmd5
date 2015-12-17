@@ -9,7 +9,7 @@ SRC=$(ROOT)/src
 
 ###  3rd party libraries ###
 HASHLIB=$(ROOT)/3rdParty/hash-library
-#header-only 3rdPartyraries:
+#header-only 3rdParty libraries:
 TCLAP=$(ROOT)/3rdParty/tclap-1.2.1/include
 CATCH=$(ROOT)/3rdParty/Catch/single_include
 SPDLOG=$(ROOT)/3rdParty/spdlog/include
